@@ -753,7 +753,6 @@ const DEFAULT_RECIPES = [
   {id:"r8",title:"Takoyaki Autentico",description:"Croccante fuori, quasi liquido dentro. Lo street food dell'anima di Osaka.",region:"Osaka, Giappone",country:"Giappone",emoji:"🐙",cover_url:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&auto=format&fit=crop",verified:true,profiles:{username:"Yuki Tanaka",avatar_url:null},likes_count:1840,time_minutes:40,difficulty:"Medio",portions:4,ingredients:[{name:"Farina per takoyaki",qty:"200 g"},{name:"Uova",qty:"2"},{name:"Brodo dashi",qty:"600 ml"},{name:"Polpo bollito",qty:"150 g"},{name:"Tenkasu",qty:"30 g"},{name:"Cipollotti",qty:"2 steli"},{name:"Salsa takoyaki",qty:"q.b."},{name:"Maionese giapponese",qty:"q.b."},{name:"Katsuobushi",qty:"q.b."}],steps:[{text:"Sbatti le uova con il brodo dashi freddo. La pastella deve essere molto liquida. Riposa 10 minuti.",tip:"Se troppo densa, il takoyaki sarà gommoso invece che cremoso.",timer:600},{text:"Taglia il polpo a pezzi di 1.5 cm. Trita i cipollotti finemente.",tip:"Polpo piccolo cuoce uniformemente nel tempo necessario.",timer:null},{text:"Scalda la piastra a fuoco alto. Oliala generosamente in ogni buco.",tip:"Se l'olio non sfrigola subito, la piastra non è abbastanza calda.",timer:null},{text:"Versa la pastella traboccando ogni buco. Metti un pezzo di polpo in ogni buco, poi tenkasu e cipollotti.",tip:"Traboccare è voluto: serve per chiudere le sfere.",timer:null},{text:"Aspetta 2 minuti senza toccare. Gira ogni pallina di esattamente 90 gradi con uno stecchino.",tip:"90 gradi, non 180: la pastella cruda scivola dentro a chiudere la sfera.",timer:120},{text:"Continua a girare ogni 30-40 secondi finché sfere dorate. Servi subito con salsa, maionese e bonito.",tip:"I fiocchi di bonito si muovono per il vapore: è normale, è spettacolo!",timer:180}],notes:["La pastella deve essere quasi watery.","Non sostituire il dashi con brodo di pollo.","Una piastra in ghisa dà il migliore esterno croccante."]}
 ];
 
-const OPENROUTER_KEY = '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';
 const SUPABASE_CONFIGURED = SUPABASE_URL !== 'INCOLLA_QUI_IL_TUO_PROJECT_URL';
 
 // ══════════════════════════════════════════════════
@@ -1253,50 +1252,37 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (OpenRouter — free models) ──
-async function callOpenRouter(messages, maxTokens=2000) {
-  // Try free models in order until one works
-  const models = [
-    'mistralai/mistral-7b-instruct:free',
-    'meta-llama/llama-3.2-3b-instruct:free',
-    'google/gemma-2-9b-it:free',
-    'microsoft/phi-3-mini-128k-instruct:free'
-  ];
-  let lastError = null;
-  for (const model of models) {
-    try {
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENROUTER_KEY,
-          'HTTP-Referer': window.location.origin,
-          'X-Title': 'Autentico'
-        },
-        body: JSON.stringify({ model, max_tokens: maxTokens, temperature: 0.7, messages })
-      });
-      if (res.status === 401) throw new Error('401: Chiave API non valida');
-      if (res.status === 402) throw new Error('402: Credito esaurito');
-      if (!res.ok) { lastError = 'Errore ' + res.status; continue; }
-      const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || '';
-      if (text) return text;
-    } catch(e) {
-      if (e.message.startsWith('401') || e.message.startsWith('402')) throw e;
-      lastError = e.message;
-    }
-  }
-  throw new Error(lastError || 'Nessun modello disponibile');
+// ── AI API CALL (Pollinations — gratuito, no chiavi, no CORS) ──
+async function callAI(messages) {
+  // Build prompt from messages
+  const system = messages.find(m => m.role === 'system')?.content || '';
+  const userMsgs = messages.filter(m => m.role !== 'system');
+  const lastUser = userMsgs[userMsgs.length - 1]?.content || '';
+
+  // Pollinations text API - completely free, no auth needed
+  const prompt = encodeURIComponent(system ? system + ' ' + lastUser : lastUser);
+  const url = `https://text.pollinations.ai/${prompt}?model=mistral&seed=${Date.now()}&json=false`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Accept': 'text/plain' }
+  });
+
+  if (!res.ok) throw new Error('Errore ' + res.status);
+  const text = await res.text();
+  if (!text || text.trim().length < 10) throw new Error('Risposta vuota');
+  return text.trim();
 }
 
 async function callGemini(prompt, systemInstruction) {
-  return await callOpenRouter([
+  return await callAI([
     { role: 'system', content: systemInstruction },
     { role: 'user', content: prompt }
-  ], 2000);
+  ]);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
+  // For chat, include conversation history
   const apiMessages = [
     { role: 'system', content: systemInstruction },
     ...messages.map(m => ({
@@ -1304,7 +1290,7 @@ async function callGeminiChat(messages, systemInstruction) {
       content: m.text
     }))
   ];
-  return await callOpenRouter(apiMessages, 1000);
+  return await callAI(apiMessages);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
@@ -1318,13 +1304,20 @@ async function generateFromDesc() {
   btn.innerHTML = '<div class="ai-spinner"></div> Sto creando la ricetta…';
   card.classList.remove('show');
 
-  const systemPrompt = `Sei un esperto chef internazionale con conoscenza approfondita delle cucine del mondo. Genera ricette autentiche, dettagliate e accurate. Rispondi SEMPRE e SOLO con JSON valido, senza testo prima o dopo, senza markdown, senza backtick. Il JSON deve avere questa struttura esatta:
-{"title":"Nome Ricetta","region":"Città, Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione autentica e appetitosa in italiano","ingredients":[{"name":"Ingrediente","qty":"100 g"}],"steps":[{"text":"Passo dettagliato con istruzioni chiare","tip":"Consiglio professionale utile","timer":0}],"notes":["Nota autenticità 1","Nota autenticità 2"]}
-Regole: difficulty deve essere esattamente Facile, Medio o Difficile. timer è in secondi (0 se nessun timer necessario). Genera almeno 6 ingredienti e almeno 5 passi molto dettagliati. Includi 2-3 note di autenticità. Tutto in italiano.`;
+  const systemPrompt = `Sei uno chef esperto. Genera una ricetta autentica in formato JSON puro.
+Rispondi SOLO con il JSON, niente altro. Struttura esatta:
+{"title":"Nome","region":"Città, Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione in italiano","ingredients":[{"name":"Ingrediente","qty":"100 g"}],"steps":[{"text":"Istruzione dettagliata","tip":"Consiglio utile","timer":0}],"notes":["Nota 1","Nota 2"]}
+difficulty = Facile, Medio o Difficile. timer in secondi (0 se non serve). Minimo 6 ingredienti, 5 passi. Tutto in italiano.`;
 
   try {
     const raw = await callGemini('Genera una ricetta autentica per: ' + desc, systemPrompt);
-    const clean = raw.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+    // Extract JSON robustly - find first { and last }
+    let clean = raw.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+    const jsonStart = clean.indexOf('{');
+    const jsonEnd = clean.lastIndexOf('}');
+    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+      clean = clean.slice(jsonStart, jsonEnd + 1);
+    }
     aiGeneratedRecipe = JSON.parse(clean);
 
     // Show preview card
