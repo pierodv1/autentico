@@ -16,7 +16,7 @@ export default async function handler(req) {
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
     if (!GEMINI_KEY) {
-      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata su Vercel → Settings → Environment Variables.' }), {
+      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata. Vai su Vercel → Settings → Environment Variables.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
@@ -33,7 +33,7 @@ export default async function handler(req) {
       maxOutputTokens: 2048
     };
 
-    // When json_mode is true, force Gemini to output valid JSON
+    // Force JSON output to avoid malformed responses
     if (json_mode) {
       generationConfig.responseMimeType = 'application/json';
     }
@@ -57,7 +57,33 @@ export default async function handler(req) {
       });
     }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    // Server-side JSON cleanup before sending to client
+    if (json_mode && text) {
+      // Remove markdown code fences
+      text = text.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+      // Find JSON boundaries
+      const start = text.indexOf('{');
+      const end = text.lastIndexOf('}');
+      if (start >= 0 && end > start) {
+        text = text.slice(start, end + 1);
+      }
+      // Replace actual newlines inside the JSON with spaces
+      text = text.replace(/\n/g, ' ').replace(/\r/g, '');
+      // Fix trailing commas
+      text = text.replace(/,(\s*[}\]])/g, '$1');
+      // Validate it's parseable, if not return error with raw
+      try {
+        JSON.parse(text);
+      } catch(e) {
+        return new Response(JSON.stringify({ error: 'JSON non valido: ' + e.message, raw: text.slice(0, 200) }), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     return new Response(JSON.stringify({ text }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
