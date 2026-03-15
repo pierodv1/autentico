@@ -12,11 +12,11 @@ export default async function handler(req) {
   }
 
   try {
-    const { messages, system } = await req.json();
+    const { messages, system, json_mode } = await req.json();
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
     if (!GEMINI_KEY) {
-      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata. Vai su Vercel → Settings → Environment Variables.' }), {
+      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata su Vercel → Settings → Environment Variables.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
@@ -26,15 +26,24 @@ export default async function handler(req) {
       ? system + '\n\n' + (messages[messages.length - 1]?.content || '')
       : (messages[messages.length - 1]?.content || '');
 
-    // gemini-2.5-flash: stable, available for all new accounts
     const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY;
+
+    const generationConfig = {
+      temperature: 0.7,
+      maxOutputTokens: 2048
+    };
+
+    // When json_mode is true, force Gemini to output valid JSON
+    if (json_mode) {
+      generationConfig.responseMimeType = 'application/json';
+    }
 
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: userText }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+        generationConfig
       })
     });
 
