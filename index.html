@@ -1252,24 +1252,24 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (Anthropic Artifact API — no keys, no CORS) ──
-async function callAI(system, userPrompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+// ── AI API CALL (via /api/ai — Vercel serverless, no CORS) ──
+async function callAI(system, userPrompt, jsonMode) {
+  const res = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
       system: system,
-      messages: [{ role: 'user', content: userPrompt }]
+      messages: [{ role: 'user', content: userPrompt }],
+      json_mode: jsonMode === true
     })
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error('Errore ' + res.status + (err.error?.message ? ': ' + err.error.message : ''));
+    const err = await res.json().catch(function(){ return {}; });
+    throw new Error('Errore ' + res.status + (err.error ? ': ' + err.error : ''));
   }
   const data = await res.json();
-  return data.content?.find(b => b.type === 'text')?.text || '';
+  if (data.error) throw new Error(data.error);
+  return data.text || '';
 }
 
 async function callGemini(prompt, systemInstruction) {
@@ -1277,11 +1277,11 @@ async function callGemini(prompt, systemInstruction) {
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  const history = messages.map(function(m) {
+  var history = messages.map(function(m) {
     return (m.role === 'ai' ? 'Chef AI' : 'Utente') + ': ' + m.text;
   }).join('\n');
-  const last = messages.length ? messages[messages.length-1].text : '';
-  return await callAI(systemInstruction, messages.length > 1 ? history : last);
+  var last = messages.length ? messages[messages.length-1].text : '';
+  return await callAI(systemInstruction, messages.length > 1 ? history : last, false);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
