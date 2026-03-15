@@ -753,6 +753,7 @@ const DEFAULT_RECIPES = [
   {id:"r8",title:"Takoyaki Autentico",description:"Croccante fuori, quasi liquido dentro. Lo street food dell'anima di Osaka.",region:"Osaka, Giappone",country:"Giappone",emoji:"🐙",cover_url:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&auto=format&fit=crop",verified:true,profiles:{username:"Yuki Tanaka",avatar_url:null},likes_count:1840,time_minutes:40,difficulty:"Medio",portions:4,ingredients:[{name:"Farina per takoyaki",qty:"200 g"},{name:"Uova",qty:"2"},{name:"Brodo dashi",qty:"600 ml"},{name:"Polpo bollito",qty:"150 g"},{name:"Tenkasu",qty:"30 g"},{name:"Cipollotti",qty:"2 steli"},{name:"Salsa takoyaki",qty:"q.b."},{name:"Maionese giapponese",qty:"q.b."},{name:"Katsuobushi",qty:"q.b."}],steps:[{text:"Sbatti le uova con il brodo dashi freddo. La pastella deve essere molto liquida. Riposa 10 minuti.",tip:"Se troppo densa, il takoyaki sarà gommoso invece che cremoso.",timer:600},{text:"Taglia il polpo a pezzi di 1.5 cm. Trita i cipollotti finemente.",tip:"Polpo piccolo cuoce uniformemente nel tempo necessario.",timer:null},{text:"Scalda la piastra a fuoco alto. Oliala generosamente in ogni buco.",tip:"Se l'olio non sfrigola subito, la piastra non è abbastanza calda.",timer:null},{text:"Versa la pastella traboccando ogni buco. Metti un pezzo di polpo in ogni buco, poi tenkasu e cipollotti.",tip:"Traboccare è voluto: serve per chiudere le sfere.",timer:null},{text:"Aspetta 2 minuti senza toccare. Gira ogni pallina di esattamente 90 gradi con uno stecchino.",tip:"90 gradi, non 180: la pastella cruda scivola dentro a chiudere la sfera.",timer:120},{text:"Continua a girare ogni 30-40 secondi finché sfere dorate. Servi subito con salsa, maionese e bonito.",tip:"I fiocchi di bonito si muovono per il vapore: è normale, è spettacolo!",timer:180}],notes:["La pastella deve essere quasi watery.","Non sostituire il dashi con brodo di pollo.","Una piastra in ghisa dà il migliore esterno croccante."]}
 ];
 
+const OPENROUTER_KEY = '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';
 const SUPABASE_CONFIGURED = SUPABASE_URL !== 'INCOLLA_QUI_IL_TUO_PROJECT_URL';
 
 // ══════════════════════════════════════════════════
@@ -1252,16 +1253,24 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (Claude) ──
+// ── AI API CALL (OpenRouter — no CORS issues) ──
 async function callGemini(prompt, systemInstruction) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + OPENROUTER_KEY,
+      'HTTP-Referer': window.location.href,
+      'X-Title': 'Autentico'
+    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemInstruction,
-      messages: [{ role: 'user', content: prompt }]
+      model: 'meta-llama/llama-3.1-8b-instruct:free',
+      max_tokens: 2000,
+      temperature: 0.7,
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: prompt }
+      ]
     })
   });
   if (!res.ok) {
@@ -1269,26 +1278,33 @@ async function callGemini(prompt, systemInstruction) {
     const code = res.status;
     const detail = errData?.error?.message || '';
     if (code === 429) throw new Error('429');
+    if (code === 402) throw new Error('Credito esaurito su OpenRouter. Vai su openrouter.ai per ricaricare.');
     throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
   }
   const data = await res.json();
-  const text = data.content?.find(b => b.type === 'text')?.text || '';
-  return text;
+  return data.choices?.[0]?.message?.content || '';
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  // Build multi-turn conversation for Claude
-  const apiMessages = messages.map(m => ({
-    role: m.role === 'ai' ? 'assistant' : 'user',
-    content: m.text
-  }));
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const apiMessages = [
+    { role: 'system', content: systemInstruction },
+    ...messages.map(m => ({
+      role: m.role === 'ai' ? 'assistant' : 'user',
+      content: m.text
+    }))
+  ];
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + OPENROUTER_KEY,
+      'HTTP-Referer': window.location.href,
+      'X-Title': 'Autentico'
+    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'meta-llama/llama-3.1-8b-instruct:free',
       max_tokens: 1000,
-      system: systemInstruction,
+      temperature: 0.8,
       messages: apiMessages
     })
   });
@@ -1297,10 +1313,11 @@ async function callGeminiChat(messages, systemInstruction) {
     const code = res.status;
     const detail = errData?.error?.message || '';
     if (code === 429) throw new Error('429');
+    if (code === 402) throw new Error('Credito esaurito su OpenRouter.');
     throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
   }
   const data = await res.json();
-  return data.content?.find(b => b.type === 'text')?.text || '';
+  return data.choices?.[0]?.message?.content || '';
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
