@@ -16,7 +16,7 @@ export default async function handler(req) {
     const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
     if (!GEMINI_KEY) {
-      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata su Vercel → Settings → Environment Variables.' }), {
+      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY non configurata.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
@@ -28,49 +28,6 @@ export default async function handler(req) {
 
     const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY;
 
-    // Use responseSchema to force perfectly valid JSON every time
-    const responseSchema = {
-      type: 'object',
-      properties: {
-        title:       { type: 'string' },
-        region:      { type: 'string' },
-        country:     { type: 'string' },
-        emoji:       { type: 'string' },
-        difficulty:  { type: 'string', enum: ['Facile', 'Medio', 'Difficile'] },
-        time_minutes:{ type: 'integer' },
-        portions:    { type: 'integer' },
-        description: { type: 'string' },
-        ingredients: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              qty:  { type: 'string' }
-            },
-            required: ['name', 'qty']
-          }
-        },
-        steps: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              text:  { type: 'string' },
-              tip:   { type: 'string' },
-              timer: { type: 'integer' }
-            },
-            required: ['text', 'tip', 'timer']
-          }
-        },
-        notes: {
-          type: 'array',
-          items: { type: 'string' }
-        }
-      },
-      required: ['title','region','country','emoji','difficulty','time_minutes','portions','description','ingredients','steps','notes']
-    };
-
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -80,7 +37,23 @@ export default async function handler(req) {
           temperature: 0.7,
           maxOutputTokens: 2048,
           responseMimeType: 'application/json',
-          responseSchema: responseSchema
+          responseSchema: {
+            type: 'object',
+            properties: {
+              title:        { type: 'string' },
+              region:       { type: 'string' },
+              country:      { type: 'string' },
+              emoji:        { type: 'string' },
+              difficulty:   { type: 'string', enum: ['Facile', 'Medio', 'Difficile'] },
+              time_minutes: { type: 'integer' },
+              portions:     { type: 'integer' },
+              description:  { type: 'string' },
+              ingredients:  { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, qty: { type: 'string' } }, required: ['name','qty'] } },
+              steps:        { type: 'array', items: { type: 'object', properties: { text: { type: 'string' }, tip: { type: 'string' }, timer: { type: 'integer' } }, required: ['text','tip','timer'] } },
+              notes:        { type: 'array', items: { type: 'string' } }
+            },
+            required: ['title','region','country','emoji','difficulty','time_minutes','portions','description','ingredients','steps','notes']
+          }
         }
       })
     });
@@ -88,28 +61,45 @@ export default async function handler(req) {
     const data = await res.json();
 
     if (!res.ok) {
-      const errMsg = data.error?.message || 'Errore ' + res.status;
-      return new Response(JSON.stringify({ error: errMsg }), {
+      return new Response(JSON.stringify({ error: data.error?.message || 'Errore ' + res.status }), {
         status: res.status,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    // Verify it's valid JSON before returning
-    try {
-      JSON.parse(text);
-    } catch(e) {
-      return new Response(JSON.stringify({ error: 'Risposta AI non valida, riprova.' }), {
+    // Check for blocked content
+    const candidate = data.candidates?.[0];
+    if (!candidate) {
+      const feedback = data.promptFeedback?.blockReason || 'Nessun candidato';
+      return new Response(JSON.stringify({ error: 'Risposta bloccata: ' + feedback }), {
         status: 422,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
-    return new Response(JSON.stringify({ text }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    const finishReason = candidate.finishReason;
+    const text = candidate.content?.parts?.[0]?.text || '';
+
+    // Return raw text so client can debug if needed
+    if (!text) {
+      return new Response(JSON.stringify({ error: 'Testo vuoto. Finish reason: ' + finishReason }), {
+        status: 422,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    // Try to parse - if fails return the raw text for debugging
+    try {
+      JSON.parse(text);
+      return new Response(JSON.stringify({ text }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    } catch(e) {
+      // Return raw text so client can try to fix it
+      return new Response(JSON.stringify({ text, parse_error: e.message }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
 
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), {
