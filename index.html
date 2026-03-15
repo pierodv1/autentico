@@ -629,7 +629,6 @@ footer p { font-size:13px;color:var(--muted); }
 // ══════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://xabqsavwogdzdmkjefsx.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhYnFzYXZ3b2dkemRta2plZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTMxMzEsImV4cCI6MjA4OTE2OTEzMX0.d-ksyKV6M0Q36zIDWFcZg4FPxhNzgkRjdoT4mFV4Ga0';
-const GEMINI_KEY = 'AIzaSyDvrNWrV6ZxkG3rrhsSAyJjMhs6euSufFQ';
 // ══════════════════════════════════════════════════
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -648,18 +647,25 @@ let photoFile = null;
 // ══════════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════════
+let authChangeTimer = null;
 sb.auth.onAuthStateChange(async (event, session) => {
-  currentUser = session?.user || null;
-  if (currentUser) {
-    const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-    currentProfile = data;
-    await loadUserLikes();
-  } else {
-    currentProfile = null;
-    userLikes = new Set();
-  }
-  renderHeaderAuth();
-  renderGrid();
+  // Debounce to prevent concurrent lock conflicts
+  if (authChangeTimer) clearTimeout(authChangeTimer);
+  authChangeTimer = setTimeout(async () => {
+    currentUser = session?.user || null;
+    if (currentUser) {
+      try {
+        const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+        currentProfile = data;
+        await loadUserLikes();
+      } catch(e) { console.warn('Profile load:', e.message); }
+    } else {
+      currentProfile = null;
+      userLikes = new Set();
+    }
+    renderHeaderAuth();
+    renderGrid();
+  }, 100);
 });
 
 function renderHeaderAuth() {
@@ -1242,16 +1248,16 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── GEMINI API CALL ──
+// ── AI API CALL (Claude) ──
 async function callGemini(prompt, systemInstruction) {
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY;
-  const res = await fetch(url, {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemInstruction }] },
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemInstruction,
+      messages: [{ role: 'user', content: prompt }]
     })
   });
   if (!res.ok) {
@@ -1259,28 +1265,27 @@ async function callGemini(prompt, systemInstruction) {
     const code = res.status;
     const detail = errData?.error?.message || '';
     if (code === 429) throw new Error('429');
-    if (code === 403) throw new Error('403');
-    if (code === 400) throw new Error('400');
     throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
   }
   const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const text = data.content?.find(b => b.type === 'text')?.text || '';
+  return text;
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY;
-  // Build Gemini conversation format
-  const contents = messages.map(m => ({
-    role: m.role === 'ai' ? 'model' : 'user',
-    parts: [{ text: m.text }]
+  // Build multi-turn conversation for Claude
+  const apiMessages = messages.map(m => ({
+    role: m.role === 'ai' ? 'assistant' : 'user',
+    content: m.text
   }));
-  const res = await fetch(url, {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemInstruction }] },
-      contents: contents,
-      generationConfig: { temperature: 0.8, maxOutputTokens: 1024 }
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemInstruction,
+      messages: apiMessages
     })
   });
   if (!res.ok) {
@@ -1288,11 +1293,10 @@ async function callGeminiChat(messages, systemInstruction) {
     const code = res.status;
     const detail = errData?.error?.message || '';
     if (code === 429) throw new Error('429');
-    if (code === 403) throw new Error('403');
     throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
   }
   const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return data.content?.find(b => b.type === 'text')?.text || '';
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
