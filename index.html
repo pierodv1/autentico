@@ -1252,27 +1252,28 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (via /api/ai — Vercel serverless proxy, no CORS) ──
+// ── AI API CALL (Anthropic Artifact API — no keys, no CORS) ──
 async function callAI(system, userPrompt) {
-  const res = await fetch('/api/ai', {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1000,
       system: system,
       messages: [{ role: 'user', content: userPrompt }]
     })
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error('Errore ' + res.status + (err.error ? ': ' + err.error : ''));
+    throw new Error('Errore ' + res.status + (err.error?.message ? ': ' + err.error.message : ''));
   }
   const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  return data.text || '';
+  return data.content?.find(b => b.type === 'text')?.text || '';
 }
 
 async function callGemini(prompt, systemInstruction) {
-  return await callAI(systemInstruction, prompt);
+  return await callAI(systemInstruction, prompt, true);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
@@ -1294,20 +1295,31 @@ async function generateFromDesc() {
   btn.innerHTML = '<div class="ai-spinner"></div> Sto creando la ricetta…';
   card.classList.remove('show');
 
-  const systemPrompt = `Sei uno chef esperto. Genera una ricetta autentica in formato JSON puro.
-Rispondi SOLO con il JSON, niente altro. Struttura esatta:
-{"title":"Nome","region":"Città, Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione in italiano","ingredients":[{"name":"Ingrediente","qty":"100 g"}],"steps":[{"text":"Istruzione dettagliata","tip":"Consiglio utile","timer":0}],"notes":["Nota 1","Nota 2"]}
-difficulty = Facile, Medio o Difficile. timer in secondi (0 se non serve). Minimo 6 ingredienti, 5 passi. Tutto in italiano.`;
+  const systemPrompt = `Sei uno chef esperto. Genera una ricetta autentica in formato JSON valido.
+IMPORTANTE: Rispondi SOLO con JSON puro, senza markdown, senza backtick, senza testo aggiuntivo.
+Usa SOLO virgolette doppie. Niente virgole finali. Niente caratteri speciali nei valori.
+
+Struttura ESATTA da rispettare:
+{"title":"Nome Ricetta","region":"Citta Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione breve","ingredients":[{"name":"Ingrediente","qty":"100 g"},{"name":"Ingrediente2","qty":"50 g"}],"steps":[{"text":"Istruzione chiara","tip":"Consiglio utile","timer":0},{"text":"Secondo passo","tip":"Altro consiglio","timer":300}],"notes":["Nota autenticita 1","Nota autenticita 2"]}
+
+Regole: difficulty deve essere Facile, Medio o Difficile. timer in secondi interi (0 se non serve). Almeno 6 ingredienti e 5 passi. Tutto in italiano. NON usare apostrofi nei valori JSON, usa forme alternative.`;
 
   try {
     const raw = await callGemini('Genera una ricetta autentica per: ' + desc, systemPrompt);
-    // Extract JSON robustly - find first { and last }
-    let clean = raw.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+    // Extract and fix JSON robustly
+    let clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
     const jsonStart = clean.indexOf('{');
     const jsonEnd = clean.lastIndexOf('}');
     if (jsonStart >= 0 && jsonEnd > jsonStart) {
       clean = clean.slice(jsonStart, jsonEnd + 1);
     }
+    // Fix common JSON issues from AI output
+    clean = clean
+      .replace(/,\s*}/g, '}')        // trailing commas in objects
+      .replace(/,\s*]/g, ']')        // trailing commas in arrays
+      .replace(/([{,]\s*)(\w+)\s*:/g, '$1"$2":')  // unquoted keys
+      .replace(/:\s*'([^']*)'/g, ':"$1"')            // single quotes to double
+      .replace(/[\u0000-\u001F]/g, ' ');             // control characters
     aiGeneratedRecipe = JSON.parse(clean);
 
     // Show preview card
