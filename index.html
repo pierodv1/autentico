@@ -1252,45 +1252,39 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (Pollinations — gratuito, no chiavi, no CORS) ──
-async function callAI(messages) {
-  // Build prompt from messages
-  const system = messages.find(m => m.role === 'system')?.content || '';
-  const userMsgs = messages.filter(m => m.role !== 'system');
-  const lastUser = userMsgs[userMsgs.length - 1]?.content || '';
-
-  // Pollinations text API - completely free, no auth needed
-  const prompt = encodeURIComponent(system ? system + ' ' + lastUser : lastUser);
-  const url = `https://text.pollinations.ai/${prompt}?model=mistral&seed=${Date.now()}&json=false`;
-
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'Accept': 'text/plain' }
+// ── AI API CALL (Pollinations POST) ──
+async function callAI(systemInstruction, userPrompt) {
+  const res = await fetch('https://text.pollinations.ai/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: userPrompt }
+      ],
+      model: 'mistral',
+      seed: Math.floor(Math.random() * 99999),
+      private: true
+    })
   });
-
   if (!res.ok) throw new Error('Errore ' + res.status);
   const text = await res.text();
-  if (!text || text.trim().length < 10) throw new Error('Risposta vuota');
+  if (!text || text.trim().length < 10) throw new Error('Risposta vuota, riprova.');
   return text.trim();
 }
 
 async function callGemini(prompt, systemInstruction) {
-  return await callAI([
-    { role: 'system', content: systemInstruction },
-    { role: 'user', content: prompt }
-  ]);
+  return await callAI(systemInstruction, prompt);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  // For chat, include conversation history
-  const apiMessages = [
-    { role: 'system', content: systemInstruction },
-    ...messages.map(m => ({
-      role: m.role === 'ai' ? 'assistant' : 'user',
-      content: m.text
-    }))
-  ];
-  return await callAI(apiMessages);
+  // For chat, build conversation context into the user prompt
+  const history = messages.map(function(m) {
+    return (m.role === 'ai' ? 'Chef AI: ' : 'Utente: ') + m.text;
+  }).join('\n');
+  const lastUser = messages.length ? messages[messages.length-1].text : '';
+  const contextPrompt = messages.length > 1 ? history : lastUser;
+  return await callAI(systemInstruction, contextPrompt);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
