@@ -1253,36 +1253,47 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (OpenRouter — no CORS issues) ──
-async function callGemini(prompt, systemInstruction) {
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + OPENROUTER_KEY,
-      'HTTP-Referer': window.location.href,
-      'X-Title': 'Autentico'
-    },
-    body: JSON.stringify({
-      model: 'meta-llama/llama-3.1-8b-instruct:free',
-      max_tokens: 2000,
-      temperature: 0.7,
-      messages: [
-        { role: 'system', content: systemInstruction },
-        { role: 'user', content: prompt }
-      ]
-    })
-  });
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    const code = res.status;
-    const detail = errData?.error?.message || '';
-    if (code === 429) throw new Error('429');
-    if (code === 402) throw new Error('Credito esaurito su OpenRouter. Vai su openrouter.ai per ricaricare.');
-    throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
+// ── AI API CALL (OpenRouter — free models) ──
+async function callOpenRouter(messages, maxTokens=2000) {
+  // Try free models in order until one works
+  const models = [
+    'mistralai/mistral-7b-instruct:free',
+    'meta-llama/llama-3.2-3b-instruct:free',
+    'google/gemma-2-9b-it:free',
+    'microsoft/phi-3-mini-128k-instruct:free'
+  ];
+  let lastError = null;
+  for (const model of models) {
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + OPENROUTER_KEY,
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'Autentico'
+        },
+        body: JSON.stringify({ model, max_tokens: maxTokens, temperature: 0.7, messages })
+      });
+      if (res.status === 401) throw new Error('401: Chiave API non valida');
+      if (res.status === 402) throw new Error('402: Credito esaurito');
+      if (!res.ok) { lastError = 'Errore ' + res.status; continue; }
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || '';
+      if (text) return text;
+    } catch(e) {
+      if (e.message.startsWith('401') || e.message.startsWith('402')) throw e;
+      lastError = e.message;
+    }
   }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  throw new Error(lastError || 'Nessun modello disponibile');
+}
+
+async function callGemini(prompt, systemInstruction) {
+  return await callOpenRouter([
+    { role: 'system', content: systemInstruction },
+    { role: 'user', content: prompt }
+  ], 2000);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
@@ -1293,31 +1304,7 @@ async function callGeminiChat(messages, systemInstruction) {
       content: m.text
     }))
   ];
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + OPENROUTER_KEY,
-      'HTTP-Referer': window.location.href,
-      'X-Title': 'Autentico'
-    },
-    body: JSON.stringify({
-      model: 'meta-llama/llama-3.1-8b-instruct:free',
-      max_tokens: 1000,
-      temperature: 0.8,
-      messages: apiMessages
-    })
-  });
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    const code = res.status;
-    const detail = errData?.error?.message || '';
-    if (code === 429) throw new Error('429');
-    if (code === 402) throw new Error('Credito esaurito su OpenRouter.');
-    throw new Error('Errore ' + code + (detail ? ': ' + detail : ''));
-  }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  return await callOpenRouter(apiMessages, 1000);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
