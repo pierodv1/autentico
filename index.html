@@ -1206,20 +1206,6 @@ function finishCook() { clearCkTimer(); closeCooking(); showToast('🎉 Ricetta 
 function fmtTime(s) { if(s<=0) return '0:00'; const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; if(h>0) return `${h}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`; return `${m}:${String(sc).padStart(2,'0')}`; }
 
 // ══════════════════════════════════════════════════
-// AI RECIPE GENERATOR
-// ══════════════════════════════════════════════════
-let aiRecipeData = null;
-
-
-}
-
-
-
-async 
-
-
-
-// ══════════════════════════════════════════════════
 // CHEF AI — GEMINI POWERED
 // ══════════════════════════════════════════════════
 let aiGeneratedRecipe = null;
