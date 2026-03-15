@@ -1313,14 +1313,24 @@ Regole: difficulty deve essere Facile, Medio o Difficile. timer in secondi inter
     if (jsonStart >= 0 && jsonEnd > jsonStart) {
       clean = clean.slice(jsonStart, jsonEnd + 1);
     }
-    // Fix common JSON issues from AI output
+    // Fix common JSON issues
     clean = clean
-      .replace(/,\s*}/g, '}')        // trailing commas in objects
-      .replace(/,\s*]/g, ']')        // trailing commas in arrays
-      .replace(/([{,]\s*)(\w+)\s*:/g, '$1"$2":')  // unquoted keys
-      .replace(/:\s*'([^']*)'/g, ':"$1"')            // single quotes to double
-      .replace(/[\u0000-\u001F]/g, ' ');             // control characters
-    aiGeneratedRecipe = JSON.parse(clean);
+      .replace(/,\s*}/g, '}')
+      .replace(/,\s*]/g, ']')
+      .replace(/[\u0000-\u001F\u007F]/g, ' ')
+      .replace(/\n/g, ' ')
+      .replace(/\r/g, '');
+    // Try parse directly first
+    try {
+      aiGeneratedRecipe = JSON.parse(clean);
+    } catch(parseErr) {
+      // If failed, use a more aggressive fix
+      // Replace unescaped single quotes inside strings
+      clean = clean.replace(/"([^"]*)"/g, function(match) {
+        return match.replace(/'/g, '\u0027');
+      });
+      aiGeneratedRecipe = JSON.parse(clean);
+    }
 
     // Show preview card
     document.getElementById('arc-title').textContent = aiGeneratedRecipe.title;
