@@ -277,6 +277,36 @@ footer p { font-size:13px;color:var(--muted); }
   .form-grid2 { grid-template-columns:1fr; }
 }
 @media(max-width:560px) { .recipes-grid { grid-template-columns:1fr; } }
+
+/* ── AI ASSISTANT ── */
+.ai-btn { width:100%;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;border:none;border-radius:14px;padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;transition:opacity .2s;position:relative;overflow:hidden; }
+.ai-btn::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.05),transparent);pointer-events:none; }
+.ai-btn:hover { opacity:.9; }
+.ai-btn .ai-icon { width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0; }
+.ai-panel { background:#f8f9ff;border:1.5px solid #d0d8ff;border-radius:14px;padding:18px;margin-bottom:20px;display:none; }
+.ai-panel.open { display:block; }
+.ai-panel-title { font-size:13px;font-weight:600;color:#3a3a6e;margin-bottom:10px;display:flex;align-items:center;gap:6px; }
+.ai-input-row { display:flex;gap:8px; }
+.ai-input { flex:1;border:1.5px solid #d0d8ff;border-radius:10px;padding:10px 13px;font-size:14px;font-family:var(--sans);outline:none;background:#fff;transition:border .2s; }
+.ai-input:focus { border-color:#7c7cff; }
+.ai-generate-btn { background:#5c5ce8;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:background .2s; }
+.ai-generate-btn:hover { background:#4a4ad4; }
+.ai-generate-btn:disabled { opacity:.6;cursor:wait; }
+.ai-status { font-size:12px;color:#6060b0;margin-top:8px;min-height:18px;display:flex;align-items:center;gap:6px; }
+.ai-dot { width:6px;height:6px;border-radius:50%;background:#5c5ce8;animation:aipulse 1s infinite; }
+.ai-dot:nth-child(2) { animation-delay:.2s; }
+.ai-dot:nth-child(3) { animation-delay:.4s; }
+@keyframes aipulse { 0%,100%{opacity:.2;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }
+.ai-result { background:#fff;border:1px solid #d0d8ff;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13px;color:#3a3a6e;line-height:1.6;display:none;max-height:160px;overflow-y:auto; }
+.ai-result.show { display:block; }
+.ai-apply-btn { width:100%;background:#5c5ce8;color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans);margin-top:8px;transition:background .2s;display:none; }
+.ai-apply-btn.show { display:block; }
+.ai-apply-btn:hover { background:#4a4ad4; }
+.ai-divider { display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin:16px 0;text-transform:uppercase;letter-spacing:1px; }
+.ai-divider::before,.ai-divider::after { content:'';flex:1;border-top:1px solid var(--border); }
+.ai-examples { display:flex;gap:6px;flex-wrap:wrap;margin-top:8px; }
+.ai-example { border:1.5px solid #d0d8ff;border-radius:99px;padding:4px 12px;font-size:12px;color:#5c5ce8;cursor:pointer;background:#fff;transition:all .2s;font-family:var(--sans); }
+.ai-example:hover { background:#5c5ce8;color:#fff;border-color:#5c5ce8; }
 </style>
 </head>
 <body>
@@ -356,7 +386,33 @@ footer p { font-size:13px;color:var(--muted); }
   <div class="add-modal">
     <button style="position:absolute;top:16px;right:16px;background:#eee;color:#333;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;" onclick="closeAdd()">✕</button>
     <h2>Aggiungi una ricetta</h2>
-    <p>Condividi una ricetta autentica con la community.</p>
+    <p>Compila manualmente o lascia che l'AI generi la ricetta per te.</p>
+
+    <button class="ai-btn" onclick="toggleAiPanel()">
+      <span class="ai-icon">✨</span>
+      <span>Genera con AI — descrivi il piatto e penso a tutto io</span>
+    </button>
+
+    <div class="ai-panel" id="ai-panel">
+      <div class="ai-panel-title">✨ Assistente AI ricette</div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="ai-prompt" placeholder="Es: ramen giapponese piccante con uovo marinato..." onkeydown="if(event.key==='Enter')generateRecipe()"/>
+        <button class="ai-generate-btn" id="ai-gen-btn" onclick="generateRecipe()">Genera</button>
+      </div>
+      <div class="ai-examples">
+        <span class="ai-example" onclick="setAiExample(this)">Tacos mexicani al pastor</span>
+        <span class="ai-example" onclick="setAiExample(this)">Curry thailandese verde</span>
+        <span class="ai-example" onclick="setAiExample(this)">Pasta alla norma siciliana</span>
+        <span class="ai-example" onclick="setAiExample(this)">Sushi roll con salmone</span>
+        <span class="ai-example" onclick="setAiExample(this)">Shakshuka israeliana</span>
+      </div>
+      <div class="ai-status" id="ai-status"></div>
+      <div class="ai-result" id="ai-result"></div>
+      <button class="ai-apply-btn" id="ai-apply-btn" onclick="applyAiRecipe()">✓ Compila il modulo con questa ricetta</button>
+    </div>
+
+    <div class="ai-divider">oppure compila manualmente</div>
+
     <div class="form-row">
       <label>Foto del piatto</label>
       <div class="upload-area" id="upload-area">
@@ -1022,6 +1078,144 @@ function clearCkTimer() { if(ckInterval){clearInterval(ckInterval);ckInterval=nu
 function ckMove(dir) { clearCkTimer(); ckStep=Math.max(0,Math.min((ckRecipe.steps||[]).length-1,ckStep+dir)); renderCookStep(); }
 function finishCook() { clearCkTimer(); closeCooking(); showToast('🎉 Ricetta completata! Buon appetito!'); }
 function fmtTime(s) { if(s<=0) return '0:00'; const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; if(h>0) return `${h}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`; return `${m}:${String(sc).padStart(2,'0')}`; }
+
+// ══════════════════════════════════════════════════
+// AI RECIPE GENERATOR
+// ══════════════════════════════════════════════════
+let aiRecipeData = null;
+
+function toggleAiPanel() {
+  const panel = document.getElementById('ai-panel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    setTimeout(() => document.getElementById('ai-prompt').focus(), 100);
+  }
+}
+
+function setAiExample(el) {
+  document.getElementById('ai-prompt').value = el.textContent;
+  document.getElementById('ai-prompt').focus();
+}
+
+async function generateRecipe() {
+  const prompt = document.getElementById('ai-prompt').value.trim();
+  if (!prompt) { document.getElementById('ai-status').innerHTML = '<span style="color:#e55">⚠️ Scrivi prima una descrizione del piatto</span>'; return; }
+
+  const btn = document.getElementById('ai-gen-btn');
+  const status = document.getElementById('ai-status');
+  const result = document.getElementById('ai-result');
+  const applyBtn = document.getElementById('ai-apply-btn');
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  result.classList.remove('show');
+  applyBtn.classList.remove('show');
+  status.innerHTML = '<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span><span style="margin-left:4px">Sto generando la ricetta…</span>';
+
+  try {
+    const systemPrompt = ;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: 'Genera una ricetta autentica per: ' + prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '';
+
+    // Parse JSON — strip any accidental markdown fences
+    const clean = text.replace(/^$/,'').trim();
+    aiRecipeData = JSON.parse(clean);
+
+    // Preview
+    result.innerHTML = '<strong>' + aiRecipeData.title + '</strong> — ' + aiRecipeData.region +
+      '<br>⏱ ' + aiRecipeData.time_minutes + ' min · ' + aiRecipeData.difficulty +
+      ' · ' + aiRecipeData.portions + ' porzioni' +
+      '<br><br>' + aiRecipeData.description +
+      '<br><br><strong>Ingredienti principali:</strong> ' +
+      aiRecipeData.ingredients.slice(0,4).map(i => i.name).join(', ') + '…' +
+      '<br><strong>Passi:</strong> ' + aiRecipeData.steps.length + ' passi dettagliati con consigli';
+    result.classList.add('show');
+    applyBtn.classList.add('show');
+    status.innerHTML = '<span style="color:#2e7d32">✅ Ricetta generata! Clicca il pulsante per compilare il modulo.</span>';
+
+  } catch(e) {
+    status.innerHTML = '<span style="color:#e55">❌ Errore nella generazione: ' + e.message + '. Riprova.</span>';
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Genera';
+}
+
+function applyAiRecipe() {
+  if (!aiRecipeData) return;
+  const r = aiRecipeData;
+
+  // Fill basic fields
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  set('f-title', r.title);
+  set('f-region', r.region);
+  set('f-emoji', r.emoji);
+  set('f-desc', r.description);
+  set('f-time', r.time_minutes);
+  set('f-portions', r.portions);
+  set('f-notes', (r.notes||[]).join('
+'));
+
+  // Set country
+  const countryEl = document.getElementById('f-country');
+  if (countryEl) {
+    const opts = Array.from(countryEl.options);
+    const match = opts.find(o => o.value.toLowerCase() === (r.country||'').toLowerCase() || r.region?.toLowerCase().includes(o.value.toLowerCase()));
+    countryEl.value = match ? match.value : '';
+  }
+
+  // Set difficulty
+  const diffEl = document.getElementById('f-diff');
+  if (diffEl && ['Facile','Medio','Difficile'].includes(r.difficulty)) diffEl.value = r.difficulty;
+
+  // Fill ingredients
+  document.getElementById('ing-dyn-list').innerHTML = '';
+  ingIdx = 0;
+  (r.ingredients||[]).forEach(ing => {
+    addIngRow();
+    const i = ingIdx - 1;
+    const nameEl = document.querySelector('[data-in="'+i+'"]');
+    const qtyEl  = document.querySelector('[data-iq="'+i+'"]');
+    if (nameEl) nameEl.value = ing.name || '';
+    if (qtyEl)  qtyEl.value  = ing.qty  || '';
+  });
+
+  // Fill steps
+  document.getElementById('step-dyn-list').innerHTML = '';
+  stepIdx = 0;
+  (r.steps||[]).forEach(step => {
+    addStepRow();
+    const i = stepIdx - 1;
+    const textEl  = document.querySelector('[data-sn="'+i+'"]');
+    const tipEl   = document.querySelector('[data-stip="'+i+'"]');
+    const timerEl = document.querySelector('[data-st="'+i+'"]');
+    if (textEl)  textEl.value  = step.text  || '';
+    if (tipEl)   tipEl.value   = step.tip   || '';
+    if (timerEl) timerEl.value = step.timer || 0;
+  });
+
+  // Close AI panel and show success
+  document.getElementById('ai-panel').classList.remove('open');
+  showToast('✅ Modulo compilato con la ricetta AI! Controlla e pubblica.');
+  
+  // Scroll to title field
+  document.getElementById('f-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('f-title').style.borderColor = '#5c5ce8';
+  setTimeout(() => { document.getElementById('f-title').style.borderColor = ''; }, 2000);
+}
 
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail(); closeAdd(); closeCooking(); closeAuth(); } });
