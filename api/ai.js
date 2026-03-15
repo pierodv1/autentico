@@ -26,7 +26,8 @@ export default async function handler(req) {
       ? system + '\n\n' + (messages[messages.length - 1]?.content || '')
       : (messages[messages.length - 1]?.content || '');
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+    // gemini-2.5-flash: stable, available for all new accounts
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY;
 
     const res = await fetch(url, {
       method: 'POST',
