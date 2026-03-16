@@ -325,7 +325,7 @@ footer p{font-size:13px;color:var(--muted)}
 .profile-stat-n{font-family:var(--serif);font-size:24px;font-weight:600}
 .profile-stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 .profile-recipes-title{font-family:var(--serif);font-size:20px;margin-bottom:16px}
-.profile-recipes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.profile-recipes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .profile-rcard{background:#fff;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition);border:1px solid var(--border)}
 .profile-rcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
 .profile-rcard img{width:100%;height:120px;object-fit:cover}
@@ -522,7 +522,6 @@ footer p{font-size:13px;color:var(--muted)}
     <button class="f-btn" data-f="Vietnam" onclick="setFilter(this)">🇻🇳 Vietnam</button>
     <button class="f-btn" data-f="China" onclick="setFilter(this)">🇨🇳 China</button>
     <button class="f-btn" data-f="USA" onclick="setFilter(this)">🇺🇸 USA</button>
-    <button class="f-btn" data-f="Verified" onclick="setFilter(this)">⭐ Verified</button>
   </div>
   <div class="recipes-grid" id="recipes-grid"></div>
 </section>
@@ -552,7 +551,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('mole')">
-      <img src="https://images.unsplash.com/photo-1534482421-64566f976cfa?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -608,7 +607,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('bouillabaisse')">
-      <img src="https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1571167366136-b57e069b6f8f?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -800,7 +799,7 @@ footer p{font-size:13px;color:var(--muted)}
         <div class="rev-field"><div class="rev-fhdr"><label>Recipe name</label><div class="rev-badges" id="rb-title"></div></div><input type="text" id="fr-title"></div>
         <div class="f-grid2">
           <div class="rev-field"><div class="rev-fhdr"><label>Region/City</label><div class="rev-badges" id="rb-region"></div></div><input type="text" id="fr-region"></div>
-          <div class="rev-field"><div class="rev-fhdr"><label>Paese</label><div class="rev-badges" id="rb-country"></div></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Country</label><div class="rev-badges" id="rb-country"></div></div>
             <select id="fr-country"><option value="">Select...</option><option>Italy</option><option>Japan</option><option>Spain</option><option>France</option><option>Mexico</option><option>India</option><option>Greece</option><option>Morocco</option><option>Other</option></select>
           </div>
         </div>
@@ -808,13 +807,13 @@ footer p{font-size:13px;color:var(--muted)}
           <div class="rev-field"><div class="rev-fhdr"><label>Time (min)</label><div class="rev-badges" id="rb-time"></div></div><input type="number" id="fr-time" min="1" placeholder="30"></div>
           <div class="rev-field"><div class="rev-fhdr"><label>Difficulty</label></div>
             <select id="fr-diff" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
-              <option value="Facile">🟢 Facile</option>
-              <option value="Medio">🟡 Medio</option>
-              <option value="Difficile">🔴 Difficile</option>
+              <option value="Easy">🟢 Easy</option>
+              <option value="Medium">🟡 Medium</option>
+              <option value="Hard">🔴 Hard</option>
             </select>
           </div>
-          <div class="f-row"><label>Foto del piatto (opzionale)</label>
-          <input type="text" id="fr-img" placeholder="https://... oppure carica sotto" style="margin-bottom:6px">
+          <div class="f-row"><label>Photo of dish (optional)</label>
+          <input type="text" id="fr-img" placeholder="https://... or upload below" style="margin-bottom:6px">
           <input type="file" id="fr-img-file" accept="image/*" onchange="window._pendingPhotoFile=this.files[0];document.getElementById('fr-img-label').textContent=this.files[0]?'✅ '+this.files[0].name:''" style="width:100%;padding:8px;border:1.5px dashed #E5E0D8;border-radius:10px;font-size:13px;cursor:pointer">
           <div id="fr-img-label" style="font-size:12px;color:#7A7570;margin-top:4px"></div>
         </div>
@@ -1535,7 +1534,7 @@ async function sendChat() {
   var s=r.steps[ckStep];
   var stepTxt=typeof s==='string'?s:s.text;
   var allSteps=(r.steps||[]).map(function(x,i){return (i+1)+'. '+(typeof x==='string'?x:x.text);}).join(' | ');
-  var ctx='Ricetta: '+r.title+' ('+r.region+'). Stai al passo '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note autenticità: '+(r.notes||[]).join('; ')+'.';
+  var ctx='Ricetta: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note autenticità: '+(r.notes||[]).join('; ')+'.';
   try {
     var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Autentico app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
@@ -1967,8 +1966,8 @@ function setAddMode(mode) {
     manBtn.style.color = mode === 'manual' ? '#fff' : 'var(--text,#1A1A1A)';
     manBtn.style.borderColor = mode === 'manual' ? 'var(--terra,#C4614A)' : 'var(--border,#E5E0D8)';
   }
-  // Init manual form if first time
-  if (mode === 'manual' && document.getElementById('ing-manual-list').children.length === 0) {
+  // Init manual form if first time (not in edit mode)
+  if (mode === 'manual' && document.getElementById('ing-manual-list').children.length === 0 && !editRecipeId) {
     addManualIngRow(); addManualIngRow(); addManualIngRow();
     addManualStepRow(); addManualStepRow();
     var authorRowM = document.getElementById('author-row-m');
@@ -2126,7 +2125,7 @@ var CURATED = {
   },
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
-    cover:'https://images.unsplash.com/photo-1534482421-64566f976cfa?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop',
     emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
@@ -2260,7 +2259,7 @@ var CURATED = {
   },
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
-    cover:'https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1571167366136-b57e069b6f8f?q=80&w=800&fit=crop',
     emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
