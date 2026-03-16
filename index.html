@@ -23,9 +23,9 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
 .search-wrap{position:relative}
-.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 44px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 42px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .search-wrap input:focus{border-color:var(--terra);width:250px;box-shadow:0 0 0 3px rgba(196,97,74,.1)}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
 .btn-add-hdr:hover{background:var(--terra2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(196,97,74,.45)}
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
@@ -86,7 +86,8 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .rcard-title{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:6px;line-height:1.15;letter-spacing:-.3px}
 .rcard-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rcard-footer{display:flex;align-items:center;justify-content:space-between}
-.rcard-likes{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted)}
+.rcard-likes{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);transition:color .2s}
+.rcard-likes.liked{color:var(--terra);font-weight:600}
 .rcard-likes svg{color:var(--terra)}
 .btn-cook{background:var(--terra);color:#fff;border:none;border-radius:22px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all var(--transition);letter-spacing:.2px}
 .btn-cook:hover{background:var(--terra2);transform:scale(1.05)}
@@ -435,11 +436,11 @@ footer p{font-size:13px;color:var(--muted)}
     <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Aggiungi una ricetta</h2>
     <p style="font-size:14px;color:#7A7570;margin-bottom:24px">Come vuoi procedere?</p>
     <div style="display:flex;flex-direction:column;gap:12px">
-      <button onclick="closeChoice();openAdd()" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
+      <button onclick="closeChoice();openAdd();setTimeout(function(){setAddMode('manual')},50)" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
         <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Scrivo io la ricetta</div><div style="font-size:13px;color:#7A7570">Inserisci manualmente tutti i dettagli</div></div>
       </button>
-      <button onclick="closeChoice();openAIAdd()" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
+      <button onclick="closeChoice();openAdd();setTimeout(function(){setAddMode('ai')},50)" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
         <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Descrivi il piatto, l'AI genera la ricetta</div></div>
       </button>
@@ -462,15 +463,72 @@ footer p{font-size:13px;color:var(--muted)}
     <!-- PHASE 1 -->
     <div id="ph1">
       <h2>Aggiungi una ricetta</h2>
-      <p>Scrivi la ricetta come vuoi — anche in modo informale. L'IA la struttura per te.</p>
-      <div class="f-row" id="author-row"><label>Il tuo nome</label><input type="text" id="f-author" placeholder="Es: Marco R."></div>
-      <div class="f-row">
-        <label>Scrivi la tua ricetta *</label>
-        <textarea id="f-raw" placeholder="Scrivi tutto quello che sai sulla ricetta, anche senza quantità esatte o tempi precisi. Es: Pasta al pesto: trofie, basilico, parmigiano, pinoli, aglio, olio. Si frulla tutto e si condisce la pasta cotta al dente..." style="min-height:180px"></textarea>
+      <div style="display:flex;gap:8px;margin:12px 0 20px">
+        <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ Con l'AI</button>
+        <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manualmente</button>
       </div>
-      <div class="f-actions">
-        <button class="btn-cancel" onclick="closeAdd()">Annulla</button>
-        <button class="btn-save" onclick="runAI()">✦ Analizza con IA →</button>
+
+      <!-- AI MODE -->
+      <div id="add-ai-mode">
+        <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Descrivi la ricetta liberamente — anche senza quantità esatte. L'AI la struttura per te.</p>
+        <div class="f-row" id="author-row"><label>Il tuo nome</label><input type="text" id="f-author" placeholder="Es: Marco R."></div>
+        <div class="f-row">
+          <label>Scrivi la tua ricetta *</label>
+          <textarea id="f-raw" placeholder="Es: Pasta al pesto: trofie, basilico, parmigiano, pinoli, aglio, olio. Si frulla tutto e si condisce la pasta cotta al dente..." style="min-height:160px"></textarea>
+        </div>
+        <div class="f-actions">
+          <button class="btn-cancel" onclick="closeAdd()">Annulla</button>
+          <button class="btn-save" onclick="runAI()">✦ Analizza con IA →</button>
+        </div>
+      </div>
+
+      <!-- MANUAL MODE -->
+      <div id="add-manual-mode" style="display:none">
+        <div class="f-row" id="author-row-m"><label>Il tuo nome</label><input type="text" id="f-author-m" placeholder="Es: Marco R."></div>
+        <div class="f-row"><label>Nome della ricetta *</label><input type="text" id="fm-title" placeholder="Es: Carbonara, Ramen, Tagine..."></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="f-row"><label>Regione/Città *</label><input type="text" id="fm-region" placeholder="Es: Roma, Italia"></div>
+          <div class="f-row"><label>Paese *</label>
+            <select id="fm-country" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
+              <option value="">Seleziona...</option>
+              <option>Italia</option><option>Giappone</option><option>Messico</option><option>India</option>
+              <option>Marocco</option><option>Tailandia</option><option>Grecia</option><option>Libano</option>
+              <option>Francia</option><option>Spagna</option><option>Cina</option><option>Turchia</option>
+              <option>Etiopia</option><option>Perù</option><option>Vietnam</option><option>Corea del Sud</option><option>Altro</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div class="f-row"><label>Tempo (min)</label><input type="number" id="fm-time" placeholder="30" min="1"></div>
+          <div class="f-row"><label>Porzioni</label><input type="number" id="fm-portions" placeholder="4" min="1" value="4"></div>
+          <div class="f-row"><label>Difficoltà</label>
+            <select id="fm-diff" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
+              <option value="Facile">🟢 Facile</option><option value="Medio">🟡 Medio</option><option value="Difficile">🔴 Difficile</option>
+            </select>
+          </div>
+        </div>
+        <div class="f-row"><label>Emoji piatto</label><input type="text" id="fm-emoji" placeholder="🍜" style="font-size:20px;width:80px"></div>
+        <div class="f-row"><label>Descrizione</label><textarea id="fm-desc" placeholder="Breve descrizione del piatto..." style="min-height:60px"></textarea></div>
+        <div class="f-row"><label>Foto URL (opzionale)</label><input type="text" id="fm-img" placeholder="https://...">
+          <input type="file" id="fm-img-file" accept="image/*" style="margin-top:6px;width:100%;padding:8px;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;font-size:13px;cursor:pointer" onchange="window._pendingPhotoFile=this.files[0];document.getElementById('fm-img-label').textContent=this.files[0]?'✅ '+this.files[0].name:''">
+          <div id="fm-img-label" style="font-size:12px;color:var(--muted);margin-top:4px"></div>
+        </div>
+        <div class="f-row">
+          <label>Ingredienti *</label>
+          <div id="ing-manual-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
+          <button type="button" onclick="addManualIngRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Aggiungi ingrediente</button>
+        </div>
+        <div class="f-row">
+          <label>Passaggi * <small style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">— aggiungi consiglio e timer per ogni passo</small></label>
+          <div id="step-manual-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
+          <button type="button" onclick="addManualStepRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Aggiungi passo</button>
+        </div>
+        <div class="f-row"><label>Note di autenticità (opzionale)</label><textarea id="fm-notes" placeholder="Una nota per riga..." style="min-height:60px"></textarea></div>
+        <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fm-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400">Ricetta verificata</label></div>
+        <div class="f-actions">
+          <button class="btn-cancel" onclick="closeAdd()">Annulla</button>
+          <button class="btn-save" onclick="saveManualRecipe()">Pubblica ricetta</button>
+        </div>
       </div>
     </div>
 
@@ -809,8 +867,9 @@ function openProfile() {
   var emailTxt = document.getElementById('profile-email-txt');
   if (emailTxt) emailTxt.textContent = currentUser.email || '';
   // My recipes
+  var uid = currentUser.id;
   var myR = recipes.filter(function(r) {
-    return r.user_id === currentUser.id || r.authorUid === currentUser.id || (r.profiles && r.profiles.id === currentUser.id);
+    return r.user_id === uid || r.authorUid === uid;
   });
   var grid = document.getElementById('profile-my-recipes');
   if (grid) {
@@ -882,13 +941,13 @@ async function dbSave(r) {
 
 async function toggleLike(recipeId, el) {
   if (!requireAuth()) return;
-  var liked = userLikes.has(recipeId);
+  var liked = userLikes.has(String(recipeId));
   if (liked) {
     await sb.from('likes').delete().eq('user_id',currentUser.id).eq('recipe_id',recipeId);
-    userLikes.delete(recipeId);
+    userLikes.delete(String(recipeId));
   } else {
     await sb.from('likes').insert({user_id:currentUser.id,recipe_id:recipeId});
-    userLikes.add(recipeId);
+    userLikes.add(String(recipeId));
   }
   var rec = recipes.find(function(x){return x.id===recipeId;});
   if (rec) {
@@ -964,7 +1023,9 @@ function renderGrid() {
       +'<div class="rcard-title">'+r.title+'</div>'
       +'<div class="rcard-desc">'+(r.description||'')+'</div>'
       +'<div class="rcard-footer">'
-      +'<div class="rcard-likes"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+(r.likes||r.likes_count||0)+'</div>'
+      +'<div class="rcard-likes '+(userLikes.has(String(r.id))?'liked':'')+'" onclick="event.stopPropagation();toggleLike(this.dataset.rid,this)" data-rid="'+rid+'" style="cursor:pointer">'
+      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(userLikes.has(String(r.id))?'var(--terra)':'none')+'" stroke="'+(userLikes.has(String(r.id))?'var(--terra)':'currentColor')+'" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+      +'<span id="likes-'+rid+'">'+(r.likes||r.likes_count||0)+'</span></div>'
       +'<button class="btn-cook" onclick="event.stopPropagation();startCooking(\''+rid+'\')">Cucina →</button>'
       +'</div></div></a>';
   }).join('');
@@ -1250,8 +1311,13 @@ async function sendChat() {
 
 function openAdd() {
   if (!requireAuth()) return;
-  ingIdx=0; stepIdx=0;
+  ingIdx=0; stepIdx=0; manualIngIdx=0; manualStepIdx=0;
   window._pendingPhotoFile = null;
+  // Reset manual lists
+  var iml = document.getElementById('ing-manual-list'); if(iml) iml.innerHTML='';
+  var sml = document.getElementById('step-manual-list'); if(sml) sml.innerHTML='';
+  // Default to AI mode
+  setAddMode('ai');
   document.getElementById('f-raw').value='';
   // Hide author field if logged in
   var authorRow = document.getElementById('author-row');
@@ -1562,6 +1628,121 @@ async function submitSignup() {
   if (!username || !email || !pass) { showToast('⚠️ Compila tutti i campi'); return; }
   if (pass.length < 6) { showToast('⚠️ Password minimo 6 caratteri'); return; }
   await doSignup(username, email, pass);
+}
+
+
+
+// ADD MODE TOGGLE
+var manualIngIdx = 0, manualStepIdx = 0;
+
+function setAddMode(mode) {
+  document.getElementById('add-ai-mode').style.display = mode === 'ai' ? '' : 'none';
+  document.getElementById('add-manual-mode').style.display = mode === 'manual' ? '' : 'none';
+  var aiBtn = document.getElementById('mode-ai-btn');
+  var manBtn = document.getElementById('mode-manual-btn');
+  if (aiBtn) {
+    aiBtn.style.background = mode === 'ai' ? 'var(--terra,#C4614A)' : '#fff';
+    aiBtn.style.color = mode === 'ai' ? '#fff' : 'var(--text,#1A1A1A)';
+    aiBtn.style.borderColor = mode === 'ai' ? 'var(--terra,#C4614A)' : 'var(--border,#E5E0D8)';
+  }
+  if (manBtn) {
+    manBtn.style.background = mode === 'manual' ? 'var(--terra,#C4614A)' : '#fff';
+    manBtn.style.color = mode === 'manual' ? '#fff' : 'var(--text,#1A1A1A)';
+    manBtn.style.borderColor = mode === 'manual' ? 'var(--terra,#C4614A)' : 'var(--border,#E5E0D8)';
+  }
+  // Init manual form if first time
+  if (mode === 'manual' && document.getElementById('ing-manual-list').children.length === 0) {
+    addManualIngRow(); addManualIngRow(); addManualIngRow();
+    addManualStepRow(); addManualStepRow();
+    var authorRowM = document.getElementById('author-row-m');
+    if (authorRowM && currentUser) authorRowM.style.display = 'none';
+    var fAuthorM = document.getElementById('f-author-m');
+    if (fAuthorM && currentProfile) fAuthorM.value = currentProfile.username || currentUser.email.split('@')[0];
+  }
+}
+
+function addManualIngRow() {
+  var i = manualIngIdx++;
+  var div = document.createElement('div');
+  div.id = 'mir' + i;
+  div.style.cssText = 'display:flex;gap:8px;align-items:center';
+  div.innerHTML = '<input type="text" placeholder="Ingrediente" data-min="'+i+'" style="flex:1;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    + '<input type="text" placeholder="Quantità" data-miq="'+i+'" style="width:130px;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    + '<button type="button" onclick="this.parentNode.remove()" style="width:32px;height:32px;border:1.5px solid var(--border,#E5E0D8);border-radius:8px;background:none;cursor:pointer;font-size:15px;color:var(--muted);flex-shrink:0">✕</button>';
+  document.getElementById('ing-manual-list').appendChild(div);
+}
+
+function addManualStepRow() {
+  var i = manualStepIdx++;
+  var div = document.createElement('div');
+  div.id = 'msr' + i;
+  div.style.cssText = 'display:flex;gap:8px;align-items:flex-start';
+  div.innerHTML = '<div style="min-width:26px;height:26px;background:var(--border,#E5E0D8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-top:10px;flex-shrink:0">'+(i+1)+'</div>'
+    + '<div style="flex:1;display:flex;flex-direction:column;gap:6px">'
+    + '<input type="text" placeholder="Descrivi il passaggio..." data-msn="'+i+'" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    + '<input type="text" placeholder="💡 Consiglio (opzionale)" data-mstip="'+i+'" style="width:100%;border:1.5px solid #E8D88A;border-radius:10px;padding:8px 12px;font-size:13px;background:#fdf8ee;color:#7a6020;font-family:inherit;outline:none">'
+    + '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--muted)">Timer (sec):</span><input type="number" placeholder="0" data-mst="'+i+'" min="0" style="width:100px;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none"></div>'
+    + '</div>'
+    + '<button type="button" onclick="this.parentNode.remove()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;margin-top:8px">✕</button>';
+  document.getElementById('step-manual-list').appendChild(div);
+}
+
+async function saveManualRecipe() {
+  var title = (document.getElementById('fm-title').value||'').trim();
+  var region = (document.getElementById('fm-region').value||'').trim();
+  var country = document.getElementById('fm-country').value;
+  if (!title || !region || !country) { showToast('⚠️ Compila nome, regione e paese'); return; }
+
+  var ings = [];
+  document.querySelectorAll('[data-min]').forEach(function(el) {
+    var n = el.value.trim(); if (!n) return;
+    var q = (document.querySelector('[data-miq="'+el.dataset.min+'"]')||{}).value||'';
+    ings.push({name:n, qty:q});
+  });
+  if (!ings.length) { showToast('⚠️ Aggiungi almeno un ingrediente'); return; }
+
+  var steps = [];
+  document.querySelectorAll('[data-msn]').forEach(function(el) {
+    var t = el.value.trim(); if (!t) return;
+    var tip = (document.querySelector('[data-mstip="'+el.dataset.msn+'"]')||{}).value||'';
+    var timer = parseInt((document.querySelector('[data-mst="'+el.dataset.msn+'"]')||{}).value)||0;
+    steps.push({text:t, tip:tip, timer:timer});
+  });
+  if (!steps.length) { showToast('⚠️ Aggiungi almeno un passo'); return; }
+
+  var notes = (document.getElementById('fm-notes').value||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
+  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : ((document.getElementById('f-author-m')||{}).value||'Anonimo');
+  var cover = (document.getElementById('fm-img').value||'').trim();
+  // Handle file upload
+  if (document.getElementById('fm-img-file') && document.getElementById('fm-img-file').files[0]) {
+    window._pendingPhotoFile = document.getElementById('fm-img-file').files[0];
+  }
+
+  var newR = {
+    id: 'u'+Date.now(),
+    title: title,
+    description: (document.getElementById('fm-desc').value||'').trim() || title,
+    region: region, country: country,
+    cover: cover, cover_url: cover,
+    emoji: (document.getElementById('fm-emoji').value||'🍽️').trim(),
+    verified: document.getElementById('fm-verified').checked,
+    author: authorName,
+    authorUid: currentUser ? currentUser.id : null,
+    user_id: currentUser ? currentUser.id : null,
+    profiles: { username: authorName },
+    likes: 0, likes_count: 0,
+    time: parseInt(document.getElementById('fm-time').value)||30,
+    time_minutes: parseInt(document.getElementById('fm-time').value)||30,
+    difficulty: document.getElementById('fm-diff').value || 'Facile',
+    portions: parseInt(document.getElementById('fm-portions').value)||4,
+    ingredients: ings, steps: steps, notes: notes
+  };
+
+  recipes.unshift(newR);
+  renderGrid(); updateStats(); closeAdd();
+  showToast('⏳ Pubblicazione in corso…');
+  var ok = await dbSave(newR);
+  if (ok) showToast('✅ Ricetta pubblicata!');
 }
 
 
