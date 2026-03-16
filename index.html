@@ -1148,29 +1148,29 @@ function openProfile() {
 
 // DB
 async function loadRecipes() {
-  if (!SUPABASE_CONFIGURED) { recipes = DEFAULT_RECIPES.slice(); renderGrid(); updateStats(); return; }
+  // Always show defaults immediately so the page is never empty
+  recipes = DEFAULT_RECIPES.slice();
+  renderGrid(); updateStats();
+  if (!SUPABASE_CONFIGURED) return;
   try {
     var res = await sb.from('recipes')
       .select('*, profiles(username, avatar_url)')
       .order('created_at', {ascending: false});
-    var dbRecipes = [];
-    if (!res.error && res.data) {
-      dbRecipes = res.data.map(function(r){
+    if (!res.error && res.data && res.data.length > 0) {
+      var dbRecipes = res.data.map(function(r){
         r.time = r.time_minutes || r.time || 30;
         r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonymous';
         r.difficulty = diffFromDb(r.difficulty);
         r.cover = r.cover_url || r.cover || '';
-        var diffMap = {'Facile':'Easy','Medio':'Medium','Difficile':'Hard'};
-        if (diffMap[r.difficulty]) r.difficulty = diffMap[r.difficulty];
         return r;
       });
+      // Merge: DB recipes first, then defaults not already in DB
+      var dbIds = dbRecipes.map(function(r){return String(r.id);});
+      var defaults = DEFAULT_RECIPES.filter(function(r){return dbIds.indexOf(String(r.id)) < 0;});
+      recipes = dbRecipes.concat(defaults);
+      renderGrid(); updateStats(); updateFilterBar();
     }
-    // Merge: DB recipes first, then defaults not already in DB
-    var dbIds = dbRecipes.map(function(r){return String(r.id);});
-    var defaults = DEFAULT_RECIPES.filter(function(r){return dbIds.indexOf(String(r.id)) < 0;});
-    recipes = dbRecipes.concat(defaults);
-    renderGrid(); updateStats(); updateFilterBar();
-  } catch(e) { console.warn('loadRecipes:', e.message); recipes = []; renderGrid(); updateStats(); }
+  } catch(e) { console.warn('loadRecipes:', e.message); /* keep showing defaults */ }
 }
 
 
@@ -1535,7 +1535,7 @@ function renderCkStep() {
   var isLast=i===steps.length-1;
   document.getElementById('ck-nav').innerHTML=
     (i>0?'<button class="ck-prev" onclick="ckMove(-1)">\u2190 Back</button>':'<div></div>')
-    +'<button class="'+(isLast?'ck-finish':'ck-next')+'" onclick="'+(isLast?'finishCook()':'ckMove(1)')+'">'+(isLast?'\ud83c\udf89 Fatto!':'Next step \u2192')+'</button>';
+    +'<button class="'+(isLast?'ck-finish':'ck-next')+'" onclick="'+(isLast?'finishCook()':'ckMove(1)')+'">'+(isLast?'\ud83c\udf89 Done!':'Next step \u2192')+'</button>';
 }
 
 function renderTimer(container) {
@@ -1545,7 +1545,7 @@ function renderTimer(container) {
     +'<button class="timer-btn" id="tplay" onclick="toggleTimer()">\u25b6</button>'
     +'<button class="timer-btn timer-rst" onclick="resetTimer()">\u21ba</button>'
     +'</div>'
-    +'<div class="timer-done" id="tdone">\u23f0 Tempo scaduto!</div>';
+    +'<div class="timer-done" id="tdone">\u23f0 Time\u2019s up!</div>';
 }
 
 function toggleTimer() {
@@ -1598,7 +1598,7 @@ function initChat() {
   var el=document.getElementById('ck-msgs');
   el.innerHTML='';
   var r=ckRecipe;
-  var welcome='Ciao! Sono il tuo AI Chef per <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
+  var welcome='Hi! I am your AI Chef for <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
   welcome+='I already have all the recipe context: '+r.ingredients.length+' ingredients, '+(r.steps||[]).length+' steps. ';
   welcome+='Ask me anything — substitutions, timing, techniques, or if something goes wrong!';
   appendMsg('ai', welcome);
@@ -1661,7 +1661,7 @@ async function sendChat() {
   input.value='';
   appendMsg('user',q);
   var tid='t'+Date.now();
-  appendMsg('typing','Lo AI Chef sta pensando\u2026',tid);
+  appendMsg('typing','The AI Chef is thinking…',tid);
   chatHistory.push({role:'user',content:q});
   var r=ckRecipe;
   var s=r.steps[ckStep];
@@ -1993,7 +1993,7 @@ function addIngRow(name,qty) {
   var i=ingIdx++,dl=document.getElementById('ing-dyn-list');
   var d=document.createElement('div');d.className='dyn-row';d.id='ir'+i;
   d.innerHTML='<input type="text" placeholder="Ingredient" data-in="'+i+'" value="'+(name||'')+'">'
-    +'<input type="text" placeholder="Quantit\u00e0" data-iq="'+i+'" value="'+(qty||'')+'" style="max-width:140px">'
+    +'<input type="text" placeholder="Quantity" data-iq="'+i+'" value="'+(qty||'')+'" style="max-width:140px">'
     +'<button class="rm-btn" onclick="document.getElementById(\'ir'+i+'\').remove()">\u2715</button>';
   dl.appendChild(d);
 }
@@ -2003,9 +2003,9 @@ function addStepRow(text,timer) {
   var d=document.createElement('div');d.className='step-drow';d.id='sr'+i;
   d.innerHTML='<div class="step-nlbl">'+(i+1)+'</div>'
     +'<div class="step-inner">'
-    +'<input type="text" placeholder="Descrivi il passaggio\u2026" data-sn="'+i+'" value="'+(text||'')+'">'
-    +'<div class="step-timer-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Timer (sec, opz):</span>'
-    +'<input type="number" placeholder="es: 300" data-st="'+i+'" min="0" value="'+(timer||'')+'">'
+    +'<input type="text" placeholder="Describe this step…" data-sn="'+i+'" value="'+(text||'')+'">'
+    +'<div class="step-timer-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Timer (sec, opt):</span>'
+    +'<input type="number" placeholder="e.g.: 300" data-st="'+i+'" min="0" value="'+(timer||'')+'">'
     +'</div></div>'
     +'<button class="step-rm" onclick="document.getElementById(\'sr'+i+'\').remove()">\u2715</button>';
   dl.appendChild(d);
@@ -2568,11 +2568,11 @@ function openCurated(key) {
 // ══════════════════════════════════════════════════════════════════
 //  FRIENDS & USER SEARCH
 // ══════════════════════════════════════════════════════════════════
-var following = JSON.parse(localStorage.getItem('ausersco_following') || '[]'); // [{id,username,avatar}]
+var following = JSON.parse(localStorage.getItem('autentico_following') || '[]'); // [{id,username,avatar}]
 var viewingUserId = null;
 
 function saveFollowing() {
-  localStorage.setItem('ausersco_following', JSON.stringify(following));
+  localStorage.setItem('autentico_following', JSON.stringify(following));
 }
 
 async function searchUsers(q) {
