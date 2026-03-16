@@ -508,13 +508,20 @@ footer p{font-size:13px;color:var(--muted)}
     <input type="text" id="search-input" placeholder="Search by name or region…" oninput="renderGrid()">
     <button class="clear-search" onclick="document.getElementById('search-input').value='';renderGrid()" title="Clear">×</button>
   </div>
-  <div class="filter-bar">
+  <div class="filter-bar" id="filter-bar">
     <button class="f-btn active" data-f="All" onclick="setFilter(this)">All</button>
     <button class="f-btn" data-f="Italy" onclick="setFilter(this)">🇮🇹 Italy</button>
     <button class="f-btn" data-f="Japan" onclick="setFilter(this)">🇯🇵 Japan</button>
     <button class="f-btn" data-f="Spain" onclick="setFilter(this)">🇪🇸 Spain</button>
     <button class="f-btn" data-f="France" onclick="setFilter(this)">🇫🇷 France</button>
     <button class="f-btn" data-f="Mexico" onclick="setFilter(this)">🇲🇽 Mexico</button>
+    <button class="f-btn" data-f="India" onclick="setFilter(this)">🇮🇳 India</button>
+    <button class="f-btn" data-f="Morocco" onclick="setFilter(this)">🇲🇦 Morocco</button>
+    <button class="f-btn" data-f="Greece" onclick="setFilter(this)">🇬🇷 Greece</button>
+    <button class="f-btn" data-f="Thailand" onclick="setFilter(this)">🇹🇭 Thailand</button>
+    <button class="f-btn" data-f="Vietnam" onclick="setFilter(this)">🇻🇳 Vietnam</button>
+    <button class="f-btn" data-f="China" onclick="setFilter(this)">🇨🇳 China</button>
+    <button class="f-btn" data-f="USA" onclick="setFilter(this)">🇺🇸 USA</button>
     <button class="f-btn" data-f="Verified" onclick="setFilter(this)">⭐ Verified</button>
   </div>
   <div class="recipes-grid" id="recipes-grid"></div>
@@ -523,9 +530,12 @@ footer p{font-size:13px;color:var(--muted)}
 
 <!-- ══ CURATED: EDITOR'S PICKS ══ -->
 <section class="curated-section" id="curated">
-  <h2 class="section-title">✦ Editor's Picks</h2>
-  <p class="curated-subtitle">Hyper-local recipes handpicked for their authenticity — each one a window into a culture.</p>
-  <div class="curated-grid" id="curated-grid">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap">
+    <h2 class="section-title" style="margin-bottom:0">⭐ Verified Recipes</h2>
+    <span style="background:var(--gold);color:#1a0f0a;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase">Hand-curated by Autentico editors</span>
+  </div>
+  <p class="curated-subtitle">Six legendary local dishes — each with a full authentic recipe, verified by our team. Click any to cook.</p>
+  <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
 
     <div class="ccard" onclick="openCurated('cacio')">
       <img src="https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?q=80&w=800&fit=crop" alt="Cacio e Pepe" loading="lazy">
@@ -542,7 +552,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('mole')">
-      <img src="https://images.unsplash.com/photo-1612715353116-7e0a9dda5a15?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1534482421-64566f976cfa?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -598,7 +608,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('bouillabaisse')">
-      <img src="https://images.unsplash.com/photo-1548943487-a2e4e43b4853?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -1061,7 +1071,7 @@ async function loadRecipes() {
     } else {
       recipes = [];
     }
-    renderGrid(); updateStats();
+    renderGrid(); updateStats(); updateFilterBar();
   } catch(e) { console.warn('loadRecipes:', e.message); recipes = []; renderGrid(); updateStats(); }
 }
 
@@ -2116,7 +2126,7 @@ var CURATED = {
   },
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
-    cover:'https://images.unsplash.com/photo-1612715353116-7e0a9dda5a15?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1534482421-64566f976cfa?q=80&w=800&fit=crop',
     emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
@@ -2250,7 +2260,7 @@ var CURATED = {
   },
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
-    cover:'https://images.unsplash.com/photo-1548943487-a2e4e43b4853?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?q=80&w=800&fit=crop',
     emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
@@ -2499,6 +2509,30 @@ function toggleFollowUser() {
 function handleAuthorClick(e, userId, username) {
   e.stopPropagation(); e.preventDefault();
   if (userId) openUserProfile(userId, encodeURIComponent(username));
+}
+
+var COUNTRY_FLAGS = {"Italy": "🇮🇹", "Japan": "🇯🇵", "Spain": "🇪🇸", "France": "🇫🇷", "Mexico": "🇲🇽", "India": "🇮🇳", "Morocco": "🇲🇦", "Greece": "🇬🇷", "Thailand": "🇹🇭", "Vietnam": "🇻🇳", "China": "🇨🇳", "USA": "🇺🇸", "Lebanon": "🇱🇧", "Turkey": "🇹🇷", "Peru": "🇵🇪", "Ethiopia": "🇪🇹", "South Korea": "🇰🇷", "Germany": "🇩🇪", "Portugal": "🇵🇹", "Brazil": "🇧🇷", "Argentina": "🇦🇷", "Egypt": "🇪🇬", "Indonesia": "🇮🇩", "Other": "🌍"};
+
+function updateFilterBar() {
+  var bar = document.getElementById('filter-bar');
+  if (!bar) return;
+  var existing = new Set();
+  bar.querySelectorAll('.f-btn[data-f]').forEach(function(b){ existing.add(b.getAttribute('data-f')); });
+  var inDB = new Set(recipes.map(function(r){ return r.country; }).filter(Boolean));
+  // Insert new country buttons before the Verified button
+  var verifiedBtn = bar.querySelector('[data-f="Verified"]');
+  inDB.forEach(function(country) {
+    if (!existing.has(country)) {
+      var flag = COUNTRY_FLAGS[country] || '🌍';
+      var btn = document.createElement('button');
+      btn.className = 'f-btn';
+      btn.setAttribute('data-f', country);
+      btn.onclick = function(){ setFilter(this); };
+      btn.textContent = flag + ' ' + country;
+      bar.insertBefore(btn, verifiedBtn);
+      existing.add(country);
+    }
+  });
 }
 
 // STARTUP
