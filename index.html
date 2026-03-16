@@ -23,7 +23,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
 .search-wrap{position:relative}
-.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 40px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 44px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .search-wrap input:focus{border-color:var(--terra);width:250px;box-shadow:0 0 0 3px rgba(196,97,74,.1)}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
@@ -345,6 +345,10 @@ footer p{font-size:13px;color:var(--muted)}
 /* Auth required toast */
 .auth-hint{font-size:12px;color:var(--muted);text-align:center;padding:8px 0}
 @keyframes pulse-btn{0%,100%{box-shadow:0 0 0 0 rgba(196,97,74,.4)}50%{box-shadow:0 0 0 8px rgba(196,97,74,0)}}
+
+.badge-easy{background:rgba(40,140,60,.85);color:#fff}
+.badge-med{background:rgba(200,120,20,.85);color:#fff}
+.badge-hard{background:rgba(180,40,40,.85);color:#fff}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -487,7 +491,14 @@ footer p{font-size:13px;color:var(--muted)}
           </div>
         </div>
         <div class="f-grid2">
-          <div class="rev-field"><div class="rev-fhdr"><label>Tempo (min)</label><div class="rev-badges" id="rb-time"></div></div><input type="number" id="fr-time" min="1"></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Tempo (min)</label><div class="rev-badges" id="rb-time"></div></div><input type="number" id="fr-time" min="1" placeholder="30"></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Difficoltà</label></div>
+            <select id="fr-diff" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
+              <option value="Facile">🟢 Facile</option>
+              <option value="Medio">🟡 Medio</option>
+              <option value="Difficile">🔴 Difficile</option>
+            </select>
+          </div>
           <div class="f-row"><label>Foto del piatto (opzionale)</label>
           <input type="text" id="fr-img" placeholder="https://... oppure carica sotto" style="margin-bottom:6px">
           <input type="file" id="fr-img-file" accept="image/*" onchange="window._pendingPhotoFile=this.files[0];document.getElementById('fr-img-label').textContent=this.files[0]?'✅ '+this.files[0].name:''" style="width:100%;padding:8px;border:1.5px dashed #E5E0D8;border-radius:10px;font-size:13px;cursor:pointer">
@@ -799,7 +810,7 @@ function openProfile() {
   if (emailTxt) emailTxt.textContent = currentUser.email || '';
   // My recipes
   var myR = recipes.filter(function(r) {
-    return r.user_id === currentUser.id || r.authorUid === currentUser.id;
+    return r.user_id === currentUser.id || r.authorUid === currentUser.id || (r.profiles && r.profiles.id === currentUser.id);
   });
   var grid = document.getElementById('profile-my-recipes');
   if (grid) {
@@ -828,7 +839,14 @@ async function loadRecipes() {
     if (!res.error && res.data && res.data.length > 0) {
       var dbIds = res.data.map(function(r){return r.id;});
       var defs = DEFAULT_RECIPES.filter(function(r){return dbIds.indexOf(r.id) < 0;});
-      recipes = res.data.concat(defs);
+      // Normalize fields: add .time alias for time_minutes for compatibility
+      var normalized = res.data.map(function(r){
+        r.time = r.time_minutes || r.time || 30;
+        r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonimo';
+        r.cover = r.cover_url || r.cover || '';
+        return r;
+      });
+      recipes = normalized.concat(defs);
       renderGrid(); updateStats();
     }
   } catch(e) { console.warn('loadRecipes:', e.message); }
@@ -853,7 +871,7 @@ async function dbSave(r) {
       cover_url: cover_url, emoji: r.emoji||'🍽️',
       verified: r.verified||false,
       time_minutes: r.time||30,
-      difficulty: r.difficulty||'Facile', portions: r.portions||4,
+      difficulty: r.difficulty||'Facile', portions: parseInt(r.portions)||4,
       ingredients: r.ingredients||[], steps: r.steps||[], notes: r.notes||[]
     });
     if (ins.error) throw new Error(ins.error.message);
@@ -918,21 +936,36 @@ function renderGrid() {
   var grid = document.getElementById('recipes-grid');
   if (!filtered.length) { grid.innerHTML='<div class="no-results">Nessuna ricetta trovata.</div>'; return; }
   grid.innerHTML = filtered.map(function(r,idx) {
-    var t = r.time<60 ? r.time+'min' : Math.floor(r.time/60)+'h'+(r.time%60?r.time%60+'m':'');
-    var av = (r.author||'?')[0].toUpperCase();
-    var delay=(idx*0.06).toFixed(2);
-    return '<a class="rcard" href="#" style="animation:fadeInUp .4s '+delay+'s ease both;opacity:0" onclick="openDetail(\''+r.id+'\');return false">'
-      +'<div class="rcard-img">'
-      +'<img src="'+(r.cover||'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop')+'" alt="'+r.title+'" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop\'">'
-      +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">\u2b50 Verificata</span>':'')+'<span class="badge badge-t">\u23f1 '+t+'</span></div>'
+    // Support both local (time) and Supabase (time_minutes) field names
+    var mins = r.time_minutes || r.time || 30;
+    var t = mins < 60 ? mins+'min' : Math.floor(mins/60)+'h'+(mins%60 ? mins%60+'m' : '');
+    // Support both local (author) and Supabase (profiles.username) author
+    var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonimo');
+    var av = authorName[0].toUpperCase();
+    // Difficulty badge
+    var diff = r.difficulty || '';
+    var diffBadge = diff ? '<span class="badge '+(diff==='Facile'?'badge-easy':diff==='Difficile'?'badge-hard':'badge-med')+'">'+diff+'</span>' : '';
+    // Cover image - use emoji fallback if no image
+    var coverImg = r.cover_url || r.cover || '';
+    var imgHtml = coverImg
+      ? '<img src="'+coverImg+'" alt="'+r.title+'" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
+        + '<div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-size:56px;background:#f0ede8">'+(r.emoji||'🍽️')+'</div>'
+      : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;background:#f0ede8">'+(r.emoji||'🍽️')+'</div>';
+    var delay = (idx*0.06).toFixed(2);
+    var rid = String(r.id).replace(/'/g,'');
+    return '<a class="rcard" href="#" style="animation:fadeInUp .4s '+delay+'s ease both;opacity:0" onclick="openDetail(\''+rid+'\');return false">'
+      +'<div class="rcard-img" style="position:relative">'+imgHtml
+      +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">⭐ Verificata</span>':'')
+      +'<span class="badge badge-t">⏱ '+t+'</span>'+diffBadge+'</div>'
       +'</div>'
       +'<div class="rcard-body">'
-      +'<div class="rcard-author"><div class="rcard-av">'+av+'</div><div><div class="rcard-an">'+(r.author||'Anonimo')+'</div><div class="rcard-ar">'+(r.region||'')+'</div></div></div>'
+      +'<div class="rcard-author"><div class="rcard-av">'+av+'</div>'
+      +'<div><div class="rcard-an">'+authorName+'</div><div class="rcard-ar">'+(r.region||'')+'</div></div></div>'
       +'<div class="rcard-title">'+r.title+'</div>'
       +'<div class="rcard-desc">'+(r.description||'')+'</div>'
       +'<div class="rcard-footer">'
-      +'<div class="rcard-likes"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+(r.likes||0).toLocaleString('it')+'</div>'
-      +'<button class="btn-cook" onclick="event.stopPropagation();startCooking(\''+r.id+'\')">Cucina \u2192</button>'
+      +'<div class="rcard-likes"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+(r.likes||r.likes_count||0)+'</div>'
+      +'<button class="btn-cook" onclick="event.stopPropagation();startCooking(\''+rid+'\')">Cucina →</button>'
       +'</div></div></a>';
   }).join('');
 }
@@ -942,15 +975,17 @@ function openDetail(id) {
   if (!r) return;
   if (!detailChecked[id]) detailChecked[id] = new Set();
   var ck = detailChecked[id];
-  var t = r.time<60 ? r.time+' min' : Math.floor(r.time/60)+'h'+(r.time%60?' '+r.time%60+'min':'');
+  var mins = r.time_minutes || r.time || 30;
+  var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonimo');
+  var t = mins<60 ? mins+' min' : Math.floor(mins/60)+'h'+(mins%60?' '+mins%60+'min':'');
   var html = '<button class="modal-x" onclick="closeDetail()">\u2715</button>'
-    +'<div class="m-hero"><img src="'+(r.cover||'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop')+'" alt="'+r.title+'" onerror="this.src=\'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop\'">'
+    +'<div class="m-hero"><img src="'+(r.cover||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop')+'" alt="'+r.title+'" onerror="this.src=\'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop\'">'
     +'<div class="m-hero-ov"></div>'
     +'<div class="m-hero-txt"><h2>'+r.title+'</h2><div class="reg">'+(r.region||'')+' \u00b7 '+t+'</div></div></div>'
     +'<div class="m-body">'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
     +'<div style="width:40px;height:40px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600;flex-shrink:0">'+(r.author||'?')[0].toUpperCase()+'</div>'
-    +'<div><div style="font-weight:500;font-size:14px">'+(r.author||'Anonimo')+'</div><div style="font-size:12px;color:var(--muted)">'+(r.region||'')+'</div></div>'
+    +'<div><div style="font-weight:500;font-size:14px">'+(authorName)+'</div><div style="font-size:12px;color:var(--muted)">'+(r.region||'')+'</div></div>'
     +(r.verified?'<span style="margin-left:auto;background:rgba(201,168,76,.15);color:var(--gold);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500">\u2b50 Verificata</span>':'')
     +'</div>'
     +'<p style="font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:4px">'+(r.description||'')+'</p>'
@@ -1417,7 +1452,7 @@ async function saveRecipe() {
     author:authorName,
     authorUid: currentUser ? currentUser.id : null,
     authorPhoto: currentProfile ? (currentProfile.avatar_url||null) : null,
-    likes:0,time:parseInt(document.getElementById('fr-time').value)||30,
+    likes:0,time:parseInt(document.getElementById('fr-time').value)||30,difficulty:document.getElementById('fr-diff')?document.getElementById('fr-diff').value:'Facile',
     ingredients:ings,steps:steps,notes:notes
   };
   recipes.unshift(newR);
