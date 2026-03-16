@@ -1252,37 +1252,50 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (via /api/ai — Vercel serverless, no CORS) ──
-async function callAI(system, userPrompt, jsonMode) {
-  const res = await fetch('/api/ai', {
+// ── AI API CALL (Mistral AI — direct browser call) ──
+const MISTRAL_KEY = 'kvESiqtWZZ2jZB7aq9RF8acxSqLYKb2G';
+
+async function callMistral(messages) {
+  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + MISTRAL_KEY
+    },
     body: JSON.stringify({
-      system: system,
-      messages: [{ role: 'user', content: userPrompt }],
-      json_mode: jsonMode === true
+      model: 'mistral-small-latest',
+      temperature: 0.7,
+      max_tokens: 2048,
+      messages: messages
     })
   });
   if (!res.ok) {
     const err = await res.json().catch(function(){ return {}; });
-    throw new Error('Errore ' + res.status + (err.error ? ': ' + err.error : ''));
+    const code = res.status;
+    if (code === 429) throw new Error('Troppe richieste — aspetta qualche secondo e riprova.');
+    if (code === 401) throw new Error('Chiave API non valida.');
+    throw new Error('Errore ' + code + (err.message ? ': ' + err.message : ''));
   }
   const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  // Server might return text even with parse_error - use it anyway
-  return data.text || '';
+  return data.choices?.[0]?.message?.content || '';
 }
 
 async function callGemini(prompt, systemInstruction) {
-  return await callAI(systemInstruction, prompt, true);
+  return await callMistral([
+    { role: 'system', content: systemInstruction },
+    { role: 'user', content: prompt }
+  ]);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  var history = messages.map(function(m) {
-    return (m.role === 'ai' ? 'Chef AI' : 'Utente') + ': ' + m.text;
-  }).join('\n');
-  var last = messages.length ? messages[messages.length-1].text : '';
-  return await callAI(systemInstruction, messages.length > 1 ? history : last, false);
+  var apiMessages = [{ role: 'system', content: systemInstruction }];
+  messages.forEach(function(m) {
+    apiMessages.push({
+      role: m.role === 'ai' ? 'assistant' : 'user',
+      content: m.text
+    });
+  });
+  return await callMistral(apiMessages);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
@@ -1296,27 +1309,22 @@ async function generateFromDesc() {
   btn.innerHTML = '<div class="ai-spinner"></div> Sto creando la ricetta…';
   card.classList.remove('show');
 
-  const systemPrompt = `Sei uno chef esperto. Genera una ricetta autentica in formato JSON valido.
-IMPORTANTE: Rispondi SOLO con JSON puro, senza markdown, senza backtick, senza testo aggiuntivo.
-Usa SOLO virgolette doppie. Niente virgole finali. Niente caratteri speciali nei valori.
-
-Struttura ESATTA da rispettare:
-{"title":"Nome Ricetta","region":"Citta Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione breve","ingredients":[{"name":"Ingrediente","qty":"100 g"},{"name":"Ingrediente2","qty":"50 g"}],"steps":[{"text":"Istruzione chiara","tip":"Consiglio utile","timer":0},{"text":"Secondo passo","tip":"Altro consiglio","timer":300}],"notes":["Nota autenticita 1","Nota autenticita 2"]}
-
-Regole: difficulty deve essere Facile, Medio o Difficile. timer in secondi interi (0 se non serve). Almeno 6 ingredienti e 5 passi. Tutto in italiano. NON usare apostrofi nei valori JSON, usa forme alternative.`;
+  const systemPrompt = `You are an expert chef. Generate an authentic recipe in valid JSON format.
+IMPORTANT: Respond with ONLY valid JSON, no markdown, no backticks, no extra text.
+Use only double quotes. No trailing commas. No special characters in values.
+Use this exact structure:
+{"title":"Recipe Name","region":"City, Country","country":"Country","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Short description","ingredients":[{"name":"ingredient","qty":"100 g"}],"steps":[{"text":"Step instruction","tip":"Pro tip","timer":0}],"notes":["Note 1","Note 2"]}
+Rules: difficulty must be Facile, Medio or Difficile. timer in seconds (0 if none). Min 6 ingredients, 5 steps. Write ALL content in Italian language.`;
 
   try {
     const raw = await callGemini('Genera una ricetta autentica per: ' + desc, systemPrompt);
     // Extract and fix JSON robustly
     let clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
-    const jsonStart = clean.indexOf('{');
-    const jsonEnd = clean.lastIndexOf('}');
-    if (jsonStart >= 0 && jsonEnd > jsonStart) {
-      clean = clean.slice(jsonStart, jsonEnd + 1);
-    }
+    const jStart = clean.indexOf('{');
+    const jEnd = clean.lastIndexOf('}');
+    if (jStart >= 0 && jEnd > jStart) clean = clean.slice(jStart, jEnd + 1);
     clean = clean
-      .replace(/,\s*}/g, '}')
-      .replace(/,\s*]/g, ']')
+      .replace(/,\s*([}\]])/g, '$1')
       .replace(/[\u0000-\u001F\u007F]/g, ' ')
       .replace(/\r/g, '');
     aiGeneratedRecipe = JSON.parse(clean);
