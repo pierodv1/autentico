@@ -23,9 +23,9 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
 .search-wrap{position:relative}
-.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 42px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 46px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .search-wrap input:focus{border-color:var(--terra);width:250px;box-shadow:0 0 0 3px rgba(196,97,74,.1)}
-.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-wrap svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
 .btn-add-hdr:hover{background:var(--terra2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(196,97,74,.45)}
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
@@ -208,7 +208,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .ck-send:active{transform:scale(.95)}
 
 /* ADD MODAL */
-#add-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;overflow-y:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#add-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9100;overflow-y:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 #add-overlay.open{display:flex;justify-content:center;padding:40px 20px}
 .add-modal{background:#fff;width:100%;max-width:680px;border-radius:24px;padding:32px;align-self:flex-start;animation:slideUp .3s ease;position:relative}
 .add-steps{display:flex;align-items:center;margin-bottom:24px}
@@ -257,7 +257,7 @@ textarea{resize:vertical}
 @keyframes spin{to{transform:rotate(360deg)}}
 .changes-box{background:#F0FFF4;border:1.5px solid rgba(76,175,80,.3);border-radius:12px;padding:14px 16px;margin-top:16px}
 .changes-box-t{font-size:12px;font-weight:600;color:#2e7d32;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.changes-box li{font-size:13px;color:#444;margin-bottom:4px;margin-left:14px}
+.changes-box li{font-size:13px;color:#444;margin-bottom:4px;margin-left:16px}
 .final-card{background:#fff;border-radius:16px;padding:20px;border:1.5px solid var(--border)}
 .final-card h3{font-family:var(--serif);font-size:22px;margin-bottom:4px}
 .ftag{display:inline-flex;background:rgba(196,97,74,.1);color:var(--terra);border-radius:16px;padding:3px 10px;font-size:12px;margin-right:5px;margin-bottom:8px}
@@ -430,17 +430,17 @@ footer p{font-size:13px;color:var(--muted)}
 <!-- ADD OVERLAY -->
 
 <!-- SCELTA AGGIUNGI -->
-<div id="choice-overlay" onclick="if(event.target===this)closeChoice()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:800;align-items:center;justify-content:center;padding:20px">
+<div id="choice-overlay" onclick="if(event.target===this)closeChoice()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:440px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeChoice()" style="position:absolute;top:14px;right:14px;background:#eee;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
     <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Aggiungi una ricetta</h2>
     <p style="font-size:14px;color:#7A7570;margin-bottom:24px">Come vuoi procedere?</p>
     <div style="display:flex;flex-direction:column;gap:12px">
-      <button onclick="closeChoice();openAdd();setTimeout(function(){setAddMode('manual')},50)" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
+      <button onclick="closeChoice();openAdd('manual')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
         <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Scrivo io la ricetta</div><div style="font-size:13px;color:#7A7570">Inserisci manualmente tutti i dettagli</div></div>
       </button>
-      <button onclick="closeChoice();openAdd();setTimeout(function(){setAddMode('ai')},50)" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
+      <button onclick="closeChoice();openAdd('ai')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
         <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Descrivi il piatto, l'AI genera la ricetta</div></div>
       </button>
@@ -869,7 +869,7 @@ function openProfile() {
   // My recipes
   var uid = currentUser.id;
   var myR = recipes.filter(function(r) {
-    return r.user_id === uid || r.authorUid === uid;
+    return String(r.user_id) === String(uid) || String(r.authorUid) === String(uid);
   });
   var grid = document.getElementById('profile-my-recipes');
   if (grid) {
@@ -954,7 +954,15 @@ async function toggleLike(recipeId, el) {
     rec.likes_count = (rec.likes_count||0)+(liked?-1:1);
     var cnt = document.getElementById('likes-'+recipeId);
     if (cnt) cnt.textContent = rec.likes_count;
-    if (el) el.classList.toggle('liked',!liked);
+    if (el) {
+      el.classList.toggle('liked',!liked);
+      var svg = el.querySelector('svg');
+      if (svg) {
+        var isLiked = el.classList.contains('liked');
+        svg.setAttribute('fill', isLiked ? 'var(--terra,#C4614A)' : 'none');
+        svg.setAttribute('stroke', isLiked ? 'var(--terra,#C4614A)' : 'currentColor');
+      }
+    }
   }
 }
 
@@ -1309,15 +1317,13 @@ async function sendChat() {
   }
 }
 
-function openAdd() {
+function openAdd(mode) {
   if (!requireAuth()) return;
   ingIdx=0; stepIdx=0; manualIngIdx=0; manualStepIdx=0;
   window._pendingPhotoFile = null;
   // Reset manual lists
   var iml = document.getElementById('ing-manual-list'); if(iml) iml.innerHTML='';
   var sml = document.getElementById('step-manual-list'); if(sml) sml.innerHTML='';
-  // Default to AI mode
-  setAddMode('ai');
   document.getElementById('f-raw').value='';
   // Hide author field if logged in
   var authorRow = document.getElementById('author-row');
@@ -1335,6 +1341,7 @@ function openAdd() {
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
+  setAddMode(mode === 'manual' ? 'manual' : 'ai');
 }
 
 function closeAdd(){
@@ -1754,7 +1761,8 @@ function openChoice() {
 }
 function closeChoice() {
   var ov = document.getElementById('choice-overlay');
-  if (ov) { ov.style.display='none'; document.body.style.overflow=''; }
+  if (ov) ov.style.display = 'none';
+  document.body.style.overflow = '';
 }
 function openAIAdd() {
   // Open the AI wizard (runAI phase)
