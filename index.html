@@ -537,7 +537,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
 
     <div class="ccard" onclick="openCurated('cacio')">
-      <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1608877907149-a206d75ba011?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -607,7 +607,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('bouillabaisse')">
-      <img src="https://images.unsplash.com/photo-1571167366136-b57e069b6f8f?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop" alt="Bouillabaisse" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -688,16 +688,16 @@ footer p{font-size:13px;color:var(--muted)}
 <div id="choice-overlay" onclick="if(event.target===this)closeChoice()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:440px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeChoice()" style="position:absolute;top:14px;right:14px;background:#eee;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Add a Recipe</h2>
-    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">How would you like to proceed?</p>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Aggiungi una ricetta</h2>
+    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">Come vuoi procedere?</p>
     <div style="display:flex;flex-direction:column;gap:12px">
       <button onclick="closeChoice();openAdd('manual')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">I'll write the recipe</div><div style="font-size:13px;color:#7A7570">Enter all details manually</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Scrivo io la ricetta</div><div style="font-size:13px;color:#7A7570">Inserisci tutti i dettagli manualmente</div></div>
       </button>
       <button onclick="closeChoice();openAdd('ai')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">AI helps me</div><div style="font-size:13px;color:#7A7570">Describe the dish, AI generates the recipe</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Descrivi il piatto, l'AI genera la ricetta</div></div>
       </button>
     </div>
   </div>
@@ -717,7 +717,7 @@ footer p{font-size:13px;color:var(--muted)}
 
     <!-- PHASE 1 -->
     <div id="ph1">
-      <h2 id="add-overlay-title">Add a Recipe</h2>
+      <h2 id="add-overlay-title">Aggiungi una ricetta</h2>
       <div style="display:flex;gap:8px;margin:12px 0 20px">
         <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ With AI</button>
         <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manually</button>
@@ -733,7 +733,7 @@ footer p{font-size:13px;color:var(--muted)}
         </div>
         <div class="f-actions">
           <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
-          <button class="btn-save" onclick="runAI()">✦ Analyse with AI →</button>
+          <button class="btn-save" onclick="runAI()">✦ Analizza con AI →</button>
         </div>
       </div>
 
@@ -782,7 +782,7 @@ footer p{font-size:13px;color:var(--muted)}
         <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fm-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400">Verified recipe</label></div>
         <div class="f-actions">
           <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
-          <button class="btn-save" onclick="saveManualRecipe()">Publish recipe</button>
+          <button class="btn-save" onclick="saveManualRecipe()">Pubblica ricetta</button>
         </div>
       </div>
     </div>
@@ -846,7 +846,7 @@ footer p{font-size:13px;color:var(--muted)}
       <div id="final-preview"></div>
       <div class="f-actions" style="margin-top:20px">
         <button class="btn-cancel" onclick="goPhase(2)">← Edit more</button>
-        <button class="btn-save" onclick="saveRecipe()">🚀 Publish recipe</button>
+        <button class="btn-save" onclick="saveRecipe()">🚀 Pubblica ricetta</button>
       </div>
     </div>
   </div>
@@ -1062,7 +1062,7 @@ async function loadRecipes() {
     if (!res.error && res.data) {
       recipes = res.data.map(function(r){
         r.time = r.time_minutes || r.time || 30;
-        r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonymous';
+        r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonimo';
         r.cover = r.cover_url || r.cover || '';
         // Normalise Italian country names stored in DB to English display values
         var ctryMap = {'Italia':'Italy','Giappone':'Japan','Spagna':'Spain','Francia':'France','Messico':'Mexico','Grecia':'Greece','India':'India','Marocco':'Morocco','Tailandia':'Thailand','Turchia':'Turkey','Cina':'China','Corea del Sud':'South Korea','Vietnam':'Vietnam','Etiopia':'Ethiopia','Perù':'Peru','Libano':'Lebanon','Altro':'Other'};
@@ -1245,7 +1245,7 @@ function renderGrid() {
   grid.innerHTML = filtered.map(function(r,idx) {
     var mins = r.time_minutes || r.time || 30;
     var tStr = mins < 60 ? mins+'min' : Math.floor(mins/60)+'h'+(mins%60 ? mins%60+'m' : '');
-    var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonymous');
+    var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonimo');
     var av = authorName[0].toUpperCase();
     var diff = r.difficulty || '';
     var diffLabel = diff==='Facile'||diff==='Easy' ? 'Easy' : diff==='Difficile'||diff==='Hard' ? 'Hard' : diff==='Medio'||diff==='Medium' ? 'Medium' : diff;
@@ -1288,7 +1288,7 @@ function openDetail(id) {
   if (!detailChecked[id]) detailChecked[id] = new Set();
   var ck = detailChecked[id];
   var mins = r.time_minutes || r.time || 30;
-  var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonymous');
+  var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonimo');
   var t = mins<60 ? mins+' min' : Math.floor(mins/60)+'h'+(mins%60?' '+mins%60+'min':'');
   var html = '<button class="modal-x" onclick="closeDetail()">\u2715</button>'
     +'<div class="m-hero"><img src="'+(r.cover||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop')+'" alt="'+r.title+'" onerror="this.src=\'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop\'">'
@@ -1328,7 +1328,7 @@ function openDetail(id) {
   +'</div>';
   });
 
-  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Start Cooking</button></div></div>';
+  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Inizia a cucinare</button></div></div>';
 
   document.getElementById('detail-modal').innerHTML = html;
   var ov=document.getElementById('detail-overlay');
@@ -1587,9 +1587,9 @@ function openAdd(mode) {
   if (fImgLabel) fImgLabel.textContent='';
   // Reset title
   var addTitle = document.getElementById('add-overlay-title');
-  if (addTitle) addTitle.textContent = 'New Recipe';
+  if (addTitle) addTitle.textContent = 'Nuova ricetta';
   var saveBtn = document.querySelector('#ph1 .btn-save');
-  if (saveBtn) saveBtn.textContent = 'Publish recipe';
+  if (saveBtn) saveBtn.textContent = 'Pubblica ricetta';
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1832,7 +1832,7 @@ async function saveRecipe() {
   if(!steps.length){showToast('\u26a0\ufe0f Aggiungi almeno un passaggio');return;}
   var notes=(document.getElementById('fr-notes').value.trim()||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
   var cover=document.getElementById('fr-img').value.trim()||'';
-  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : (document.getElementById('f-author') ? document.getElementById('f-author').value.trim() : 'Anonymous') || 'Anonymous';
+  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : (document.getElementById('f-author') ? document.getElementById('f-author').value.trim() : 'Anonimo') || 'Anonimo';
   var newR={
     id:'u'+Date.now(),title:title,
     description:document.getElementById('fr-desc').value.trim()||title,
@@ -2035,7 +2035,7 @@ async function saveManualRecipe() {
   if (!steps.length) { showToast('⚠️ Aggiungi almeno un passo'); return; }
 
   var notes = (document.getElementById('fm-notes').value||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
-  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : ((document.getElementById('f-author-m')||{}).value||'Anonymous');
+  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : ((document.getElementById('f-author-m')||{}).value||'Anonimo');
   var cover = (document.getElementById('fm-img').value||'').trim();
   // Handle file upload
   if (document.getElementById('fm-img-file') && document.getElementById('fm-img-file').files[0]) {
@@ -2113,7 +2113,7 @@ function openAIAdd() {
 var CURATED = {
   cacio: {
     id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
-    cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
+    cover:'https://images.unsplash.com/photo-1608877907149-a206d75ba011?q=80&w=800&auto=format&fit=crop',
     emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
     description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
     ingredients:[
@@ -2267,7 +2267,7 @@ var CURATED = {
   },
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
-    cover:'https://images.unsplash.com/photo-1571167366136-b57e069b6f8f?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop',
     emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
@@ -2332,7 +2332,7 @@ async function searchUsers(q) {
     var eid = u.id.replace(/[^a-zA-Z0-9_-]/g,'_');
     return '<div class="user-result-item" data-uid="'+u.id+'" data-uname="'+encodeURIComponent(u.username||'')+'" onclick="var d=this.dataset;openUserProfile(d.uid,d.uname)">'
       + '<div class="friend-av" style="width:36px;height:36px;flex-shrink:0">'+av+'</div>'
-      + '<div style="flex:1"><div class="user-result-name">'+(u.username||'Anonymous')+'</div></div>'
+      + '<div style="flex:1"><div class="user-result-name">'+(u.username||'Anonimo')+'</div></div>'
       + '<button class="btn-follow '+(isF?'following':'')+'" data-uid="'+u.id+'" data-uname="'+encodeURIComponent(u.username||'')+'" data-uav="'+encodeURIComponent(u.avatar_url||'')+'" onclick="event.stopPropagation();var d=this.dataset;toggleFollow(d.uid,d.uname,d.uav,this)">'
       + (isF?'Following':'Follow')+'</button></div>';
   }).join('');
@@ -2393,7 +2393,7 @@ async function loadFriendsFeed() {
   }
   var frFeed = res.data.map(function(r){
     r.time = r.time_minutes||r.time||30;
-    r.author = (r.profiles&&r.profiles.username)||'Anonymous';
+    r.author = (r.profiles&&r.profiles.username)||'Anonimo';
     r.cover = r.cover_url||r.cover||'';
     return r;
   });
@@ -2405,7 +2405,7 @@ async function loadFriendsFeed() {
     var rid = String(r.id).replace(/'/g,'');
     var mins = r.time_minutes||r.time||30;
     var tStr = mins<60?mins+'min':Math.floor(mins/60)+'h'+(mins%60?mins%60+'m':'');
-    var authorName = (r.profiles&&r.profiles.username)||r.author||'Anonymous';
+    var authorName = (r.profiles&&r.profiles.username)||r.author||'Anonimo';
     var av = authorName[0].toUpperCase();
     var coverImg = r.cover_url||r.cover||'';
     var imgHtml = coverImg
