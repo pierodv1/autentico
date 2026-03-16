@@ -18,12 +18,13 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden}
 
 /* HEADER */
-header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 0 var(--border)}
+header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 0 var(--border);overflow:hidden}
 .logo{font-family:var(--serif);font-size:22px;font-weight:600;text-decoration:none;color:var(--text)}
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
 /* search moved to section – no header search-wrap */
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
+.btn-add-txt{font-size:inherit}
 .btn-add-hdr:hover{background:var(--terra2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(196,97,74,.45)}
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
 
@@ -445,13 +446,17 @@ footer p{font-size:13px;color:var(--muted)}
 /* ── MOBILE ── */
 @media(max-width:600px){
   /* Header */
-  header{padding:0 12px;height:56px;gap:8px}
-  .logo{font-size:18px}
-  .search-wrap{flex:1;min-width:0}
-  .search-wrap input{width:100%;font-size:13px;padding:8px 10px 8px 36px}
-  .search-wrap svg{left:11px;width:14px;height:14px}
-  .btn-add-hdr{padding:7px 12px;font-size:13px;white-space:nowrap}
+  header{padding:0 12px;height:56px;gap:6px;overflow:hidden}
+  .logo{font-size:18px;flex-shrink:0}
+  .hdr-right{gap:6px;flex-shrink:0}
+  .search-wrap{flex:1;min-width:0;display:none}
+  .btn-add-hdr{padding:0;width:36px;height:36px;border-radius:50%;font-size:0;gap:0;flex-shrink:0}
+  .btn-add-hdr svg{width:18px;height:18px;flex-shrink:0}
+  .btn-add-txt{display:none}
   nav{display:none}
+  /* Auth chip mobile — avatar only */
+  #user-chip-btn span{display:none !important}
+  #user-chip-btn{padding:3px !important;border-radius:50% !important;gap:0 !important;border:2px solid var(--terra) !important}
 
   /* Hero */
   .hero{padding:28px 16px 24px;text-align:center}
@@ -531,7 +536,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="hdr-right">
     <button class="btn-add-hdr" onclick="openChoice()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Recipe
+      <span class="btn-add-txt">Add Recipe</span>
     </button>
     <!-- AUTH AREA -->
     <div id="auth-area" style="position:relative;flex-shrink:0">
@@ -563,15 +568,15 @@ footer p{font-size:13px;color:var(--muted)}
   </div>
   <div class="hero-imgs">
     <div class="h-img" onclick="openCurated('pho')" style="cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop" alt="Pho Bo" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=800&fit=crop" alt="Pho Bo" loading="lazy">
       <div class="h-img-ov"><strong>Phở Bò Hà Nội</strong><small>Hanoi, Vietnam →</small></div>
     </div>
     <div class="h-img" onclick="openCurated('tagine')" style="cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=600&fit=crop" alt="Lamb Tagine" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=600&fit=crop" alt="Lamb Tagine" loading="lazy">
       <div class="h-img-ov"><strong>Lamb Tagine</strong><small>Marrakech, Morocco →</small></div>
     </div>
     <div class="h-img" onclick="openCurated('biryani')" style="cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=600&fit=crop" alt="Biryani" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=600&fit=crop" alt="Biryani" loading="lazy">
       <div class="h-img-ov"><strong>Hyderabadi Biryani</strong><small>Hyderabad, India →</small></div>
     </div>
   </div>
@@ -614,7 +619,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
 
     <div class="ccard" onclick="openCurated('cacio')">
-      <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1611270418597-a6c77f4b7271?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -628,7 +633,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('mole')">
-      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -642,7 +647,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('tagine')">
-      <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop" alt="Lamb Tagine" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=800&fit=crop" alt="Lamb Tagine" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -656,7 +661,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('pho')">
-      <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop" alt="Pho Bo" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=800&fit=crop" alt="Pho Bo" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -670,7 +675,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('biryani')">
-      <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop" alt="Hyderabadi Biryani" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800&fit=crop" alt="Hyderabadi Biryani" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -684,7 +689,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('bouillabaisse')">
-      <img src="https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=800&auto=format&fit=crop" alt="Bouillabaisse" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -1189,20 +1194,10 @@ async function fetchRecipeImage(title) {
 
 // Smarter: use Unsplash API with embedded demo key
 async function fetchRecipeImageSmart(title) {
-  // Use Pexels API (free, reliable) with fallback to Unsplash source
-  try {
-    var q = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,' ').trim() + ' food');
-    var res = await fetch('https://api.pexels.com/v1/search?query='+q+'&per_page=1&orientation=landscape', {
-      headers: { 'Authorization': 'BbD3KhU1LJ3MfvXV3fGQW1mEJSdkePzNXb3tkCKEJkXXjotS7ZtZo3qR' }
-    });
-    if (res.ok) {
-      var data = await res.json();
-      if (data.photos && data.photos[0]) return data.photos[0].src.large;
-    }
-  } catch(e) {}
-  // Fallback: Unsplash Source (no key, browser follows redirect natively)
-  var q2 = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(' ').slice(0,3).join(',');
-  return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(q2 + ',food');
+  // Unsplash Source — no API key needed, browser follows the redirect.
+  // Returns a real food photo matching the recipe title.
+  var keywords = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(/\s+/).slice(0,3).join(',');
+  return 'https://source.unsplash.com/800x500/?' + keywords + ',food,dish';
 }
 
 async function dbSave(r) {
@@ -2246,7 +2241,7 @@ function openAIAdd() {
 var CURATED = {
   cacio: {
     id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
-    cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
+    cover:'https://images.unsplash.com/photo-1611270418597-a6c77f4b7271?q=80&w=800&auto=format&fit=crop',
     emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
     description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
     ingredients:[
@@ -2266,7 +2261,7 @@ var CURATED = {
   },
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
-    cover:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?q=80&w=800&fit=crop',
     emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
@@ -2307,7 +2302,7 @@ var CURATED = {
   },
   tagine: {
     id:'c3', title:'Lamb Tagine with Preserved Lemon', region:'Marrakech, Morocco', country:'Morocco',
-    cover:'https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=800&fit=crop',
     emoji:'🥘', verified:true, author:'Autentico Editors', likes:1540, time:150, difficulty:'Medium',
     description:'Slow-cooked lamb with saffron, preserved lemon and olives. The conical tagine lid creates a self-basting steam cycle.',
     ingredients:[
@@ -2339,7 +2334,7 @@ var CURATED = {
   },
   pho: {
     id:'c4', title:'Phở Bò Hà Nội', region:'Hanoi, Vietnam', country:'Vietnam',
-    cover:'https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=800&fit=crop',
     emoji:'🍜', verified:true, author:'Autentico Editors', likes:2210, time:360, difficulty:'Medium',
     description:'Northern-style pho — clear, clean, intensely aromatic. The 6-hour bone broth is non-negotiable.',
     ingredients:[
@@ -2371,7 +2366,7 @@ var CURATED = {
   },
   biryani: {
     id:'c5', title:'Hyderabadi Dum Biryani', region:'Hyderabad, India', country:'India',
-    cover:'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800&fit=crop',
     emoji:'🍚', verified:true, author:'Autentico Editors', likes:1890, time:180, difficulty:'Hard',
     description:'The dum (sealed steam) technique locks saffron, caramelised onion and whole spice aromas into every grain of rice.',
     ingredients:[
@@ -2400,7 +2395,7 @@ var CURATED = {
   },
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
-    cover:'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop',
+    cover:'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=800&auto=format&fit=crop',
     emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
