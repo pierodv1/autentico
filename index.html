@@ -667,7 +667,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="ck-msgs" id="ck-msgs"></div>
   <div class="ck-quick" id="ck-quick-btns">
     <button class="ck-q-btn" onclick="quickMsg('Can I substitute an ingredient?')">Substitute ingredient?</button>
-    <button class="ck-q-btn" onclick="quickMsg('How do I know when it's done?')">How do I know when it's done?</button>
+    <button class="ck-q-btn" onclick="quickMsg("How do I know when it's done?")">How do I know when it&#39;s done?</button>
     <button class="ck-q-btn" onclick="quickMsg('I made a mistake, how do I recover?')">I made a mistake, how do I recover?</button>
     <button class="ck-q-btn" onclick="quickMsg('What temperature should I use?')">Temperature?</button>
   </div>
@@ -1237,7 +1237,7 @@ function updateQuickButtons(stepIdx) {
   if(!quick)return;
   var suggestions=[
     'Can I substitute an ingredient?',
-    'How do I know when it's done?',
+    "How do I know when it's done?",
     hasTmr?'Can I shorten the time?':'How long does this step take?',
     'I made a mistake, how do I recover?',
     'What temperature should I use?',
@@ -1299,7 +1299,7 @@ async function sendChat() {
     });
     var data=await res.json();
     if(!res.ok)throw new Error(data.message||'API error '+res.status);
-    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'I didn\'t get that, try again!';
+    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||"I didn't get that, try again!";
     chatHistory.push({role:'assistant',content:reply});
     var tel=document.getElementById(tid);
     if(tel){tel.className='ck-msg ai';tel.innerHTML=reply;}
