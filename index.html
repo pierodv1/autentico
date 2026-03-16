@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ausersco — World Recipes</title>
+<title>Autentico — World Recipes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -28,7 +28,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
 
 /* HERO */
-.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px;gap:60px;min-height:86vh;position:relative;overflow:hidden}
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:60px 80px;gap:60px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(196,97,74,.07),transparent 70%);pointer-events:none}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(196,97,74,.1);color:var(--terra);border-radius:20px;padding:6px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(196,97,74,.2)}
 .hero h1{font-family:var(--serif);font-size:clamp(40px,5vw,68px);font-weight:600;line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px}
@@ -40,7 +40,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .btn-primary:active{transform:translateY(0)}
 .btn-ghost{color:var(--text);font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
 .btn-ghost:hover{color:var(--terra)}
-.hero-stats{display:flex;gap:36px;margin-top:44px;padding-top:32px;border-top:1px solid var(--border)}
+.hero-stats{display:flex;gap:24px;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
 .stat-n{font-family:var(--serif);font-size:28px;font-weight:600}
 .stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 .hero-imgs{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:520px}
@@ -522,7 +522,7 @@ footer p{font-size:13px;color:var(--muted)}
 
 <!-- HEADER -->
 <header>
-  <a class="logo" href="#">Ausers<span>co</span></a>
+  <a class="logo" href="#">Autenti<span>co</span></a>
   <nav style="display:flex;gap:4px">
     <a href="#recipes" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Recipes</a>
     <a href="#curated" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Editor's Picks</a>
@@ -608,7 +608,7 @@ footer p{font-size:13px;color:var(--muted)}
 <section class="curated-section" id="curated">
   <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap">
     <h2 class="section-title" style="margin-bottom:0">⭐ Verified Recipes</h2>
-    <span style="background:var(--gold);color:#1a0f0a;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase">Hand-curated by Ausersco editors</span>
+    <span style="background:var(--gold);color:#1a0f0a;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase">Hand-curated by Autentico editors</span>
   </div>
   <p class="curated-subtitle">Six legendary local dishes — each with a full authentic recipe, verified by our team. Click any to cook.</p>
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
@@ -750,7 +750,7 @@ footer p{font-size:13px;color:var(--muted)}
 </div>
 
 <footer>
-  <div class="foot-logo">Ausers<span>co</span></div>
+  <div class="foot-logo">Autenti<span>co</span></div>
   <p>Traditional recipes from around the world</p>
 </footer>
 
@@ -1189,22 +1189,20 @@ async function fetchRecipeImage(title) {
 
 // Smarter: use Unsplash API with embedded demo key
 async function fetchRecipeImageSmart(title) {
+  // Use Pexels API (free, reliable) with fallback to Unsplash source
   try {
-    var q = encodeURIComponent(title + ' food dish');
-    // Unsplash demo access key (public, read-only)
-    var key = 'oP9aEl7QM11I3BhOMRdPzgG8SHbYlHp_GKMQVAf28AI';
-    var res = await fetch('https://api.unsplash.com/search/photos?query='+q+'&per_page=1&orientation=landscape&client_id='+key);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    if (data.results && data.results[0]) {
-      return data.results[0].urls.regular;
+    var q = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,' ').trim() + ' food');
+    var res = await fetch('https://api.pexels.com/v1/search?query='+q+'&per_page=1&orientation=landscape', {
+      headers: { 'Authorization': 'BbD3KhU1LJ3MfvXV3fGQW1mEJSdkePzNXb3tkCKEJkXXjotS7ZtZo3qR' }
+    });
+    if (res.ok) {
+      var data = await res.json();
+      if (data.photos && data.photos[0]) return data.photos[0].src.large;
     }
-    // Fallback to source URL
-    return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(title) + ',food';
-  } catch(e) {
-    // Fallback
-    return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(title) + ',food';
-  }
+  } catch(e) {}
+  // Fallback: Unsplash Source (no key, browser follows redirect natively)
+  var q2 = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(' ').slice(0,3).join(',');
+  return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(q2 + ',food');
 }
 
 async function dbSave(r) {
@@ -1679,7 +1677,7 @@ async function sendChat() {
   var allSteps=(r.steps||[]).map(function(x,i){return (i+1)+'. '+(typeof x==='string'?x:x.text);}).join(' | ');
   var ctx='Ricetta: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note auserscità: '+(r.notes||[]).join('; ')+'.';
   try {
-    var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Ausersco app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
+    var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Autentico app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
@@ -2249,7 +2247,7 @@ var CURATED = {
   cacio: {
     id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
     cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
-    emoji:'🍝', verified:true, author:'Ausersco Editors', likes:2840, time:15, difficulty:'Easy',
+    emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
     description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
     ingredients:[
       {name:'Tonnarelli or thick spaghetti',qty:'400 g'},
@@ -2269,7 +2267,7 @@ var CURATED = {
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
     cover:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop',
-    emoji:'🫚', verified:true, author:'Ausersco Editors', likes:1920, time:240, difficulty:'Hard',
+    emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
       {name:'Mulato chillies, dried',qty:'4'},
@@ -2310,7 +2308,7 @@ var CURATED = {
   tagine: {
     id:'c3', title:'Lamb Tagine with Preserved Lemon', region:'Marrakech, Morocco', country:'Morocco',
     cover:'https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop',
-    emoji:'🥘', verified:true, author:'Ausersco Editors', likes:1540, time:150, difficulty:'Medium',
+    emoji:'🥘', verified:true, author:'Autentico Editors', likes:1540, time:150, difficulty:'Medium',
     description:'Slow-cooked lamb with saffron, preserved lemon and olives. The conical tagine lid creates a self-basting steam cycle.',
     ingredients:[
       {name:'Lamb shoulder, bone-in pieces',qty:'1.2 kg'},
@@ -2342,7 +2340,7 @@ var CURATED = {
   pho: {
     id:'c4', title:'Phở Bò Hà Nội', region:'Hanoi, Vietnam', country:'Vietnam',
     cover:'https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop',
-    emoji:'🍜', verified:true, author:'Ausersco Editors', likes:2210, time:360, difficulty:'Medium',
+    emoji:'🍜', verified:true, author:'Autentico Editors', likes:2210, time:360, difficulty:'Medium',
     description:'Northern-style pho — clear, clean, intensely aromatic. The 6-hour bone broth is non-negotiable.',
     ingredients:[
       {name:'Beef bones (knuckle + neck)',qty:'2 kg'},
@@ -2374,7 +2372,7 @@ var CURATED = {
   biryani: {
     id:'c5', title:'Hyderabadi Dum Biryani', region:'Hyderabad, India', country:'India',
     cover:'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop',
-    emoji:'🍚', verified:true, author:'Ausersco Editors', likes:1890, time:180, difficulty:'Hard',
+    emoji:'🍚', verified:true, author:'Autentico Editors', likes:1890, time:180, difficulty:'Hard',
     description:'The dum (sealed steam) technique locks saffron, caramelised onion and whole spice aromas into every grain of rice.',
     ingredients:[
       {name:'Bone-in chicken pieces',qty:'1 kg'},
@@ -2403,7 +2401,7 @@ var CURATED = {
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
     cover:'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop',
-    emoji:'🐟', verified:true, author:'Ausersco Editors', likes:1650, time:120, difficulty:'Hard',
+    emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
       {name:'Mixed Mediterranean fish (scorpionfish, gurnard, monkfish, sea bass)',qty:'2 kg total'},
@@ -2691,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="auth-overlay" onclick="if(event.target===this)closeAuthModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:420px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:#eee;color:#333;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Welcome to Ausersco</h2>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Welcome to Autentico</h2>
     <p style="font-size:14px;color:#7A7570;margin-bottom:20px">Sign in to publish recipes, like and comment.</p>
     <div style="display:flex;background:#f5f5f5;border-radius:12px;padding:3px;margin-bottom:20px">
       <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:8px;border:none;background:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.1)">Sign in</button>
