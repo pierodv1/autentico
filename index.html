@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Autentico — Ricette del Mondo</title>
+<title>Autentico — World Recipes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -22,11 +22,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .logo{font-family:var(--serif);font-size:22px;font-weight:600;text-decoration:none;color:var(--text)}
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
-.search-wrap{position:relative}
-.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 44px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.search-wrap input:focus{border-color:var(--terra);width:250px;box-shadow:0 0 0 3px rgba(196,97,74,.1)}
-.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#555;pointer-events:none;z-index:2;background:transparent;width:16px;height:16px;transition:color .2s}
-.search-wrap:focus-within svg{color:var(--terra);transition:color .2s}
+/* search moved to section – no header search-wrap */
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
 .btn-add-hdr:hover{background:var(--terra2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(196,97,74,.45)}
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
@@ -353,9 +349,17 @@ footer p{font-size:13px;color:var(--muted)}
 .badge-easy{background:rgba(40,140,60,.85);color:#fff}
 .badge-med{background:rgba(200,120,20,.85);color:#fff}
 .badge-hard{background:rgba(180,40,40,.85);color:#fff}
-/* LANGUAGE SELECTOR */
-#lang-select{border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;background:#fff;cursor:pointer;font-family:var(--sans);outline:none;transition:border-color .2s;color:var(--text)}
-#lang-select:hover,#lang-select:focus{border-color:var(--terra)}
+
+
+/* SECTION SEARCH BAR */
+.section-search{position:relative;max-width:480px;margin-bottom:28px}
+.section-search input{width:100%;border:2px solid var(--border);border-radius:14px;padding:13px 20px 13px 48px;font-size:15px;font-family:var(--sans);background:#fff;outline:none;transition:all var(--transition);box-shadow:0 2px 8px rgba(0,0,0,.06);color:var(--text)}
+.section-search input::placeholder{color:var(--muted)}
+.section-search input:focus{border-color:var(--terra);box-shadow:0 0 0 4px rgba(196,97,74,.1)}
+.section-search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;transition:color .2s;width:18px;height:18px}
+.section-search:focus-within svg{color:var(--terra)}
+.section-search .clear-search{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:2px;display:none;line-height:1}
+.section-search input:not(:placeholder-shown) ~ .clear-search{display:block}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -367,24 +371,14 @@ footer p{font-size:13px;color:var(--muted)}
 <header>
   <a class="logo" href="#">Autenti<span>co</span></a>
   <div class="hdr-right">
-    <div class="search-wrap">
-      <input type="text" id="search-input" placeholder="Cerca ricetta…" data-i18n="search_placeholder" oninput="renderGrid()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    </div>
-    <select id="lang-select" onchange="setLang(this.value)">
-      <option value="it">🇮🇹 IT</option>
-      <option value="en">🇬🇧 EN</option>
-      <option value="es">🇪🇸 ES</option>
-      <option value="fr">🇫🇷 FR</option>
-    </select>
     <button class="btn-add-hdr" onclick="openChoice()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span data-i18n="add_recipe">Aggiungi ricetta</span>
+      Add Recipe
     </button>
     <!-- AUTH AREA -->
     <div id="auth-area" style="position:relative">
       <div id="header-auth">
-        <button class="btn-login" onclick="openAuthModal()">Accedi</button>
+        <button class="btn-login" onclick="openAuthModal()">Sign in</button>
       </div>
       <div class="avatar-btn" id="user-avatar" style="display:none" onclick="toggleProfileDrop()">
         <div class="avatar-initial" id="avatar-initial">?</div>
@@ -396,42 +390,49 @@ footer p{font-size:13px;color:var(--muted)}
 <!-- HERO -->
 <section class="hero">
   <div>
-    <div class="hero-tag" data-i18n="hero_tag">✦ Ricette Verificate</div>
-    <h1>Sapori <em>autentici</em><br>da tutto il mondo</h1>
-    <p>Ricette tradizionali condivise da chi le conosce davvero. Niente scorciatoie, niente compromessi.</p>
+    <div class="hero-tag">✦ Verified Recipes</div>
+    <h1>Authentic <em>flavours</em><br>from the world</h1>
+    <p>Traditional recipes shared by those who truly know them. No shortcuts, no compromises.</p>
     <div class="hero-btns">
-      <a href="#ricette" class="btn-primary">Scopri le ricette</a>
-      <a href="#" onclick="openChoice();return false" class="btn-ghost">+ Aggiungi la tua <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#ricette" class="btn-primary">Explore Recipes</a>
+      <a href="#" onclick="openChoice();return false" class="btn-ghost">+ Add yours <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-n" id="stat-count">5</div><div class="stat-l">Ricette</div></div>
-      <div><div class="stat-n" id="stat-countries">4</div><div class="stat-l">Paesi</div></div>
-      <div><div class="stat-n">100%</div><div class="stat-l">Autentiche</div></div>
+      <div><div class="stat-n" id="stat-count">5</div><div class="stat-l">Recipes</div></div>
+      <div><div class="stat-n" id="stat-countries">4</div><div class="stat-l">Countries</div></div>
+      <div><div class="stat-n">100%</div><div class="stat-l">Authentic</div></div>
     </div>
   </div>
   <div class="hero-imgs">
-    <div class="h-img" onclick="openDetail('r1')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1608756687911-aa1599ab3bd9?q=80&w=800&auto=format&fit=crop" alt="Carbonara"><div class="h-img-ov"><strong>Carbonara</strong><small>Roma, Italia →</small></div></div>
-    <div class="h-img" onclick="openDetail('r3')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?q=80&w=600&auto=format&fit=crop" alt="Takoyaki"><div class="h-img-ov"><strong>Takoyaki</strong><small>Osaka, Giappone →</small></div></div>
-    <div class="h-img" onclick="openDetail('r4')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=600&auto=format&fit=crop" alt="Pan con Tomate"><div class="h-img-ov"><strong>Pan con Tomate</strong><small>Barcelona, Spagna →</small></div></div>
+    <div class="h-img" onclick="openDetail('r1')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1608756687911-aa1599ab3bd9?q=80&w=800&auto=format&fit=crop" alt="Carbonara"><div class="h-img-ov"><strong>Carbonara</strong><small>Rome, Italy →</small></div></div>
+    <div class="h-img" onclick="openDetail('r3')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?q=80&w=600&auto=format&fit=crop" alt="Takoyaki"><div class="h-img-ov"><strong>Takoyaki</strong><small>Osaka, Japan →</small></div></div>
+    <div class="h-img" onclick="openDetail('r4')" style="cursor:pointer"><img src="https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=600&auto=format&fit=crop" alt="Pan con Tomate"><div class="h-img-ov"><strong>Pan con Tomate</strong><small>Barcelona, Spain →</small></div></div>
   </div>
 </section>
 
-<!-- RICETTE -->
+<!-- RECIPES -->
 <section class="section" id="ricette">
-  <h2 class="section-title" data-i18n="all_recipes">Tutte le ricette</h2>
+  <h2 class="section-title">All Recipes</h2>
+  <div class="section-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Search by name or region…" oninput="renderGrid()">
+    <button class="clear-search" onclick="document.getElementById('search-input').value='';renderGrid()" title="Clear">×</button>
+  </div>
   <div class="filter-bar">
-    <button class="f-btn active" data-f="Tutto" onclick="setFilter(this)" data-i18n="filter_all">Tutto</button>
-    <button class="f-btn" data-f="Italia" onclick="setFilter(this)">🇮🇹 Italia</button>
-    <button class="f-btn" data-f="Giappone" onclick="setFilter(this)">🇯🇵 Giappone</button>
-    <button class="f-btn" data-f="Spagna" onclick="setFilter(this)">🇪🇸 Spagna</button>
-    <button class="f-btn" data-f="Verificata" onclick="setFilter(this)">⭐ Verificate</button>
+    <button class="f-btn active" data-f="All" onclick="setFilter(this)">All</button>
+    <button class="f-btn" data-f="Italy" onclick="setFilter(this)">🇮🇹 Italy</button>
+    <button class="f-btn" data-f="Japan" onclick="setFilter(this)">🇯🇵 Japan</button>
+    <button class="f-btn" data-f="Spain" onclick="setFilter(this)">🇪🇸 Spain</button>
+    <button class="f-btn" data-f="France" onclick="setFilter(this)">🇫🇷 France</button>
+    <button class="f-btn" data-f="Mexico" onclick="setFilter(this)">🇲🇽 Mexico</button>
+    <button class="f-btn" data-f="Verified" onclick="setFilter(this)">⭐ Verified</button>
   </div>
   <div class="recipes-grid" id="recipes-grid"></div>
 </section>
 
 <footer>
   <div class="foot-logo">Autenti<span>co</span></div>
-  <p>Ricette tradizionali da tutto il mondo</p>
+  <p>Traditional recipes from around the world</p>
 </footer>
 
 <!-- DETAIL OVERLAY -->
@@ -445,16 +446,16 @@ footer p{font-size:13px;color:var(--muted)}
 <div id="choice-overlay" onclick="if(event.target===this)closeChoice()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:440px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeChoice()" style="position:absolute;top:14px;right:14px;background:#eee;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Aggiungi una ricetta</h2>
-    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">Come vuoi procedere?</p>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Add a Recipe</h2>
+    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">How would you like to proceed?</p>
     <div style="display:flex;flex-direction:column;gap:12px">
       <button onclick="closeChoice();openAdd('manual')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Scrivo io la ricetta</div><div style="font-size:13px;color:#7A7570">Inserisci manualmente tutti i dettagli</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">I'll write the recipe</div><div style="font-size:13px;color:#7A7570">Enter all details manually</div></div>
       </button>
       <button onclick="closeChoice();openAdd('ai')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Descrivi il piatto, l'AI genera la ricetta</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">AI helps me</div><div style="font-size:13px;color:#7A7570">Describe the dish, AI generates the recipe</div></div>
       </button>
     </div>
   </div>
@@ -465,104 +466,104 @@ footer p{font-size:13px;color:var(--muted)}
 
     <!-- step indicator -->
     <div class="add-steps" id="add-steps-bar">
-      <div class="add-step active" id="as1"><span class="add-step-n">1</span>Scrivi</div>
+      <div class="add-step active" id="as1"><span class="add-step-n">1</span>Write</div>
       <div class="add-step-sep"></div>
-      <div class="add-step" id="as2"><span class="add-step-n">2</span>Revisione IA</div>
+      <div class="add-step" id="as2"><span class="add-step-n">2</span>AI Review</div>
       <div class="add-step-sep"></div>
-      <div class="add-step" id="as3"><span class="add-step-n">3</span>Pubblica</div>
+      <div class="add-step" id="as3"><span class="add-step-n">3</span>Publish</div>
     </div>
 
     <!-- PHASE 1 -->
     <div id="ph1">
-      <h2 id="add-overlay-title">Aggiungi una ricetta</h2>
+      <h2 id="add-overlay-title">Add a Recipe</h2>
       <div style="display:flex;gap:8px;margin:12px 0 20px">
-        <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ Con l'AI</button>
-        <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manualmente</button>
+        <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ With AI</button>
+        <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manually</button>
       </div>
 
       <!-- AI MODE -->
       <div id="add-ai-mode">
-        <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Descrivi la ricetta liberamente — anche senza quantità esatte. L'AI la struttura per te.</p>
-        <div class="f-row" id="author-row"><label>Il tuo nome</label><input type="text" id="f-author" placeholder="Es: Marco R."></div>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Describe the recipe freely — no exact quantities needed. AI structures it for you.</p>
+        <div class="f-row" id="author-row"><label>Your name</label><input type="text" id="f-author" placeholder="E.g.: John D."></div>
         <div class="f-row">
-          <label>Scrivi la tua ricetta *</label>
+          <label>Write your recipe *</label>
           <textarea id="f-raw" placeholder="Es: Pasta al pesto: trofie, basilico, parmigiano, pinoli, aglio, olio. Si frulla tutto e si condisce la pasta cotta al dente..." style="min-height:160px"></textarea>
         </div>
         <div class="f-actions">
-          <button class="btn-cancel" onclick="closeAdd()">Annulla</button>
-          <button class="btn-save" onclick="runAI()">✦ Analizza con IA →</button>
+          <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
+          <button class="btn-save" onclick="runAI()">✦ Analyse with AI →</button>
         </div>
       </div>
 
       <!-- MANUAL MODE -->
       <div id="add-manual-mode" style="display:none">
-        <div class="f-row" id="author-row-m"><label>Il tuo nome</label><input type="text" id="f-author-m" placeholder="Es: Marco R."></div>
-        <div class="f-row"><label>Nome della ricetta *</label><input type="text" id="fm-title" placeholder="Es: Carbonara, Ramen, Tagine..."></div>
+        <div class="f-row" id="author-row-m"><label>Your name</label><input type="text" id="f-author-m" placeholder="E.g.: John D."></div>
+        <div class="f-row"><label>Recipe name *</label><input type="text" id="fm-title" placeholder="Es: Carbonara, Ramen, Tagine..."></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="f-row"><label>Regione/Città *</label><input type="text" id="fm-region" placeholder="Es: Roma, Italia"></div>
-          <div class="f-row"><label>Paese *</label>
+          <div class="f-row"><label>Region/City *</label><input type="text" id="fm-region" placeholder="Es: Roma, Italia"></div>
+          <div class="f-row"><label>Country *</label>
             <select id="fm-country" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
-              <option value="">Seleziona...</option>
-              <option>Italia</option><option>Giappone</option><option>Messico</option><option>India</option>
-              <option>Marocco</option><option>Tailandia</option><option>Grecia</option><option>Libano</option>
-              <option>Francia</option><option>Spagna</option><option>Cina</option><option>Turchia</option>
-              <option>Etiopia</option><option>Perù</option><option>Vietnam</option><option>Corea del Sud</option><option>Altro</option>
+              <option value="">Select...</option>
+              <option>Italy</option><option>Japan</option><option>Mexico</option><option>India</option>
+              <option>Morocco</option><option>Thailand</option><option>Greece</option><option>Lebanon</option>
+              <option>France</option><option>Spain</option><option>China</option><option>Turkey</option>
+              <option>Ethiopia</option><option>Peru</option><option>Vietnam</option><option>South Korea</option><option>Other</option>
             </select>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div class="f-row"><label>Tempo (min)</label><input type="number" id="fm-time" placeholder="30" min="1"></div>
-          <div class="f-row"><label>Porzioni</label><input type="number" id="fm-portions" placeholder="4" min="1" value="4"></div>
-          <div class="f-row"><label>Difficoltà</label>
+          <div class="f-row"><label>Time (min)</label><input type="number" id="fm-time" placeholder="30" min="1"></div>
+          <div class="f-row"><label>Servings</label><input type="number" id="fm-portions" placeholder="4" min="1" value="4"></div>
+          <div class="f-row"><label>Difficulty</label>
             <select id="fm-diff" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
-              <option value="Facile">🟢 Facile</option><option value="Medio">🟡 Medio</option><option value="Difficile">🔴 Difficile</option>
+              <option value="Easy">🟢 Easy</option><option value="Medium">🟡 Medium</option><option value="Hard">🔴 Hard</option>
             </select>
           </div>
         </div>
-        <div class="f-row"><label>Emoji piatto</label><input type="text" id="fm-emoji" placeholder="🍜" style="font-size:20px;width:80px"></div>
-        <div class="f-row"><label>Descrizione</label><textarea id="fm-desc" placeholder="Breve descrizione del piatto..." style="min-height:60px"></textarea></div>
-        <div class="f-row"><label>Foto URL (opzionale)</label><input type="text" id="fm-img" placeholder="https://...">
+        <div class="f-row"><label>Dish emoji</label><input type="text" id="fm-emoji" placeholder="🍜" style="font-size:20px;width:80px"></div>
+        <div class="f-row"><label>Description</label><textarea id="fm-desc" placeholder="Brief description of the dish..." style="min-height:60px"></textarea></div>
+        <div class="f-row"><label>Photo URL (optional)</label><input type="text" id="fm-img" placeholder="https://...">
           <input type="file" id="fm-img-file" accept="image/*" style="margin-top:6px;width:100%;padding:8px;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;font-size:13px;cursor:pointer" onchange="window._pendingPhotoFile=this.files[0];document.getElementById('fm-img-label').textContent=this.files[0]?'✅ '+this.files[0].name:''">
           <div id="fm-img-label" style="font-size:12px;color:var(--muted);margin-top:4px"></div>
         </div>
         <div class="f-row">
-          <label>Ingredienti *</label>
+          <label>Ingredients *</label>
           <div id="ing-manual-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
-          <button type="button" onclick="addManualIngRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Aggiungi ingrediente</button>
+          <button type="button" onclick="addManualIngRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Add ingredient</button>
         </div>
         <div class="f-row">
-          <label>Passaggi * <small style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">— aggiungi consiglio e timer per ogni passo</small></label>
+          <label>Steps * <small style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted)">— add a tip and timer for each step</small></label>
           <div id="step-manual-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
-          <button type="button" onclick="addManualStepRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Aggiungi passo</button>
+          <button type="button" onclick="addManualStepRow()" style="width:100%;border:1.5px dashed var(--border,#E5E0D8);border-radius:10px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;background:none;font-family:inherit">+ Add step</button>
         </div>
-        <div class="f-row"><label>Note di autenticità (opzionale)</label><textarea id="fm-notes" placeholder="Una nota per riga..." style="min-height:60px"></textarea></div>
-        <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fm-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400">Ricetta verificata</label></div>
+        <div class="f-row"><label>Authenticity notes (optional)</label><textarea id="fm-notes" placeholder="One note per line..." style="min-height:60px"></textarea></div>
+        <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fm-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400">Verified recipe</label></div>
         <div class="f-actions">
-          <button class="btn-cancel" onclick="closeAdd()">Annulla</button>
-          <button class="btn-save" onclick="saveManualRecipe()">Pubblica ricetta</button>
+          <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
+          <button class="btn-save" onclick="saveManualRecipe()">Publish recipe</button>
         </div>
       </div>
     </div>
 
     <!-- PHASE 2 -->
     <div id="ph2" style="display:none">
-      <h2>Revisione IA</h2>
-      <p id="ph2-sub" style="margin-bottom:16px">L'IA ha strutturato la tua ricetta. Controlla e modifica liberamente.</p>
+      <h2>AI Review</h2>
+      <p id="ph2-sub" style="margin-bottom:16px">AI has structured your recipe. Review and edit freely.</p>
       <div id="ai-loading" style="text-align:center;padding:48px 0">
         <div class="ai-spinner"></div>
-        <div id="ai-load-msg" style="margin-top:16px;font-size:14px;color:var(--muted)">Sto leggendo la ricetta…</div>
+        <div id="ai-load-msg" style="margin-top:16px;font-size:14px;color:var(--muted)">Reading your recipe…</div>
       </div>
       <div id="ai-fields" style="display:none">
-        <div class="rev-field"><div class="rev-fhdr"><label>Nome ricetta</label><div class="rev-badges" id="rb-title"></div></div><input type="text" id="fr-title"></div>
+        <div class="rev-field"><div class="rev-fhdr"><label>Recipe name</label><div class="rev-badges" id="rb-title"></div></div><input type="text" id="fr-title"></div>
         <div class="f-grid2">
-          <div class="rev-field"><div class="rev-fhdr"><label>Regione/Città</label><div class="rev-badges" id="rb-region"></div></div><input type="text" id="fr-region"></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Region/City</label><div class="rev-badges" id="rb-region"></div></div><input type="text" id="fr-region"></div>
           <div class="rev-field"><div class="rev-fhdr"><label>Paese</label><div class="rev-badges" id="rb-country"></div></div>
-            <select id="fr-country"><option value="">Seleziona...</option><option>Italia</option><option>Giappone</option><option>Spagna</option><option>Francia</option><option>Messico</option><option>India</option><option>Grecia</option><option>Marocco</option><option>Altro</option></select>
+            <select id="fr-country"><option value="">Select...</option><option>Italy</option><option>Japan</option><option>Spain</option><option>France</option><option>Mexico</option><option>India</option><option>Greece</option><option>Morocco</option><option>Other</option></select>
           </div>
         </div>
         <div class="f-grid2">
-          <div class="rev-field"><div class="rev-fhdr"><label>Tempo (min)</label><div class="rev-badges" id="rb-time"></div></div><input type="number" id="fr-time" min="1" placeholder="30"></div>
-          <div class="rev-field"><div class="rev-fhdr"><label>Difficoltà</label></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Time (min)</label><div class="rev-badges" id="rb-time"></div></div><input type="number" id="fr-time" min="1" placeholder="30"></div>
+          <div class="rev-field"><div class="rev-fhdr"><label>Difficulty</label></div>
             <select id="fr-diff" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
               <option value="Facile">🟢 Facile</option>
               <option value="Medio">🟡 Medio</option>
@@ -575,35 +576,35 @@ footer p{font-size:13px;color:var(--muted)}
           <div id="fr-img-label" style="font-size:12px;color:#7A7570;margin-top:4px"></div>
         </div>
         </div>
-        <div class="rev-field"><div class="rev-fhdr"><label>Descrizione</label><div class="rev-badges" id="rb-desc"></div></div><textarea id="fr-desc" style="min-height:60px"></textarea></div>
+        <div class="rev-field"><div class="rev-fhdr"><label>Description</label><div class="rev-badges" id="rb-desc"></div></div><textarea id="fr-desc" style="min-height:60px"></textarea></div>
         <div class="rev-field">
-          <div class="rev-fhdr"><label>Ingredienti</label><div class="rev-badges" id="rb-ings"></div></div>
+          <div class="rev-fhdr"><label>Ingredients</label><div class="rev-badges" id="rb-ings"></div></div>
           <div class="dyn-list" id="ing-dyn-list"></div>
-          <button class="btn-add-row" onclick="addIngRow()">+ Aggiungi ingrediente</button>
+          <button class="btn-add-row" onclick="addIngRow()">+ Add ingredient</button>
         </div>
         <div class="rev-field">
-          <div class="rev-fhdr"><label>Passaggi</label><div class="rev-badges" id="rb-steps"></div></div>
+          <div class="rev-fhdr"><label>Steps</label><div class="rev-badges" id="rb-steps"></div></div>
           <div class="dyn-list" id="step-dyn-list"></div>
-          <button class="btn-add-row" onclick="addStepRow()">+ Aggiungi passo</button>
+          <button class="btn-add-row" onclick="addStepRow()">+ Add step</button>
         </div>
-        <div class="f-row"><label>Note di autenticità (una per riga)</label><textarea id="fr-notes" style="min-height:70px" placeholder="Una nota per riga…"></textarea></div>
-        <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fr-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0">Ricetta verificata</label></div>
+        <div class="f-row"><label>Authenticity notes (one per line)</label><textarea id="fr-notes" style="min-height:70px" placeholder="One note per line…"></textarea></div>
+        <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fr-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0">Verified recipe</label></div>
         <div id="ai-changes" style="display:none"></div>
         <div class="f-actions" style="margin-top:20px">
-          <button class="btn-cancel" onclick="goPhase(1)">← Riscrivi</button>
-          <button class="btn-save" onclick="goPhase(3)">Continua →</button>
+          <button class="btn-cancel" onclick="goPhase(1)">← Rewrite</button>
+          <button class="btn-save" onclick="goPhase(3)">Continue →</button>
         </div>
       </div>
     </div>
 
     <!-- PHASE 3 -->
     <div id="ph3" style="display:none">
-      <h2>Pronta per la pubblicazione!</h2>
-      <p style="margin-bottom:20px;color:var(--muted)">Dai un ultimo sguardo prima di pubblicarla.</p>
+      <h2>Ready to publish!</h2>
+      <p style="margin-bottom:20px;color:var(--muted)">Take one last look before publishing.</p>
       <div id="final-preview"></div>
       <div class="f-actions" style="margin-top:20px">
-        <button class="btn-cancel" onclick="goPhase(2)">← Modifica ancora</button>
-        <button class="btn-save" onclick="saveRecipe()">🚀 Pubblica ricetta</button>
+        <button class="btn-cancel" onclick="goPhase(2)">← Edit more</button>
+        <button class="btn-save" onclick="saveRecipe()">🚀 Publish recipe</button>
       </div>
     </div>
   </div>
@@ -621,12 +622,12 @@ footer p{font-size:13px;color:var(--muted)}
       <div class="profile-name" id="profile-name-txt">Utente</div>
       <div class="profile-email" id="profile-email-txt"></div>
       <div class="profile-stats">
-        <div><div class="profile-stat-n" id="profile-stat-recipes">0</div><div class="profile-stat-l" data-i18n="profile_recipes_lbl">Ricette</div></div>
-        <div><div class="profile-stat-n" id="profile-stat-likes">0</div><div class="profile-stat-l" data-i18n="profile_likes_lbl">Like ricevuti</div></div>
+        <div><div class="profile-stat-n" id="profile-stat-recipes">0</div><div class="profile-stat-l">Recipes</div></div>
+        <div><div class="profile-stat-n" id="profile-stat-likes">0</div><div class="profile-stat-l">Likes received</div></div>
       </div>
-      <div class="profile-recipes-title">Le mie ricette</div>
+      <div class="profile-recipes-title">My Recipes</div>
       <div class="profile-recipes-grid" id="profile-recipes-grid">
-        <div class="profile-empty"><div class="profile-empty-icon">🍳</div>Nessuna ricetta ancora.<br>Aggiungine una!</div>
+        <div class="profile-empty"><div class="profile-empty-icon">🍳</div>No recipes yet.<br>Add one!</div>
       </div>
     </div>
   </div>
@@ -652,26 +653,26 @@ footer p{font-size:13px;color:var(--muted)}
 </div>
 
 <!-- COOKING CHAT BUTTON -->
-<button class="ck-chat-btn" id="ck-chat-btn" onclick="toggleChat()" title="Chatta con lo Chef IA"><span class="chat-icon">💬</span><span class="chat-label">Chiedi allo Chef</span></button>
+<button class="ck-chat-btn" id="ck-chat-btn" onclick="toggleChat()" title="Chatta con lo AI Chef"><span class="chat-icon">💬</span><span class="chat-label">Ask the Chef</span></button>
 
 <!-- COOKING CHAT PANEL -->
 <div class="ck-chat-panel" id="ck-chat-panel">
   <div class="ck-chat-hdr">
     <div class="ck-chat-hdr-l">
       <div class="ck-chat-icon">✦</div>
-      <div><div class="ck-chat-title">Chef IA</div><div class="ck-chat-sub">Chiedimi qualsiasi cosa sulla ricetta</div></div>
+      <div><div class="ck-chat-title">AI Chef</div><div class="ck-chat-sub">Ask me anything about the recipe</div></div>
     </div>
     <button class="ck-chat-x" onclick="toggleChat()">✕</button>
   </div>
   <div class="ck-msgs" id="ck-msgs"></div>
   <div class="ck-quick" id="ck-quick-btns">
-    <button class="ck-q-btn" onclick="quickMsg('Posso sostituire un ingrediente?')">Sostituire ingrediente?</button>
-    <button class="ck-q-btn" onclick="quickMsg('Come capisco se è pronto?')">Come capisco se è pronto?</button>
-    <button class="ck-q-btn" onclick="quickMsg('Ho sbagliato questo passo, come recupero?')">Ho sbagliato, come recupero?</button>
-    <button class="ck-q-btn" onclick="quickMsg('Che temperatura devo usare?')">Che temperatura?</button>
+    <button class="ck-q-btn" onclick="quickMsg('Can I substitute an ingredient?')">Substitute ingredient?</button>
+    <button class="ck-q-btn" onclick="quickMsg('How do I know when it's done?')">How do I know when it's done?</button>
+    <button class="ck-q-btn" onclick="quickMsg('I made a mistake, how do I recover?')">I made a mistake, how do I recover?</button>
+    <button class="ck-q-btn" onclick="quickMsg('What temperature should I use?')">Temperature?</button>
   </div>
   <div class="ck-input-row">
-    <input class="ck-input" id="ck-input" placeholder="Chiedi allo Chef IA…" onkeydown="if(event.key==='Enter')sendChat()">
+    <input class="ck-input" id="ck-input" placeholder="Ask the AI Chef…" onkeydown="if(event.key==='Enter')sendChat()">
     <button class="ck-send" onclick="sendChat()">➤</button>
   </div>
 </div>
@@ -685,7 +686,7 @@ const SUPABASE_CONFIGURED = SUPABASE_URL.indexOf('supabase.co') >= 0;
 
 // STATE
 var recipes = [];
-var activeFilter = 'Tutto';
+var activeFilter = 'All';
 var detailChecked = {};
 var ckRecipe = null, ckStep = 0;
 var ckInterval = null, ckTimerLeft = 0, ckTimerTotal = 0, ckRunning = false;
@@ -735,11 +736,11 @@ function updateAuthUI() {
       + '<div id="profile-dropdown" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid #E5E0D8;min-width:210px;z-index:9999;overflow:hidden">'
       + '<div style="padding:14px 16px;border-bottom:1px solid #E5E0D8"><div style="font-weight:600;font-size:14px">' + name + '</div><div style="font-size:12px;color:#7A7570;margin-top:2px">' + (currentUser.email||'') + '</div></div>'
       + '<div style="padding:6px">'
-      + '<button onclick="toggleProfileDrop();openProfile()" style="width:100%;text-align:left;padding:10px 14px;border:none;background:none;cursor:pointer;font-size:14px;border-radius:10px">👤 Il mio profilo</button>'
-      + '<button onclick="toggleProfileDrop();doLogout()" style="width:100%;text-align:left;padding:10px 14px;border:none;background:none;cursor:pointer;font-size:14px;border-radius:10px;color:#C4614A">↪️ Esci</button>'
+      + '<button onclick="toggleProfileDrop();openProfile()" style="width:100%;text-align:left;padding:10px 14px;border:none;background:none;cursor:pointer;font-size:14px;border-radius:10px">👤 My Profile</button>'
+      + '<button onclick="toggleProfileDrop();doLogout()" style="width:100%;text-align:left;padding:10px 14px;border:none;background:none;cursor:pointer;font-size:14px;border-radius:10px;color:#C4614A">↪️ Sign out</button>'
       + '</div></div></div>';
   } else {
-    hel.innerHTML = '<button onclick="openAuthModal()" style="padding:8px 20px;border-radius:24px;background:#fff;border:1.5px solid #E5E0D8;cursor:pointer;font-size:14px;font-family:inherit">Accedi</button>';
+    hel.innerHTML = '<button onclick="openAuthModal()" style="padding:8px 20px;border-radius:24px;background:#fff;border:1.5px solid #E5E0D8;cursor:pointer;font-size:14px;font-family:inherit">Sign in</button>';
   }
 }
 
@@ -750,18 +751,18 @@ function requireAuth() {
 
 async function doLogin(email, password) {
   var res = await sb.auth.signInWithPassword({ email: email, password: password });
-  if (res.error) { showToast('❌ ' + (res.error.message.includes('Invalid') ? 'Email o password errati' : res.error.message)); return; }
-  closeAuthModal(); showToast('✅ Bentornato!');
+  if (res.error) { showToast('❌ ' + (res.error.message.includes('Invalid') ? 'Incorrect email or password' : res.error.message)); return; }
+  closeAuthModal(); showToast('✅ Welcome back!');
 }
 
 async function doSignup(username, email, password) {
   var res = await sb.auth.signUp({ email: email, password: password, options: { data: { username: username } } });
   if (res.error) { showToast('❌ ' + res.error.message); return; }
-  closeAuthModal(); showToast('✅ Registrato!');
+  closeAuthModal(); showToast('✅ Registered!');
 }
 
 async function doLogout() {
-  await sb.auth.signOut(); showToast('Arrivederci!');
+  await sb.auth.signOut(); showToast('Goodbye!');
 }
 
 function openProfile() {
@@ -798,7 +799,7 @@ function openProfile() {
       return '<div class="profile-recipe-item" style="cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid #E5E0D8;background:#fff" onclick="closeProfile();setTimeout(function(){openDetail(\'' + rid + '\')},50)">'
         + coverHtml
         + '<div style="padding:8px 10px;font-size:13px;font-weight:500;line-height:1.3">' + r.title + '</div></div>';
-    }).join('') : '<div class="profile-empty"><div class="profile-empty-icon">🍳</div>Nessuna ricetta ancora.<br>Aggiungine una!</div>';
+    }).join('') : '<div class="profile-empty"><div class="profile-empty-icon">🍳</div>No recipes yet.<br>Add one!</div>';
   }
   var ov = document.getElementById('profile-overlay');
   if (ov) { ov.classList.add('open'); document.body.style.overflow='hidden'; }
@@ -814,8 +815,14 @@ async function loadRecipes() {
     if (!res.error && res.data) {
       recipes = res.data.map(function(r){
         r.time = r.time_minutes || r.time || 30;
-        r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonimo';
+        r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonymous';
         r.cover = r.cover_url || r.cover || '';
+        // Normalise Italian country names stored in DB to English display values
+        var ctryMap = {'Italia':'Italy','Giappone':'Japan','Spagna':'Spain','Francia':'France','Messico':'Mexico','Grecia':'Greece','India':'India','Marocco':'Morocco','Tailandia':'Thailand','Turchia':'Turkey','Cina':'China','Corea del Sud':'South Korea','Vietnam':'Vietnam','Etiopia':'Ethiopia','Perù':'Peru','Libano':'Lebanon','Altro':'Other'};
+        if (ctryMap[r.country]) r.country = ctryMap[r.country];
+        // Normalise difficulty
+        var diffMap = {'Facile':'Easy','Medio':'Medium','Difficile':'Hard'};
+        if (diffMap[r.difficulty]) r.difficulty = diffMap[r.difficulty];
         return r;
       });
     } else {
@@ -880,6 +887,27 @@ async function dbUpdate(r) {
   } catch(e) { showToast('❌ '+e.message); return false; }
 }
 
+async function deleteRecipe(recipeId) {
+  if (!requireAuth()) return;
+  var rec = recipes.find(function(x){return String(x.id)===String(recipeId);});
+  if (!rec) return;
+  if (!confirm('Delete "' + rec.title + '"? This cannot be undone.')) return;
+  // Optimistic UI remove
+  recipes = recipes.filter(function(x){return String(x.id)!==String(recipeId);});
+  renderGrid(); updateStats();
+  showToast('🗑️ Deleting…');
+  if (SUPABASE_CONFIGURED && currentUser) {
+    try {
+      var res = await sb.from('recipes').delete().eq('id', recipeId).eq('user_id', currentUser.id);
+      if (res.error) throw new Error(res.error.message);
+      showToast('✅ Recipe deleted.');
+    } catch(e) {
+      showToast('❌ ' + e.message);
+      await loadRecipes(); // restore on error
+    }
+  }
+}
+
 async function toggleLike(recipeId, el) {
   if (!requireAuth()) return;
   var liked = userLikes.has(String(recipeId));
@@ -911,11 +939,11 @@ async function postComment(recipeId) {
   if (!requireAuth()) return;
   var inp = document.getElementById('comment-input-'+recipeId);
   var body = inp ? inp.value.trim() : '';
-  if (!body) { showToast('⚠️ Scrivi un commento'); return; }
+  if (!body) { showToast('⚠️ Write a comment'); return; }
   var res = await sb.from('comments').insert({user_id:currentUser.id,recipe_id:recipeId,body:body});
   if (res.error) { showToast('❌ '+res.error.message); return; }
   if (inp) inp.value='';
-  showToast('✅ Commento pubblicato!');
+  showToast('✅ Comment published!');
 }
 
 // APP FUNCTIONS
@@ -950,26 +978,29 @@ function setFilter(btn) {
 }
 
 function renderGrid() {
-  var t = TRANSLATIONS[currentLang] || TRANSLATIONS.it;
+  
   var q = (document.getElementById('search-input').value||'').toLowerCase();
   var filtered = recipes.filter(function(r) {
-    if (activeFilter==='Verificata' && !r.verified) return false;
-    if (activeFilter!=='Tutto' && activeFilter!=='Verificata' && r.country!==activeFilter) return false;
+    if (activeFilter==='Verified' && !r.verified) return false;
+    if (activeFilter!=='All' && activeFilter!=='Verified') {
+      // Map English filter label → Italian DB values stored in country field
+      var countryMap={'Italy':'Italia','Japan':'Giappone','Spain':'Spagna','France':'Francia','Mexico':'Messico'};
+      var dbVal = countryMap[activeFilter] || activeFilter;
+      if (r.country !== activeFilter && r.country !== dbVal) return false;
+    }
     if (q && !r.title.toLowerCase().includes(q) && !(r.region||'').toLowerCase().includes(q)) return false;
     return true;
   });
   var grid = document.getElementById('recipes-grid');
-  if (!filtered.length) { grid.innerHTML='<div class="no-results">'+(t.no_results||'Nessuna ricetta trovata.')+'</div>'; return; }
+  if (!filtered.length) { grid.innerHTML='<div class="no-results">'+('No recipes found.')+'</div>'; return; }
   grid.innerHTML = filtered.map(function(r,idx) {
     var mins = r.time_minutes || r.time || 30;
     var tStr = mins < 60 ? mins+'min' : Math.floor(mins/60)+'h'+(mins%60 ? mins%60+'m' : '');
-    var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || t.anonymous||'Anonimo');
+    var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonymous');
     var av = authorName[0].toUpperCase();
     var diff = r.difficulty || '';
-    var diffLabel = diff==='Facile'||diff==='Easy'||diff==='Fácil'||diff==='Facile' ? t.diff_easy
-                  : diff==='Difficile'||diff==='Hard'||diff==='Difficile'||diff==='Difícil' ? t.diff_hard
-                  : diff==='Medio'||diff==='Medium'||diff==='Moyen' ? t.diff_med : diff;
-    var diffBadge = diffLabel ? '<span class="badge '+(r.difficulty==='Facile'||r.difficulty==='Easy'?'badge-easy':r.difficulty==='Difficile'||r.difficulty==='Hard'?'badge-hard':'badge-med')+'">'+diffLabel+'</span>' : '';
+    var diffLabel = diff==='Facile'||diff==='Easy' ? 'Easy' : diff==='Difficile'||diff==='Hard' ? 'Hard' : diff==='Medio'||diff==='Medium' ? 'Medium' : diff;
+    var diffBadge = diffLabel ? '<span class="badge '+(r.difficulty==='Easy'||r.difficulty==='Facile'?'badge-easy':r.difficulty==='Hard'||r.difficulty==='Difficile'?'badge-hard':'badge-med')+'">'+diffLabel+'</span>' : '';
     var coverImg = r.cover_url || r.cover || '';
     var imgHtml = coverImg
       ? '<img src="'+coverImg+'" alt="'+r.title+'" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
@@ -980,8 +1011,12 @@ function renderGrid() {
     var isOwn = currentUser && (String(r.user_id)===String(currentUser.id)||String(r.authorUid)===String(currentUser.id));
     return '<a class="rcard" href="#" style="animation:fadeInUp .4s '+delay+'s ease both;opacity:0" onclick="openDetail(\''+rid+'\');return false">'
       +'<div class="rcard-img" style="position:relative">'+imgHtml
-      +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">'+(t.badge_verified||'⭐ Verificata')+'</span>':'')
+      +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">⭐ Verified</span>':'')
       +'<span class="badge badge-t">⏱ '+tStr+'</span>'+diffBadge+'</div>'
+      +(isOwn ? '<div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">'
+        +'<button onclick="event.stopPropagation();event.preventDefault();openEdit(\''+rid+'\')" title="Edit" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">✏️</button>'
+        +'<button onclick="event.stopPropagation();event.preventDefault();deleteRecipe(\''+rid+'\')" title="Delete" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">🗑️</button>'
+        +'</div>' : '')
       +'</div>'
       +'<div class="rcard-body">'
       +'<div class="rcard-author"><div class="rcard-av">'+av+'</div>'
@@ -992,10 +1027,7 @@ function renderGrid() {
       +'<div class="rcard-likes '+(userLikes.has(String(r.id))?'liked':'')+'" onclick="event.stopPropagation();event.preventDefault();toggleLike(this.dataset.rid,this)" data-rid="'+rid+'" style="cursor:pointer">'
       +'<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(userLikes.has(String(r.id))?'var(--terra)':'none')+'" stroke="'+(userLikes.has(String(r.id))?'var(--terra)':'currentColor')+'" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
       +'<span id="likes-'+rid+'">'+(r.likes||r.likes_count||0)+'</span></div>'
-      +'<div style="display:flex;gap:6px;align-items:center">'
-      +(isOwn ? '<button class="btn-edit" onclick="event.stopPropagation();event.preventDefault();openEdit(\''+rid+'\')" style="background:none;border:1.5px solid var(--border);border-radius:22px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all var(--transition);color:var(--muted)">✏️</button>' : '')
-      +'<button class="btn-cook" onclick="event.stopPropagation();event.preventDefault();startCooking(\''+rid+'\')">'+(t.cook_btn||'Cucina →')+'</button>'
-      +'</div>'
+      +'<button class="btn-cook" onclick="event.stopPropagation();event.preventDefault();startCooking(\''+rid+'\')">Cook →</button>'
       +'</div></div></a>';
   }).join('');
 }
@@ -1006,7 +1038,7 @@ function openDetail(id) {
   if (!detailChecked[id]) detailChecked[id] = new Set();
   var ck = detailChecked[id];
   var mins = r.time_minutes || r.time || 30;
-  var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonimo');
+  var authorName = (r.profiles && r.profiles.username) ? r.profiles.username : (r.author || 'Anonymous');
   var t = mins<60 ? mins+' min' : Math.floor(mins/60)+'h'+(mins%60?' '+mins%60+'min':'');
   var html = '<button class="modal-x" onclick="closeDetail()">\u2715</button>'
     +'<div class="m-hero"><img src="'+(r.cover||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop')+'" alt="'+r.title+'" onerror="this.src=\'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop\'">'
@@ -1019,7 +1051,7 @@ function openDetail(id) {
     +(r.verified?'<span style="margin-left:auto;background:rgba(201,168,76,.15);color:var(--gold);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500">\u2b50 Verificata</span>':'')
     +'</div>'
     +'<p style="font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:4px">'+(r.description||'')+'</p>'
-    +'<div class="m-sec">Ingredienti</div>';
+    +'<div class="m-sec">Ingredients</div>';
 
   (r.ingredients||[]).forEach(function(ing,i) {
     var isck = ck.has(i);
@@ -1033,7 +1065,7 @@ function openDetail(id) {
       +r.notes.map(function(n){return '<li>'+n+'</li>'}).join('')+'</ul></div>';
   }
 
-  html += '<div class="m-sec">Preparazione</div>';
+  html += '<div class="m-sec">Preparation</div>';
   (r.steps||[]).forEach(function(s,i) {
     var txt = typeof s==='string'?s:s.text;
     var tmr = typeof s==='string'?0:(s.timer||0);
@@ -1043,7 +1075,7 @@ function openDetail(id) {
       +'</div></div>';
   });
 
-  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Inizia a Cucinare</button></div></div>';
+  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Start Cooking</button></div></div>';
 
   document.getElementById('detail-modal').innerHTML = html;
   var ov=document.getElementById('detail-overlay');
@@ -1103,7 +1135,7 @@ function closeCooking() {
   var panel=document.getElementById('ck-chat-panel');
   panel.classList.remove('open');
   chatOpen=false;
-  document.getElementById('ck-chat-btn').innerHTML='<span class="chat-icon">💬</span><span class="chat-label">Chiedi allo Chef</span>';
+  document.getElementById('ck-chat-btn').innerHTML='<span class="chat-icon">💬</span><span class="chat-label">Ask the Chef</span>';
   document.getElementById('ck-chat-btn').classList.remove('open-state');
   chatHistory=[];
 }
@@ -1114,7 +1146,7 @@ function renderCkStep() {
   var tmr=typeof s==='string'?0:(s.timer||0);
   document.getElementById('ck-title').textContent=r.title;
   document.getElementById('ck-prog').innerHTML=steps.map(function(_,j){return '<div class="ck-dot'+(j<=i?' done':'')+'"></div>';}).join('');
-  document.getElementById('ck-lbl').textContent='Passo '+(i+1)+' di '+steps.length;
+  document.getElementById('ck-lbl').textContent='Step '+(i+1)+' of '+steps.length;
   document.getElementById('ck-ings').innerHTML=(r.ingredients||[]).map(function(g){return '<div class="ck-ing-pill">'+g.name+' \u00b7 '+(g.qty||'')+'</div>';}).join('');
   document.getElementById('ck-num').textContent=String(i+1).padStart(2,'0');
   document.getElementById('ck-txt').textContent=txt;
@@ -1188,7 +1220,7 @@ function initChat() {
   var el=document.getElementById('ck-msgs');
   el.innerHTML='';
   var r=ckRecipe;
-  var welcome='Ciao! Sono il tuo Chef IA per <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
+  var welcome='Ciao! Sono il tuo AI Chef per <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
   welcome+='Ho già tutto il contesto della ricetta: '+r.ingredients.length+' ingredienti, '+(r.steps||[]).length+' passaggi. ';
   welcome+='Chiedimi qualsiasi cosa — sostituzioni, tempi, tecniche o se qualcosa va storto!';
   appendMsg('ai', welcome);
@@ -1204,12 +1236,12 @@ function updateQuickButtons(stepIdx) {
   var quick=document.getElementById('ck-quick-btns');
   if(!quick)return;
   var suggestions=[
-    'Posso sostituire un ingrediente?',
-    'Come capisco se è pronto?',
-    hasTmr?'Posso ridurre il tempo?':'Quanto ci vuole questo passo?',
-    'Ho sbagliato, come recupero?',
-    'Che temperatura usare?',
-    'Consigli per non sbagliare?'
+    'Can I substitute an ingredient?',
+    'How do I know when it's done?',
+    hasTmr?'Can I shorten the time?':'How long does this step take?',
+    'I made a mistake, how do I recover?',
+    'What temperature should I use?',
+    'Tips to avoid mistakes?'
   ];
   quick.innerHTML=suggestions.map(function(q){
     return '<button class="ck-q-btn" onclick="quickMsg(\''+q.replace(/'/g,"\\'")+'\')">'+q+'</button>';
@@ -1226,7 +1258,7 @@ function toggleChat() {
     btn.classList.add('open-state');
     setTimeout(function(){document.getElementById('ck-input').focus();},320);
   } else {
-    btn.innerHTML='<span class="chat-icon">💬</span><span class="chat-label">Chiedi allo Chef</span>';
+    btn.innerHTML='<span class="chat-icon">💬</span><span class="chat-label">Ask the Chef</span>';
     btn.classList.remove('open-state');
   }
 }
@@ -1251,15 +1283,15 @@ async function sendChat() {
   input.value='';
   appendMsg('user',q);
   var tid='t'+Date.now();
-  appendMsg('typing','Lo Chef IA sta pensando\u2026',tid);
+  appendMsg('typing','Lo AI Chef sta pensando\u2026',tid);
   chatHistory.push({role:'user',content:q});
   var r=ckRecipe;
   var s=r.steps[ckStep];
   var stepTxt=typeof s==='string'?s:s.text;
   var allSteps=(r.steps||[]).map(function(x,i){return (i+1)+'. '+(typeof x==='string'?x:x.text);}).join(' | ');
-  var ctx='Ricetta: '+r.title+' ('+r.region+'). Stai al passo '+(ckStep+1)+' di '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note autenticità: '+(r.notes||[]).join('; ')+'.';
+  var ctx='Ricetta: '+r.title+' ('+r.region+'). Stai al passo '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note autenticità: '+(r.notes||[]).join('; ')+'.';
   try {
-    var mistralChatMsgs=[{role:'system',content:'Sei uno chef esperto che assiste l\'utente mentre cucina nell\'app Autentico. Rispondi in italiano, BREVE e PRATICO (max 3-4 frasi). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
+    var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Autentico app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
@@ -1267,14 +1299,14 @@ async function sendChat() {
     });
     var data=await res.json();
     if(!res.ok)throw new Error(data.message||'API error '+res.status);
-    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'Non ho capito, riprova!';
+    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'I didn\'t get that, try again!';
     chatHistory.push({role:'assistant',content:reply});
     var tel=document.getElementById(tid);
     if(tel){tel.className='ck-msg ai';tel.innerHTML=reply;}
     document.getElementById('ck-msgs').scrollTop=99999;
   } catch(e) {
     var tel=document.getElementById(tid);
-    if(tel){tel.className='ck-msg ai';tel.textContent='Errore di connessione. Riprova!';}
+    if(tel){tel.className='ck-msg ai';tel.textContent='Connection error. Please try again!';}
   }
 }
 
@@ -1302,9 +1334,9 @@ function openAdd(mode) {
   if (fImgLabel) fImgLabel.textContent='';
   // Reset title
   var addTitle = document.getElementById('add-overlay-title');
-  if (addTitle) addTitle.textContent = 'Nuova Ricetta';
+  if (addTitle) addTitle.textContent = 'New Recipe';
   var saveBtn = document.querySelector('#ph1 .btn-save');
-  if (saveBtn) saveBtn.textContent = 'Pubblica ricetta';
+  if (saveBtn) saveBtn.textContent = 'Publish recipe';
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1332,7 +1364,7 @@ function openEdit(id) {
   if (fImgLabel) fImgLabel.textContent='';
   // Update title
   var addTitle = document.getElementById('add-overlay-title');
-  if (addTitle) addTitle.textContent = 'Modifica Ricetta';
+  if (addTitle) addTitle.textContent = 'Edit Recipe';
   // Pre-populate manual form fields
   setAddMode('manual');
   var title = document.getElementById('fm-title'); if(title) title.value = r.title||'';
@@ -1369,7 +1401,7 @@ function openEdit(id) {
   });
   // Update save button
   var saveBtn = document.querySelector('#ph1 .btn-save');
-  if (saveBtn) saveBtn.textContent = 'Salva modifiche';
+  if (saveBtn) saveBtn.textContent = 'Save changes';
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1543,11 +1575,11 @@ async function saveRecipe() {
   var country=document.getElementById('fr-country').value;
   if(!title||!region||!country){showToast('\u26a0\ufe0f Compila nome, regione e paese');return;}
   var ings=collectIngs(),steps=collectSteps();
-  if(!ings.length){showToast('\u26a0\ufe0f Aggiungi almeno un ingrediente');return;}
+  if(!ings.length){showToast('⚠️ Add at least one ingredient');return;}
   if(!steps.length){showToast('\u26a0\ufe0f Aggiungi almeno un passaggio');return;}
   var notes=(document.getElementById('fr-notes').value.trim()||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
   var cover=document.getElementById('fr-img').value.trim()||'';
-  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : (document.getElementById('f-author') ? document.getElementById('f-author').value.trim() : 'Anonimo') || 'Anonimo';
+  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : (document.getElementById('f-author') ? document.getElementById('f-author').value.trim() : 'Anonymous') || 'Anonymous';
   var newR={
     id:'u'+Date.now(),title:title,
     description:document.getElementById('fr-desc').value.trim()||title,
@@ -1718,8 +1750,8 @@ function addManualStepRow() {
   div.style.cssText = 'display:flex;gap:8px;align-items:flex-start';
   div.innerHTML = '<div style="min-width:26px;height:26px;background:var(--border,#E5E0D8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-top:10px;flex-shrink:0">'+(i+1)+'</div>'
     + '<div style="flex:1;display:flex;flex-direction:column;gap:6px">'
-    + '<input type="text" placeholder="Descrivi il passaggio..." data-msn="'+i+'" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
-    + '<input type="text" placeholder="💡 Consiglio (opzionale)" data-mstip="'+i+'" style="width:100%;border:1.5px solid #E8D88A;border-radius:10px;padding:8px 12px;font-size:13px;background:#fdf8ee;color:#7a6020;font-family:inherit;outline:none">'
+    + '<input type="text" placeholder="Describe the step..." data-msn="'+i+'" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    + '<input type="text" placeholder="💡 Tip (optional)" data-mstip="'+i+'" style="width:100%;border:1.5px solid #E8D88A;border-radius:10px;padding:8px 12px;font-size:13px;background:#fdf8ee;color:#7a6020;font-family:inherit;outline:none">'
     + '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--muted)">Timer (sec):</span><input type="number" placeholder="0" data-mst="'+i+'" min="0" style="width:100px;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none"></div>'
     + '</div>'
     + '<button type="button" onclick="this.parentNode.remove()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;margin-top:8px">✕</button>';
@@ -1730,7 +1762,7 @@ async function saveManualRecipe() {
   var title = (document.getElementById('fm-title').value||'').trim();
   var region = (document.getElementById('fm-region').value||'').trim();
   var country = document.getElementById('fm-country').value;
-  if (!title || !region || !country) { showToast('⚠️ Compila nome, regione e paese'); return; }
+  if (!title || !region || !country) { showToast('⚠️ Please fill in name, region and country'); return; }
 
   var ings = [];
   document.querySelectorAll('[data-min]').forEach(function(el) {
@@ -1738,7 +1770,7 @@ async function saveManualRecipe() {
     var q = (document.querySelector('[data-miq="'+el.dataset.min+'"]')||{}).value||'';
     ings.push({name:n, qty:q});
   });
-  if (!ings.length) { showToast('⚠️ Aggiungi almeno un ingrediente'); return; }
+  if (!ings.length) { showToast('⚠️ Add at least one ingredient'); return; }
 
   var steps = [];
   document.querySelectorAll('[data-msn]').forEach(function(el) {
@@ -1747,10 +1779,10 @@ async function saveManualRecipe() {
     var timer = parseInt((document.querySelector('[data-mst="'+el.dataset.msn+'"]')||{}).value)||0;
     steps.push({text:t, tip:tip, timer:timer});
   });
-  if (!steps.length) { showToast('⚠️ Aggiungi almeno un passo'); return; }
+  if (!steps.length) { showToast('⚠️ Add at least one step'); return; }
 
   var notes = (document.getElementById('fm-notes').value||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
-  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : ((document.getElementById('f-author-m')||{}).value||'Anonimo');
+  var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : ((document.getElementById('f-author-m')||{}).value||'Anonymous');
   var cover = (document.getElementById('fm-img').value||'').trim();
   // Handle file upload
   if (document.getElementById('fm-img-file') && document.getElementById('fm-img-file').files[0]) {
@@ -1772,7 +1804,7 @@ async function saveManualRecipe() {
     likes: 0, likes_count: 0,
     time: parseInt(document.getElementById('fm-time').value)||30,
     time_minutes: parseInt(document.getElementById('fm-time').value)||30,
-    difficulty: document.getElementById('fm-diff').value || 'Facile',
+    difficulty: document.getElementById('fm-diff').value || 'Easy',
     portions: parseInt(document.getElementById('fm-portions').value)||4,
     ingredients: ings, steps: steps, notes: notes
   };
@@ -1784,15 +1816,15 @@ async function saveManualRecipe() {
     var idx = recipes.findIndex(function(x){return x.id===editRecipeId;});
     if (idx >= 0) recipes[idx] = newR;
     renderGrid(); updateStats(); closeAdd();
-    showToast('⏳ Salvataggio in corso…');
+    showToast('⏳ Saving…');
     var ok = await dbUpdate(newR);
-    if (ok) showToast('✅ Ricetta aggiornata!');
+    if (ok) showToast('✅ Recipe updated!');
   } else {
     recipes.unshift(newR);
     renderGrid(); updateStats(); closeAdd();
-    showToast('⏳ Pubblicazione in corso…');
+    showToast('⏳ Publishing…');
     var ok = await dbSave(newR);
-    if (ok) showToast('✅ Ricetta pubblicata!');
+    if (ok) showToast('✅ Recipe published!');
   }
 }
 
@@ -1816,132 +1848,12 @@ function openAIAdd() {
 }
 
 // LANGUAGE / i18n
-var TRANSLATIONS = {
-  it: {
-    add_recipe: 'Aggiungi ricetta',
-    search_placeholder: 'Cerca ricetta…',
-    all_recipes: 'Tutte le ricette',
-    filter_all: 'Tutto',
-    filter_verified: '⭐ Verificate',
-    no_results: 'Nessuna ricetta trovata.',
-    hero_tag: '❖ Ricette Verificate',
-    hero_cta: 'Scopri le ricette',
-    hero_add: '+ Aggiungi la tua',
-    stat_recipes: 'Ricette',
-    stat_countries: 'Paesi',
-    cook_btn: 'Cucina →',
-    edit_btn: '✏️',
-    profile_recipes_lbl: 'Ricette',
-    profile_likes_lbl: 'Like ricevuti',
-    login_btn: 'Accedi',
-    badge_verified: '⭐ Verificata',
-    anonymous: 'Anonimo',
-    my_recipes_title: 'Le mie ricette',
-    diff_easy: 'Facile', diff_med: 'Medio', diff_hard: 'Difficile'
-  },
-  en: {
-    add_recipe: 'Add recipe',
-    search_placeholder: 'Search recipe…',
-    all_recipes: 'All recipes',
-    filter_all: 'All',
-    filter_verified: '⭐ Verified',
-    no_results: 'No recipes found.',
-    hero_tag: '❖ Verified Recipes',
-    hero_cta: 'Explore recipes',
-    hero_add: '+ Add yours',
-    stat_recipes: 'Recipes',
-    stat_countries: 'Countries',
-    cook_btn: 'Cook →',
-    edit_btn: '✏️',
-    profile_recipes_lbl: 'Recipes',
-    profile_likes_lbl: 'Likes received',
-    login_btn: 'Sign in',
-    badge_verified: '⭐ Verified',
-    anonymous: 'Anonymous',
-    my_recipes_title: 'My recipes',
-    diff_easy: 'Easy', diff_med: 'Medium', diff_hard: 'Hard'
-  },
-  es: {
-    add_recipe: 'Añadir receta',
-    search_placeholder: 'Buscar receta…',
-    all_recipes: 'Todas las recetas',
-    filter_all: 'Todo',
-    filter_verified: '⭐ Verificadas',
-    no_results: 'No se encontraron recetas.',
-    hero_tag: '❖ Recetas Verificadas',
-    hero_cta: 'Explorar recetas',
-    hero_add: '+ Añade la tuya',
-    stat_recipes: 'Recetas',
-    stat_countries: 'Países',
-    cook_btn: 'Cocinar →',
-    edit_btn: '✏️',
-    profile_recipes_lbl: 'Recetas',
-    profile_likes_lbl: 'Likes recibidos',
-    login_btn: 'Entrar',
-    badge_verified: '⭐ Verificada',
-    anonymous: 'Anónimo',
-    my_recipes_title: 'Mis recetas',
-    diff_easy: 'Fácil', diff_med: 'Medio', diff_hard: 'Difícil'
-  },
-  fr: {
-    add_recipe: 'Ajouter recette',
-    search_placeholder: 'Chercher recette…',
-    all_recipes: 'Toutes les recettes',
-    filter_all: 'Tout',
-    filter_verified: '⭐ Vérifiées',
-    no_results: 'Aucune recette trouvée.',
-    hero_tag: '❖ Recettes Vérifiées',
-    hero_cta: 'Explorer les recettes',
-    hero_add: '+ Ajoutez la vôtre',
-    stat_recipes: 'Recettes',
-    stat_countries: 'Pays',
-    cook_btn: 'Cuisiner →',
-    edit_btn: '✏️',
-    profile_recipes_lbl: 'Recettes',
-    profile_likes_lbl: 'Likes reçus',
-    login_btn: 'Se connecter',
-    badge_verified: '⭐ Vérifiée',
-    anonymous: 'Anonyme',
-    my_recipes_title: 'Mes recettes',
-    diff_easy: 'Facile', diff_med: 'Moyen', diff_hard: 'Difficile'
-  }
-};
 
-var currentLang = 'it';
 
-function setLang(lang) {
-  if (!TRANSLATIONS[lang]) return;
-  currentLang = lang;
-  localStorage.setItem('autentico_lang', lang);
-  document.documentElement.lang = lang;
-  var t = TRANSLATIONS[lang];
-  // Update all data-i18n elements
-  document.querySelectorAll('[data-i18n]').forEach(function(el) {
-    var key = el.getAttribute('data-i18n');
-    if (!t[key]) return;
-    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-      el.placeholder = t[key];
-    } else {
-      el.textContent = t[key];
-    }
-  });
-  // Update profile section title
-  var prt = document.querySelector('.profile-recipes-title');
-  if (prt) prt.textContent = t.my_recipes_title || 'Le mie ricette';
-  // Update btn-add-hdr (has both SVG and span inside)
-  var addBtn = document.querySelector('.btn-add-hdr span[data-i18n]');
-  if (addBtn) addBtn.textContent = t.add_recipe;
-  // Sync select value
-  var sel = document.getElementById('lang-select');
-  if (sel) sel.value = lang;
-  // Re-render grid to update dynamic text
-  renderGrid();
-}
+
 
 // STARTUP
 document.addEventListener('DOMContentLoaded', function() {
-  var savedLang = localStorage.getItem('autentico_lang') || 'it';
-  setLang(savedLang);
   updateAuthUI();
   loadRecipes();
 });
@@ -1952,22 +1864,22 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="auth-overlay" onclick="if(event.target===this)closeAuthModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:420px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:#eee;color:#333;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Benvenuto su Autentico</h2>
-    <p style="font-size:14px;color:#7A7570;margin-bottom:20px">Accedi per pubblicare ricette, mettere like e commentare.</p>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Welcome to Autentico</h2>
+    <p style="font-size:14px;color:#7A7570;margin-bottom:20px">Sign in to publish recipes, like and comment.</p>
     <div style="display:flex;background:#f5f5f5;border-radius:12px;padding:3px;margin-bottom:20px">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:8px;border:none;background:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.1)">Accedi</button>
-      <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;background:none;border-radius:9px;cursor:pointer;font-size:14px;color:#7A7570">Registrati</button>
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:8px;border:none;background:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.1)">Sign in</button>
+      <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;background:none;border-radius:9px;cursor:pointer;font-size:14px;color:#7A7570">Sign up</button>
     </div>
     <div id="auth-form-login">
       <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email" placeholder="tua@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Password</label><input type="password" id="auth-password" placeholder="••••••••" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
-      <button onclick="submitLogin()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Accedi</button>
+      <button onclick="submitLogin()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Sign in</button>
     </div>
     <div id="auth-form-signup" style="display:none">
       <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Username</label><input type="text" id="auth-username" placeholder="nomeutente" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email-signup" placeholder="tua@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
-      <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Password (min. 6 caratteri)</label><input type="password" id="auth-password-signup" placeholder="••••••••" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
-      <button onclick="submitSignup()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Registrati gratis</button>
+      <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Password (min. 6 characters)</label><input type="password" id="auth-password-signup" placeholder="••••••••" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
+      <button onclick="submitSignup()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Sign up free</button>
     </div>
   </div>
 </div>
