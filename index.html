@@ -1089,11 +1089,11 @@ async function dbSave(r) {
     var ins = await sb.from('recipes').insert({
       user_id: currentUser.id,
       title: r.title, description: r.description||'',
-      region: r.region||'', country: r.country||'Altro',
+      region: r.region||'', country: r.country||'Other',
       cover_url: cover_url, emoji: r.emoji||'🍽️',
       verified: r.verified||false,
-      time_minutes: r.time||30,
-      difficulty: r.difficulty||'Facile', portions: parseInt(r.portions)||4,
+      time_minutes: parseInt(r.time)||30,
+      difficulty: r.difficulty||'Easy', portions: parseInt(r.portions)||4,
       ingredients: r.ingredients||[], steps: r.steps||[], notes: r.notes||[]
     });
     if (ins.error) throw new Error(ins.error.message);
@@ -1105,7 +1105,10 @@ async function dbSave(r) {
 async function dbUpdate(r) {
   if (!SUPABASE_CONFIGURED || !currentUser) return false;
   try {
-    var cover_url = r.cover || null;
+    // Start with the existing cover_url from Supabase (don't wipe it if no new image)
+    var orig = recipes.find(function(x){ return String(x.id) === String(r.id); });
+    var cover_url = r.cover_url || r.cover || (orig ? (orig.cover_url || orig.cover) : null) || null;
+
     if (window._pendingPhotoFile) {
       var f = window._pendingPhotoFile;
       var ext = f.name.split('.').pop();
@@ -1114,19 +1117,32 @@ async function dbUpdate(r) {
       if (!up.error) cover_url = sb.storage.from('recipe-images').getPublicUrl(up.data.path).data.publicUrl;
       window._pendingPhotoFile = null;
     }
-    var upd = await sb.from('recipes').update({
-      title: r.title, description: r.description||'',
-      region: r.region||'', country: r.country||'Altro',
-      cover_url: cover_url, emoji: r.emoji||'🍽️',
-      verified: r.verified||false,
-      time_minutes: r.time||30,
-      difficulty: r.difficulty||'Facile', portions: parseInt(r.portions)||4,
-      ingredients: r.ingredients||[], steps: r.steps||[], notes: r.notes||[]
-    }).eq('id', r.id).eq('user_id', currentUser.id);
+
+    // Normalise difficulty to English before saving
+    var diffMap = {'Facile':'Easy','Medio':'Medium','Difficile':'Hard'};
+    var difficulty = diffMap[r.difficulty] || r.difficulty || 'Easy';
+
+    var payload = {
+      title: r.title,
+      description: r.description || '',
+      region: r.region || '',
+      country: r.country || 'Other',
+      cover_url: cover_url,
+      emoji: r.emoji || '🍽️',
+      verified: r.verified || false,
+      time_minutes: parseInt(r.time) || 30,
+      difficulty: difficulty,
+      portions: parseInt(r.portions) || 4,
+      ingredients: r.ingredients || [],
+      steps: r.steps || [],
+      notes: r.notes || []
+    };
+
+    var upd = await sb.from('recipes').update(payload).eq('id', r.id).eq('user_id', currentUser.id);
     if (upd.error) throw new Error(upd.error.message);
     await loadRecipes();
     return true;
-  } catch(e) { showToast('❌ '+e.message); return false; }
+  } catch(e) { showToast('❌ ' + e.message); return false; }
 }
 
 async function deleteRecipe(recipeId) {
@@ -2055,15 +2071,22 @@ async function saveManualRecipe() {
   };
 
   if (editRecipeId) {
-    // Preserve existing likes/cover from original
+    // Preserve existing likes and cover from original if no new cover entered
     var orig = recipes.find(function(x){return x.id===editRecipeId;});
-    if (orig) { newR.likes = orig.likes; newR.likes_count = orig.likes_count; if(!cover) { newR.cover = orig.cover; newR.cover_url = orig.cover_url; } }
-    var idx = recipes.findIndex(function(x){return x.id===editRecipeId;});
-    if (idx >= 0) recipes[idx] = newR;
-    renderGrid(); updateStats(); closeAdd();
+    if (orig) {
+      newR.likes = orig.likes;
+      newR.likes_count = orig.likes_count;
+      if (!cover && !window._pendingPhotoFile) {
+        newR.cover = orig.cover;
+        newR.cover_url = orig.cover_url;
+      }
+    }
     showToast('⏳ Saving…');
     var ok = await dbUpdate(newR);
-    if (ok) showToast('✅ Recipe updated!');
+    if (ok) {
+      closeAdd();
+      showToast('✅ Recipe updated!');
+    }
   } else {
     recipes.unshift(newR);
     renderGrid(); updateStats(); closeAdd();
