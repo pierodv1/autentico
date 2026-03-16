@@ -206,7 +206,7 @@ header { position:sticky;top:0;z-index:200;background:rgba(250,247,242,.96);back
 .ck-btn-finish { background:#4CAF50;color:#fff; }
 
 /* ── ADD MODAL ── */
-#add-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;overflow-y:auto; }
+#add-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;overflow-y:auto; }
 #add-overlay.open { display:flex;justify-content:center;padding:40px 20px; }
 .add-modal { background:#fff;width:100%;max-width:680px;border-radius:24px;padding:32px;align-self:flex-start;animation:slideUp .3s ease;position:relative; }
 .add-modal h2 { font-family:var(--serif);font-size:26px;margin-bottom:6px; }
@@ -377,6 +377,7 @@ footer p { font-size:13px;color:var(--muted); }
 <body>
 <div class="toast" id="toast"></div>
 
+<!-- HEADER -->
 <header>
   <a class="logo" href="#">Autenti<span>co</span></a>
   <div class="header-right">
@@ -396,6 +397,7 @@ footer p { font-size:13px;color:var(--muted); }
   </div>
 </header>
 
+<!-- HERO -->
 <section class="hero">
   <div>
     <div class="hero-tag">
@@ -421,6 +423,7 @@ footer p { font-size:13px;color:var(--muted); }
   </div>
 </section>
 
+<!-- RICETTE SECTION -->
 <section class="section" id="ricette">
   <h2 class="section-title">Tutte le ricette</h2>
   <div class="filter-bar">
@@ -442,15 +445,38 @@ footer p { font-size:13px;color:var(--muted); }
   <p>Ricette autentiche da tutto il mondo — spiegate a prova di chiunque</p>
 </footer>
 
+<!-- DETAIL MODAL -->
 <div class="overlay" id="detail-overlay" onclick="maybeCloseDetail(event)">
   <div class="modal" id="detail-modal"></div>
 </div>
 
+<!-- ADD MODAL -->
 <div id="add-overlay" onclick="maybeCloseAdd(event)">
   <div class="add-modal">
     <button style="position:absolute;top:16px;right:16px;background:#eee;color:#333;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;" onclick="closeAdd()">✕</button>
     <h2>Aggiungi una ricetta</h2>
-    <p>Compila i campi qui sotto. Puoi usare il bottone "Chef AI" in alto per generare la ricetta in automatico.</p>
+    <p>Compila manualmente o lascia che l'AI generi la ricetta per te.</p>
+
+    
+
+    
+      <div class="ai-input-row">
+        <input class="ai-input" id="ai-prompt" placeholder="Es: ramen giapponese piccante con uovo marinato..." onkeydown="if(event.key==='Enter')generateRecipe()"/>
+        <button class="ai-generate-btn" id="ai-gen-btn" onclick="generateRecipe()">Genera</button>
+      </div>
+      <div class="ai-examples">
+        <span class="ai-example" onclick="setAiExample(this)">Tacos mexicani al pastor</span>
+        <span class="ai-example" onclick="setAiExample(this)">Curry thailandese verde</span>
+        <span class="ai-example" onclick="setAiExample(this)">Pasta alla norma siciliana</span>
+        <span class="ai-example" onclick="setAiExample(this)">Sushi roll con salmone</span>
+        <span class="ai-example" onclick="setAiExample(this)">Shakshuka israeliana</span>
+      </div>
+      <div class="ai-status" id="ai-status"></div>
+      <div class="ai-result" id="ai-result"></div>
+      <button class="ai-apply-btn" id="ai-apply-btn" onclick="applyAiRecipe()">✓ Compila il modulo con questa ricetta</button>
+    </div>
+
+    
 
     <div class="form-row">
       <label>Foto del piatto</label>
@@ -497,6 +523,7 @@ footer p { font-size:13px;color:var(--muted); }
   </div>
 </div>
 
+<!-- AUTH MODAL -->
 <div id="auth-overlay" onclick="maybeCloseAuth(event)">
   <div class="auth-modal">
     <button style="position:absolute;top:14px;right:14px;background:#eee;color:#333;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;" onclick="closeAuth()">✕</button>
@@ -525,6 +552,7 @@ footer p { font-size:13px;color:var(--muted); }
   </div>
 </div>
 
+<!-- CHEF AI MODAL -->
 <div id="ai-overlay" onclick="maybeCloseAi(event)">
   <div class="ai-modal">
     <div class="ai-modal-header">
@@ -538,6 +566,7 @@ footer p { font-size:13px;color:var(--muted); }
     </div>
     <div class="ai-body">
 
+      <!-- TAB: GENERA -->
       <div id="ai-tab-gen" class="ai-gen-wrap">
         <div>
           <div class="ai-desc-label">Descrivi il piatto che vuoi creare</div>
@@ -567,6 +596,7 @@ footer p { font-size:13px;color:var(--muted); }
         </div>
       </div>
 
+      <!-- TAB: CHAT -->
       <div id="ai-tab-chat" style="display:none">
         <div class="ai-chat-wrap">
           <div class="ai-chat-messages" id="chat-messages"></div>
@@ -586,6 +616,7 @@ footer p { font-size:13px;color:var(--muted); }
   </div>
 </div>
 
+<!-- COOKING FULLSCREEN -->
 <div id="cooking-screen">
   <div class="ck-header"><div class="ck-recipe-title" id="ck-title"></div><button class="ck-close-btn" onclick="closeCooking()">✕</button></div>
   <div class="ck-progress" id="ck-progress"></div>
@@ -1021,12 +1052,12 @@ function previewPhoto(input) {
 
 function openAdd() {
   if (!SUPABASE_CONFIGURED) { showToast('⚠️ Configura Supabase per pubblicare ricette'); return; }
-  if (!currentUser) { openAuth(); return; }
+  if (!currentUser) { openAuth(); showToast('⚠️ Devi essere loggato per aggiungere ricette'); return; }
   ingIdx = 0; stepIdx = 0; photoFile = null;
   document.getElementById('ing-dyn-list').innerHTML = '';
   document.getElementById('step-dyn-list').innerHTML = '';
   document.getElementById('upload-preview').classList.remove('show');
-  ['f-title','f-region','f-emoji','f-desc','f-notes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-title','f-region','f-author','f-emoji','f-desc','f-notes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-time').value='';
   document.getElementById('f-country').value='';
   document.getElementById('f-diff').value='Facile';
@@ -1192,11 +1223,6 @@ let chatHistory = [];
 let chatRecipeData = null;
 
 // ── OPEN / CLOSE ──
-function toggleAiPanel() {
-  const panel = document.getElementById('ai-panel');
-  if (panel) panel.classList.toggle('open');
-}
-
 function openAiChef() {
   document.getElementById('ai-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1226,50 +1252,45 @@ function setDesc(el) {
   document.getElementById('ai-desc').focus();
 }
 
-// ── AI API CALL (Mistral AI — direct browser call) ──
-const MISTRAL_KEY = 'kvESiqtWZZ2jZB7aq9RF8acxSqLYKb2G';
+// ── AI API CALL (Pollinations — gratuito, no chiavi, no CORS) ──
+async function callAI(messages) {
+  // Build prompt from messages
+  const system = messages.find(m => m.role === 'system')?.content || '';
+  const userMsgs = messages.filter(m => m.role !== 'system');
+  const lastUser = userMsgs[userMsgs.length - 1]?.content || '';
 
-async function callMistral(messages) {
-  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + MISTRAL_KEY
-    },
-    body: JSON.stringify({
-      model: 'mistral-small-latest',
-      temperature: 0.7,
-      max_tokens: 2048,
-      messages: messages
-    })
+  // Pollinations text API - completely free, no auth needed
+  const prompt = encodeURIComponent(system ? system + ' ' + lastUser : lastUser);
+  const url = `https://text.pollinations.ai/${prompt}?model=mistral&seed=${Date.now()}&json=false`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Accept': 'text/plain' }
   });
-  if (!res.ok) {
-    const err = await res.json().catch(function(){ return {}; });
-    const code = res.status;
-    if (code === 429) throw new Error('Troppe richieste — aspetta qualche secondo e riprova.');
-    if (code === 401) throw new Error('Chiave API non valida.');
-    throw new Error('Errore ' + code + (err.message ? ': ' + err.message : ''));
-  }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+
+  if (!res.ok) throw new Error('Errore ' + res.status);
+  const text = await res.text();
+  if (!text || text.trim().length < 10) throw new Error('Risposta vuota');
+  return text.trim();
 }
 
 async function callGemini(prompt, systemInstruction) {
-  return await callMistral([
+  return await callAI([
     { role: 'system', content: systemInstruction },
     { role: 'user', content: prompt }
   ]);
 }
 
 async function callGeminiChat(messages, systemInstruction) {
-  var apiMessages = [{ role: 'system', content: systemInstruction }];
-  messages.forEach(function(m) {
-    apiMessages.push({
+  // For chat, include conversation history
+  const apiMessages = [
+    { role: 'system', content: systemInstruction },
+    ...messages.map(m => ({
       role: m.role === 'ai' ? 'assistant' : 'user',
       content: m.text
-    });
-  });
-  return await callMistral(apiMessages);
+    }))
+  ];
+  return await callAI(apiMessages);
 }
 
 // ── TAB 1: GENERA DA DESCRIZIONE ──
@@ -1281,21 +1302,23 @@ async function generateFromDesc() {
   const card = document.getElementById('ai-result-card');
   btn.disabled = true;
   btn.innerHTML = '<div class="ai-spinner"></div> Sto creando la ricetta…';
-  card.style.display = 'none';
+  card.classList.remove('show');
 
-  const systemPrompt = 'Sei un chef esperto. Rispondi SOLO con JSON valido, niente altro. Struttura esatta: {"title":"Nome","region":"Citta, Paese","country":"Paese","emoji":"emoji","difficulty":"Facile","time_minutes":30,"portions":4,"description":"descrizione","ingredients":[{"name":"nome","qty":"100 g"}],"steps":[{"text":"istruzione","tip":"consiglio","timer":0}],"notes":["nota"]}. difficulty: solo Facile Medio o Difficile. timer: secondi interi. Minimo 6 ingredienti e 5 passi dettagliati. Tutto in italiano. SOLO JSON.';
+  const systemPrompt = `Sei uno chef esperto. Genera una ricetta autentica in formato JSON puro.
+Rispondi SOLO con il JSON, niente altro. Struttura esatta:
+{"title":"Nome","region":"Città, Paese","country":"Paese","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Descrizione in italiano","ingredients":[{"name":"Ingrediente","qty":"100 g"}],"steps":[{"text":"Istruzione dettagliata","tip":"Consiglio utile","timer":0}],"notes":["Nota 1","Nota 2"]}
+difficulty = Facile, Medio o Difficile. timer in secondi (0 se non serve). Minimo 6 ingredienti, 5 passi. Tutto in italiano.`;
 
   try {
     const raw = await callGemini('Genera una ricetta autentica per: ' + desc, systemPrompt);
-    // Extract and fix JSON robustly
-    var clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
-    var jStart = clean.indexOf('{');
-    var jEnd = clean.lastIndexOf('}');
-    if (jStart < 0 || jEnd <= jStart) throw new Error('Risposta non valida, riprova.');
-    clean = clean.slice(jStart, jEnd + 1);
-    clean = clean.replace(/,\s*([}\]])/g,'$1').replace(/[\u0000-\u001F]/g,' ');
+    // Extract JSON robustly - find first { and last }
+    let clean = raw.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+    const jsonStart = clean.indexOf('{');
+    const jsonEnd = clean.lastIndexOf('}');
+    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+      clean = clean.slice(jsonStart, jsonEnd + 1);
+    }
     aiGeneratedRecipe = JSON.parse(clean);
-    if (!aiGeneratedRecipe.title) throw new Error('Ricetta incompleta, riprova.');
 
     // Show preview card
     document.getElementById('arc-title').textContent = aiGeneratedRecipe.title;
@@ -1307,7 +1330,7 @@ async function generateFromDesc() {
       aiGeneratedRecipe.ingredients.slice(0, 5).map(i =>
         `<span class="ai-result-pill">${i.name}</span>`
       ).join('') + (aiGeneratedRecipe.ingredients.length > 5 ? `<span class="ai-result-pill">+${aiGeneratedRecipe.ingredients.length - 5} altri</span>` : '');
-    card.style.display = 'block';
+    card.classList.add('show');
 
   } catch(e) {
     let msg = '❌ Errore: ' + e.message;
@@ -1329,18 +1352,30 @@ async function generateFromDesc() {
 function applyGeneratedRecipe() {
   if (!aiGeneratedRecipe) return;
   closeAiChef();
-  setTimeout(function() { fillFormWithRecipe(aiGeneratedRecipe); }, 400);
+  setTimeout(() => {
+    fillFormWithRecipe(aiGeneratedRecipe);
+  }, 200);
 }
 
 // ── TAB 2: CHAT INTERATTIVA ──
-const CHAT_SYSTEM = 'Sei Chef AI, un assistente culinario esperto integrato in Autentico. ' +
-  'Aiuta gli utenti a creare ricette autentiche. Fai domande per capire: paese, ingredienti, difficolta, tempo. ' +
-  'Quando hai abbastanza info (almeno paese + piatto), genera la ricetta. Rispondi in italiano. ' +
-  'Quando generi la ricetta DEVI includere il JSON preceduto esattamente da RICETTA_JSON: ' +
-  '{"title":"...","region":"...","country":"...","emoji":"...","difficulty":"Facile",' +
-  '"time_minutes":30,"portions":4,"description":"...","ingredients":[{"name":"...","qty":"..."}],' +
-  '"steps":[{"text":"...","tip":"...","timer":0}],"notes":["..."]}. ' +
-  'difficulty deve essere Facile, Medio o Difficile. Tutto in italiano.';
+const CHAT_SYSTEM = `Sei Chef AI, un assistente culinario esperto e amichevole integrato in Autentico, una piattaforma di ricette autentiche dal mondo.
+
+Il tuo obiettivo è aiutare l'utente a costruire una ricetta autentica attraverso una conversazione naturale.
+
+COMPORTAMENTO:
+- Fai domande mirate per capire cosa vuole: paese/cucina, ingredienti preferiti, difficoltà, tempo disponibile, numero di persone
+- Dai consigli e suggerimenti autentici mentre chatti
+- Quando hai abbastanza informazioni (almeno paese + piatto principale), genera la ricetta
+- Sii caldo, entusiasta e professionale
+- Rispondi sempre in italiano
+- Mantieni le risposte concise (max 3-4 righe) tranne quando generi la ricetta
+
+GENERAZIONE RICETTA:
+Quando generi la ricetta finale, DEVI includere nel tuo messaggio il JSON completo in questo formato esatto (preceduto da RICETTA_JSON:):
+
+RICETTA_JSON:{"title":"...","region":"...","country":"...","emoji":"...","difficulty":"Facile","time_minutes":30,"portions":4,"description":"...","ingredients":[{"name":"...","qty":"..."}],"steps":[{"text":"...","tip":"...","timer":0}],"notes":["..."]}
+
+Non usare backtick attorno al JSON. difficulty deve essere esattamente Facile, Medio o Difficile. Includi almeno 6 ingredienti e 5 passi dettagliati.`;
 
 function addChatMsg(role, text) {
   const container = document.getElementById('chat-messages');
@@ -1390,20 +1425,12 @@ async function sendChat() {
     removeTypingIndicator();
 
     // Check if recipe JSON is included
-    // Extract recipe JSON from response
-    const jsonIdx = responseText.indexOf('RICETTA_JSON:');
-    if (jsonIdx >= 0) {
+    const jsonMatch = responseText.match(/RICETTA_JSON:(\{[\s\S]*\})/);
+    if (jsonMatch) {
       try {
-        let jsonStr = responseText.slice(jsonIdx + 13).trim();
-        const jStart = jsonStr.indexOf('{');
-        const jEnd = jsonStr.lastIndexOf('}');
-        if (jStart >= 0 && jEnd > jStart) {
-          jsonStr = jsonStr.slice(jStart, jEnd + 1);
-          jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1').replace(/[\u0000-\u001F]/g,' ');
-          chatRecipeData = JSON.parse(jsonStr);
-          document.getElementById('chat-apply-bar').style.display = 'block';
-        }
-      } catch(e) { console.warn('Chat JSON parse failed:', e.message); }
+        chatRecipeData = JSON.parse(jsonMatch[1].trim());
+        document.getElementById('chat-apply-bar').classList.add('show');
+      } catch(e) { console.warn('JSON parse failed:', e); }
     }
 
     addChatMsg('ai', responseText);
@@ -1426,13 +1453,16 @@ async function sendChat() {
 function applyChatRecipe() {
   if (!chatRecipeData) return;
   closeAiChef();
-  setTimeout(function() { fillFormWithRecipe(chatRecipeData); }, 400);
+  setTimeout(() => {
+    fillFormWithRecipe(chatRecipeData);
+  }, 200);
 }
 
 // ── FILL FORM (shared by both tabs) ──
 function fillFormWithRecipe(r) {
   // Make sure add modal is open
-  // Open form - login check happens when saving
+  if (!currentUser) { openAuth(); showToast('⚠️ Devi essere loggato per pubblicare'); return; }
+  if (!SUPABASE_CONFIGURED) { showToast('⚠️ Configura Supabase per pubblicare ricette'); return; }
 
   // Open add modal with clean state
   ingIdx = 0; stepIdx = 0; photoFile = null;
@@ -1488,4 +1518,26 @@ function fillFormWithRecipe(r) {
     const tip = document.querySelector(`[data-stip="${i}"]`);
     const tim = document.querySelector(`[data-st="${i}"]`);
     if(t) t.value = step.text || '';
-    if(tip) tip.value =
+    if(tip) tip.value = step.tip || '';
+    if(tim) tim.value = step.timer || 0;
+  });
+
+  // Open the add modal
+  document.getElementById('add-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  showToast('✅ Ricetta AI caricata nel modulo! Controlla e aggiungi la foto.');
+
+  // Highlight title field
+  setTimeout(() => {
+    const tf = document.getElementById('f-title');
+    if(tf) { tf.style.borderColor = '#764ba2'; setTimeout(() => tf.style.borderColor = '', 2000); }
+  }, 300);
+}
+
+
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail(); closeAdd(); closeCooking(); closeAuth(); } });
+</script>
+</body>
+</html>
