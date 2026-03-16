@@ -255,9 +255,9 @@ textarea{resize:vertical}
 .sug-rej{background:#eee;color:#555;border:none;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--sans)}
 .ai-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--terra);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
-.changes-box{background:#F0FFF4;border:1.5px solid rgba(76,175,80,.3);border-radius:12px;padding:14px 16px;margin-top:16px}
-.changes-box-t{font-size:12px;font-weight:600;color:#2e7d32;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.changes-box li{font-size:13px;color:#444;margin-bottom:4px;margin-left:16px}
+
+
+
 .final-card{background:#fff;border-radius:16px;padding:20px;border:1.5px solid var(--border)}
 .final-card h3{font-family:var(--serif);font-size:22px;margin-bottom:4px}
 .ftag{display:inline-flex;background:rgba(196,97,74,.1);color:var(--terra);border-radius:16px;padding:3px 10px;font-size:12px;margin-right:5px;margin-bottom:8px}
@@ -454,9 +454,15 @@ footer p{font-size:13px;color:var(--muted)}
   .btn-add-hdr svg{width:18px;height:18px;flex-shrink:0}
   .btn-add-txt{display:none}
   nav{display:none}
-  /* Auth chip mobile — avatar only */
+  /* Auth area — always visible on mobile */
+  #auth-area{flex-shrink:0 !important;min-width:36px}
+  #header-auth{flex-shrink:0}
+  /* User chip — avatar only */
   #user-chip-btn span{display:none !important}
-  #user-chip-btn{padding:3px !important;border-radius:50% !important;gap:0 !important;border:2px solid var(--terra) !important}
+  #user-chip-btn{padding:3px !important;border-radius:50% !important;gap:0 !important;border:2px solid var(--terra) !important;width:36px !important;height:36px !important;justify-content:center !important}
+  /* Sign-in button — icon only on mobile */
+  .hdr-signin-txt{display:none}
+  .hdr-signin-btn{width:36px !important;height:36px !important;padding:0 !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important}
 
   /* Hero */
   .hero{padding:28px 16px 24px;text-align:center}
@@ -541,7 +547,7 @@ footer p{font-size:13px;color:var(--muted)}
     <!-- AUTH AREA -->
     <div id="auth-area" style="position:relative;flex-shrink:0">
       <div id="header-auth">
-        <button class="btn-login" onclick="openAuthModal()">Sign in</button>
+        <button class="btn-login hdr-signin-btn" onclick="openAuthModal()" style="display:flex;align-items:center;gap:6px;padding:8px 16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="hdr-signin-txt">Sign in</span></button>
       </div>
       <div class="avatar-btn" id="user-avatar" style="display:none" onclick="toggleProfileDrop()">
         <div class="avatar-initial" id="avatar-initial">?</div>
@@ -619,7 +625,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
 
     <div class="ccard" onclick="openCurated('cacio')">
-      <img src="https://images.unsplash.com/photo-1611270418597-a6c77f4b7271?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -633,7 +639,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('mole')">
-      <img src="https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -913,7 +919,7 @@ footer p{font-size:13px;color:var(--muted)}
         </div>
         <div class="f-row"><label>Authenticity notes (one per line)</label><textarea id="fr-notes" style="min-height:70px" placeholder="One note per line…"></textarea></div>
         <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fr-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0">Verified recipe</label></div>
-        <div id="ai-changes" style="display:none"></div>
+        
         <div class="f-actions" style="margin-top:20px">
           <button class="btn-cancel" onclick="goPhase(1)">← Rewrite</button>
           <button class="btn-save" onclick="goPhase(3)">Continue →</button>
@@ -1064,7 +1070,9 @@ function updateAuthUI() {
       + '<button onclick="toggleProfileDrop();doLogout()" style="width:100%;text-align:left;padding:10px 14px;border:none;background:none;cursor:pointer;font-size:14px;border-radius:10px;color:#C4614A">↪️ Sign out</button>'
       + '</div></div></div>';
   } else {
-    hel.innerHTML = '<button onclick="openAuthModal()" style="padding:8px 20px;border-radius:24px;background:#fff;border:1.5px solid #E5E0D8;cursor:pointer;font-size:14px;font-family:inherit">Sign in</button>';
+    hel.innerHTML = '<button class="hdr-signin-btn" onclick="openAuthModal()" style="padding:8px 20px;border-radius:24px;background:#fff;border:1.5px solid #E5E0D8;cursor:pointer;font-size:14px;font-family:var(--sans);display:flex;align-items:center;gap:6px">'
+      + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+      + '<span class="hdr-signin-txt">Sign in</span></button>';
   }
 }
 
@@ -1194,10 +1202,23 @@ async function fetchRecipeImage(title) {
 
 // Smarter: use Unsplash API with embedded demo key
 async function fetchRecipeImageSmart(title) {
-  // Unsplash Source — no API key needed, browser follows the redirect.
-  // Returns a real food photo matching the recipe title.
-  var keywords = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(/\s+/).slice(0,3).join(',');
-  return 'https://source.unsplash.com/800x500/?' + keywords + ',food,dish';
+  // Try Unsplash API first (free, 50 req/hr, no card needed)
+  var UNSPLASH_KEY = 'J-QBPe0oC_Y43d72wJv5-UzSHRDtNmQAvkB7fH9WI9I';
+  try {
+    var q = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,' ').trim() + ' food');
+    var res = await fetch(
+      'https://api.unsplash.com/search/photos?query=' + q + '&per_page=1&orientation=landscape',
+      { headers: { Authorization: 'Client-ID ' + UNSPLASH_KEY } }
+    );
+    if (res.ok) {
+      var data = await res.json();
+      if (data.results && data.results.length > 0)
+        return data.results[0].urls.regular;
+    }
+  } catch(e) { console.warn('Unsplash API error:', e); }
+  // Fallback: picsum food-themed placeholder (always returns an image)
+  var seed = title.split('').reduce(function(a,c){return a+c.charCodeAt(0);},0) % 1000;
+  return 'https://picsum.photos/seed/' + seed + '/800/500';
 }
 
 async function dbSave(r) {
@@ -1902,12 +1923,7 @@ function populateFields(ai) {
 
   if(ai.notes&&ai.notes.length) setVal('fr-notes',ai.notes.join('\n'));
 
-  if(ai.changes&&ai.changes.length){
-    var box=document.getElementById('ai-changes');
-    box.style.display='';
-    box.innerHTML='<div class="changes-box"><div class="changes-box-t">\u2756 Cosa ha fatto l\'IA</div><ul>'
-      +ai.changes.map(function(c){return '<li>'+c+'</li>';}).join('')+'</ul></div>';
-  }
+  // AI changes box removed
 }
 
 function collectIngs() {
@@ -2241,7 +2257,7 @@ function openAIAdd() {
 var CURATED = {
   cacio: {
     id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
-    cover:'https://images.unsplash.com/photo-1611270418597-a6c77f4b7271?q=80&w=800&auto=format&fit=crop',
+    cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
     emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
     description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
     ingredients:[
@@ -2261,7 +2277,7 @@ var CURATED = {
   },
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
-    cover:'https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?q=80&w=800&fit=crop',
+    cover:'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?q=80&w=800&fit=crop',
     emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
