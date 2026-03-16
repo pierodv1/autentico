@@ -1052,7 +1052,7 @@ function previewPhoto(input) {
 
 function openAdd() {
   if (!SUPABASE_CONFIGURED) { showToast('⚠️ Configura Supabase per pubblicare ricette'); return; }
-  if (!currentUser) { openAuth(); showToast('⚠️ Devi essere loggato per aggiungere ricette'); return; }
+  if (!currentUser) { openAuth(); return; }
   ingIdx = 0; stepIdx = 0; photoFile = null;
   document.getElementById('ing-dyn-list').innerHTML = '';
   document.getElementById('step-dyn-list').innerHTML = '';
@@ -1223,6 +1223,11 @@ let chatHistory = [];
 let chatRecipeData = null;
 
 // ── OPEN / CLOSE ──
+function toggleAiPanel() {
+  const panel = document.getElementById('ai-panel');
+  if (panel) panel.classList.toggle('open');
+}
+
 function openAiChef() {
   document.getElementById('ai-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1367,24 +1372,14 @@ function applyGeneratedRecipe() {
 }
 
 // ── TAB 2: CHAT INTERATTIVA ──
-const CHAT_SYSTEM = `Sei Chef AI, un assistente culinario esperto e amichevole integrato in Autentico, una piattaforma di ricette autentiche dal mondo.
-
-Il tuo obiettivo è aiutare l'utente a costruire una ricetta autentica attraverso una conversazione naturale.
-
-COMPORTAMENTO:
-- Fai domande mirate per capire cosa vuole: paese/cucina, ingredienti preferiti, difficoltà, tempo disponibile, numero di persone
-- Dai consigli e suggerimenti autentici mentre chatti
-- Quando hai abbastanza informazioni (almeno paese + piatto principale), genera la ricetta
-- Sii caldo, entusiasta e professionale
-- Rispondi sempre in italiano
-- Mantieni le risposte concise (max 3-4 righe) tranne quando generi la ricetta
-
-GENERAZIONE RICETTA:
-Quando generi la ricetta finale, DEVI includere nel tuo messaggio il JSON completo in questo formato esatto (preceduto da RICETTA_JSON:):
-
-RICETTA_JSON:{"title":"...","region":"...","country":"...","emoji":"...","difficulty":"Facile","time_minutes":30,"portions":4,"description":"...","ingredients":[{"name":"...","qty":"..."}],"steps":[{"text":"...","tip":"...","timer":0}],"notes":["..."]}
-
-Non usare backtick attorno al JSON. difficulty deve essere esattamente Facile, Medio o Difficile. Includi almeno 6 ingredienti e 5 passi dettagliati.`;
+const CHAT_SYSTEM = 'Sei Chef AI, un assistente culinario esperto integrato in Autentico. ' +
+  'Aiuta gli utenti a creare ricette autentiche. Fai domande per capire: paese, ingredienti, difficolta, tempo. ' +
+  'Quando hai abbastanza info (almeno paese + piatto), genera la ricetta. Rispondi in italiano. ' +
+  'Quando generi la ricetta DEVI includere il JSON preceduto esattamente da RICETTA_JSON: ' +
+  '{"title":"...","region":"...","country":"...","emoji":"...","difficulty":"Facile",' +
+  '"time_minutes":30,"portions":4,"description":"...","ingredients":[{"name":"...","qty":"..."}],' +
+  '"steps":[{"text":"...","tip":"...","timer":0}],"notes":["..."]}. ' +
+  'difficulty deve essere Facile, Medio o Difficile. Tutto in italiano.';
 
 function addChatMsg(role, text) {
   const container = document.getElementById('chat-messages');
@@ -1434,12 +1429,20 @@ async function sendChat() {
     removeTypingIndicator();
 
     // Check if recipe JSON is included
-    const jsonMatch = responseText.match(/RICETTA_JSON:(\{[\s\S]*\})/);
-    if (jsonMatch) {
+    // Extract recipe JSON from response
+    const jsonIdx = responseText.indexOf('RICETTA_JSON:');
+    if (jsonIdx >= 0) {
       try {
-        chatRecipeData = JSON.parse(jsonMatch[1].trim());
-        document.getElementById('chat-apply-bar').classList.add('show');
-      } catch(e) { console.warn('JSON parse failed:', e); }
+        let jsonStr = responseText.slice(jsonIdx + 13).trim();
+        const jStart = jsonStr.indexOf('{');
+        const jEnd = jsonStr.lastIndexOf('}');
+        if (jStart >= 0 && jEnd > jStart) {
+          jsonStr = jsonStr.slice(jStart, jEnd + 1);
+          jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1').replace(/[\u0000-\u001F]/g,' ');
+          chatRecipeData = JSON.parse(jsonStr);
+          document.getElementById('chat-apply-bar').style.display = 'block';
+        }
+      } catch(e) { console.warn('Chat JSON parse failed:', e.message); }
     }
 
     addChatMsg('ai', responseText);
@@ -1470,8 +1473,7 @@ function applyChatRecipe() {
 // ── FILL FORM (shared by both tabs) ──
 function fillFormWithRecipe(r) {
   // Make sure add modal is open
-  if (!currentUser) { openAuth(); showToast('⚠️ Devi essere loggato per pubblicare'); return; }
-  if (!SUPABASE_CONFIGURED) { showToast('⚠️ Configura Supabase per pubblicare ricette'); return; }
+  // Open form - login check happens when saving
 
   // Open add modal with clean state
   ingIdx = 0; stepIdx = 0; photoFile = null;
