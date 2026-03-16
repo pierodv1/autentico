@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Autentico — World Recipes</title>
+<title>Ausersco — World Recipes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -278,16 +278,8 @@ footer{border-top:1px solid var(--border);padding:36px 80px;display:flex;justify
 footer p{font-size:13px;color:var(--muted)}
 .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-90px);background:#1A1A1A;color:#fff;padding:11px 24px;border-radius:24px;font-size:13px;font-weight:500;z-index:9999;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.2);letter-spacing:.2px}
 .toast.show{transform:translateX(-50%) translateY(0)}
-@media(max-width:900px){
-  .hero{grid-template-columns:1fr;padding:48px 24px}
-  .hero-imgs{display:none}
-  .section{padding:32px 20px}
-  footer{flex-direction:column;gap:10px;text-align:center;padding:28px 20px}
-  header{padding:0 16px}
-  .search-wrap input{width:120px}
-  .f-grid2{grid-template-columns:1fr}
-}
-@media(max-width:560px){.recipes-grid{grid-template-columns:1fr}}
+
+
 
 /* ── AUTH & PROFILE ── */
 .btn-login{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:24px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:8px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.06)}
@@ -436,6 +428,91 @@ footer p{font-size:13px;color:var(--muted)}
 .up-recipe-info{padding:8px 10px}
 .up-recipe-info div{font-size:13px;font-weight:500;line-height:1.3}
 
+
+/* ── TABLET ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:40px 20px 32px}
+  .hero-imgs{display:none}
+  .section{padding:32px 16px}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:28px 16px}
+  header{padding:0 16px;height:60px}
+  .search-wrap input{width:150px}
+  .f-grid2{grid-template-columns:1fr}
+  .recipes-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .stats-row{flex-wrap:wrap;gap:12px}
+}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  /* Header */
+  header{padding:0 12px;height:56px;gap:8px}
+  .logo{font-size:18px}
+  .search-wrap{flex:1;min-width:0}
+  .search-wrap input{width:100%;font-size:13px;padding:8px 10px 8px 36px}
+  .search-wrap svg{left:11px;width:14px;height:14px}
+  .btn-add-hdr{padding:7px 12px;font-size:13px;white-space:nowrap}
+  nav{display:none}
+
+  /* Hero */
+  .hero{padding:28px 16px 24px;text-align:center}
+  .hero h1{font-size:clamp(28px,7vw,42px);line-height:1.2}
+  .hero p{font-size:15px}
+  .hero-cta{flex-direction:column;gap:10px;align-items:center}
+  .btn-primary,.btn-ghost{width:100%;max-width:280px;justify-content:center;text-align:center}
+
+  /* Country filter chips — horizontal scroll */
+  .filter-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;flex-wrap:nowrap;scrollbar-width:none}
+  .filter-bar::-webkit-scrollbar{display:none}
+  .filter-chip{white-space:nowrap;flex-shrink:0}
+
+  /* Recipes grid */
+  .recipes-grid{grid-template-columns:1fr;gap:14px;padding:0}
+  .section{padding:24px 14px}
+  .section-hdr{flex-direction:column;align-items:flex-start;gap:10px}
+
+  /* Recipe card */
+  .rcard{border-radius:16px}
+  .rcard-img{height:180px}
+
+  /* Stats row */
+  .stats-row{flex-wrap:wrap;gap:8px;justify-content:center}
+  .stat-item{min-width:80px;text-align:center}
+
+  /* Modals */
+  .add-modal{border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;margin:auto 0 0}
+  #add-overlay{align-items:flex-end}
+  #add-overlay.open{display:flex}
+  .profile-modal{border-radius:20px 20px 0 0;max-height:90vh;overflow-y:auto;margin:auto 0 0}
+  #profile-overlay.open{align-items:flex-end}
+  .auth-modal-inner{border-radius:20px 20px 0 0;margin:auto 0 0}
+  #auth-overlay{align-items:flex-end}
+  #auth-overlay[style*="flex"]{align-items:flex-end}
+  #choice-overlay{align-items:flex-end}
+
+  /* Forms */
+  .f-grid2{grid-template-columns:1fr}
+  .f-grid3{grid-template-columns:1fr}
+
+  /* Detail modal */
+  #detail-overlay .modal{border-radius:20px 20px 0 0}
+
+  /* Profile grid */
+  .profile-recipe-grid{grid-template-columns:repeat(2,1fr) !important}
+
+  /* Curated cards */
+  .curated-grid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+  .ccard-title{font-size:14px}
+
+  footer{padding:20px 14px;font-size:13px}
+}
+
+/* ── VERY SMALL ── */
+@media(max-width:380px){
+  .curated-grid{grid-template-columns:1fr !important}
+  .profile-recipe-grid{grid-template-columns:1fr !important}
+  .hero h1{font-size:26px}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -445,9 +522,9 @@ footer p{font-size:13px;color:var(--muted)}
 
 <!-- HEADER -->
 <header>
-  <a class="logo" href="#">Autenti<span>co</span></a>
+  <a class="logo" href="#">Ausers<span>co</span></a>
   <nav style="display:flex;gap:4px">
-    <a href="#ricette" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Recipes</a>
+    <a href="#recipes" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Recipes</a>
     <a href="#curated" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Editor's Picks</a>
     <a href="#friends-section" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Friends</a>
   </nav>
@@ -457,7 +534,7 @@ footer p{font-size:13px;color:var(--muted)}
       Add Recipe
     </button>
     <!-- AUTH AREA -->
-    <div id="auth-area" style="position:relative">
+    <div id="auth-area" style="position:relative;flex-shrink:0">
       <div id="header-auth">
         <button class="btn-login" onclick="openAuthModal()">Sign in</button>
       </div>
@@ -475,7 +552,7 @@ footer p{font-size:13px;color:var(--muted)}
     <h1>Authentic <em>flavours</em><br>from the world</h1>
     <p>Traditional recipes shared by those who truly know them. No shortcuts, no compromises.</p>
     <div class="hero-btns">
-      <a href="#ricette" class="btn-primary">Explore Recipes</a>
+      <a href="#recipes" class="btn-primary">Explore Recipes</a>
       <a href="#" onclick="openChoice();return false" class="btn-ghost">+ Add yours <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
     <div class="hero-stats">
@@ -501,7 +578,7 @@ footer p{font-size:13px;color:var(--muted)}
 </section>
 
 <!-- RECIPES -->
-<section class="section" id="ricette">
+<section class="section" id="recipes">
   <h2 class="section-title">All Recipes</h2>
   <div class="section-search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -531,7 +608,7 @@ footer p{font-size:13px;color:var(--muted)}
 <section class="curated-section" id="curated">
   <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap">
     <h2 class="section-title" style="margin-bottom:0">⭐ Verified Recipes</h2>
-    <span style="background:var(--gold);color:#1a0f0a;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase">Hand-curated by Autentico editors</span>
+    <span style="background:var(--gold);color:#1a0f0a;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase">Hand-curated by Ausersco editors</span>
   </div>
   <p class="curated-subtitle">Six legendary local dishes — each with a full authentic recipe, verified by our team. Click any to cook.</p>
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
@@ -673,7 +750,7 @@ footer p{font-size:13px;color:var(--muted)}
 </div>
 
 <footer>
-  <div class="foot-logo">Autenti<span>co</span></div>
+  <div class="foot-logo">Ausers<span>co</span></div>
   <p>Traditional recipes from around the world</p>
 </footer>
 
@@ -684,12 +761,12 @@ footer p{font-size:13px;color:var(--muted)}
 
 <!-- ADD OVERLAY -->
 
-<!-- SCELTA AGGIUNGI -->
+<!-- CHOICE MODAL -->
 <div id="choice-overlay" onclick="if(event.target===this)closeChoice()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:440px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeChoice()" style="position:absolute;top:14px;right:14px;background:#eee;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Aggiungi una ricetta</h2>
-    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">Come vuoi procedere?</p>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:8px">Add a recipe</h2>
+    <p style="font-size:14px;color:#7A7570;margin-bottom:24px">How would you like to proceed?</p>
     <div style="display:flex;flex-direction:column;gap:12px">
       <button onclick="closeChoice();openAdd('manual')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
@@ -697,7 +774,7 @@ footer p{font-size:13px;color:var(--muted)}
       </button>
       <button onclick="closeChoice();openAdd('ai')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Descrivi il piatto, l'AI genera la ricetta</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Describe the dish, the AI generates the recipe</div></div>
       </button>
     </div>
   </div>
@@ -717,7 +794,7 @@ footer p{font-size:13px;color:var(--muted)}
 
     <!-- PHASE 1 -->
     <div id="ph1">
-      <h2 id="add-overlay-title">Aggiungi una ricetta</h2>
+      <h2 id="add-overlay-title">Add a recipe</h2>
       <div style="display:flex;gap:8px;margin:12px 0 20px">
         <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ With AI</button>
         <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manually</button>
@@ -729,20 +806,20 @@ footer p{font-size:13px;color:var(--muted)}
         <div class="f-row" id="author-row"><label>Your name</label><input type="text" id="f-author" placeholder="E.g.: John D."></div>
         <div class="f-row">
           <label>Write your recipe *</label>
-          <textarea id="f-raw" placeholder="Es: Pasta al pesto: trofie, basilico, parmigiano, pinoli, aglio, olio. Si frulla tutto e si condisce la pasta cotta al dente..." style="min-height:160px"></textarea>
+          <textarea id="f-raw" placeholder="E.g.: Pesto pasta: trofie, basil, parmesan, pine nuts, garlic, olive oil. Blend everything and toss with al dente pasta..." style="min-height:160px"></textarea>
         </div>
         <div class="f-actions">
           <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
-          <button class="btn-save" onclick="runAI()">✦ Analizza con AI →</button>
+          <button class="btn-save" onclick="runAI()">✦ Analyze with AI →</button>
         </div>
       </div>
 
       <!-- MANUAL MODE -->
       <div id="add-manual-mode" style="display:none">
         <div class="f-row" id="author-row-m"><label>Your name</label><input type="text" id="f-author-m" placeholder="E.g.: John D."></div>
-        <div class="f-row"><label>Recipe name *</label><input type="text" id="fm-title" placeholder="Es: Carbonara, Ramen, Tagine..."></div>
+        <div class="f-row"><label>Recipe name *</label><input type="text" id="fm-title" placeholder="E.g.: Carbonara, Ramen, Tagine..."></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="f-row"><label>Region/City *</label><input type="text" id="fm-region" placeholder="Es: Roma, Italia"></div>
+          <div class="f-row"><label>Region/City *</label><input type="text" id="fm-region" placeholder="E.g.: Rome, Italy"></div>
           <div class="f-row"><label>Country *</label>
             <select id="fm-country" style="width:100%;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;outline:none;font-family:inherit">
               <option value="">Select...</option>
@@ -782,7 +859,7 @@ footer p{font-size:13px;color:var(--muted)}
         <div class="f-row" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fm-verified" style="width:auto"><label style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400">Verified recipe</label></div>
         <div class="f-actions">
           <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
-          <button class="btn-save" onclick="saveManualRecipe()">Pubblica ricetta</button>
+          <button class="btn-save" onclick="saveManualRecipe()">Publish recipe</button>
         </div>
       </div>
     </div>
@@ -846,7 +923,7 @@ footer p{font-size:13px;color:var(--muted)}
       <div id="final-preview"></div>
       <div class="f-actions" style="margin-top:20px">
         <button class="btn-cancel" onclick="goPhase(2)">← Edit more</button>
-        <button class="btn-save" onclick="saveRecipe()">🚀 Pubblica ricetta</button>
+        <button class="btn-save" onclick="saveRecipe()">🚀 Publish recipe</button>
       </div>
     </div>
   </div>
@@ -1065,8 +1142,8 @@ async function loadRecipes() {
         r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonymous';
         r.difficulty = diffFromDb(r.difficulty);
         r.cover = r.cover_url || r.cover || '';
-        // Normalise Italian country names stored in DB to English display values
-        var ctryMap = {'Italia':'Italy','Giappone':'Japan','Spagna':'Spain','Francia':'France','Messico':'Mexico','Grecia':'Greece','India':'India','Marocco':'Morocco','Tailandia':'Thailand','Turchia':'Turkey','Cina':'China','Corea del Sud':'South Korea','Vietnam':'Vietnam','Etiopia':'Ethiopia','Perù':'Peru','Libano':'Lebanon','Altro':'Other'};
+        // Normalise Italyn country names stored in DB to English display values
+        var ctryMap = {'Italy':'Italy','Japan':'Japan','Spain':'Spain','France':'France','Mexico':'Mexico','Greece':'Greece','India':'India','Morocco':'Morocco','Thailand':'Thailand','Turkey':'Turkey','China':'China','South Korea':'South Korea','Vietnam':'Vietnam','Ethiopia':'Ethiopia','Peru':'Peru','Lebanon':'Lebanon','Other':'Other'};
         if (ctryMap[r.country]) r.country = ctryMap[r.country];
         // Normalise difficulty
         var diffMap = {'Facile':'Easy','Medio':'Medium','Difficile':'Hard'};
@@ -1081,7 +1158,7 @@ async function loadRecipes() {
 }
 
 
-// Difficulty mapping: English UI <-> Italian DB
+// Difficulty mapping: English UI <-> Italyn DB
 function diffToDb(d) {
   var map = {Easy:'Facile', Medium:'Medio', Hard:'Difficile', Facile:'Facile', Medio:'Medio', Difficile:'Difficile'};
   return map[d] || 'Facile';
@@ -1091,10 +1168,49 @@ function diffFromDb(d) {
   return map[d] || d || 'Easy';
 }
 
+
+// AUTO-FETCH IMAGE FROM UNSPLASH
+async function fetchRecipeImage(title) {
+  try {
+    // Use Unsplash Source (no API key needed, uses title as query)
+    var query = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,'').trim().toLowerCase());
+    // Try multiple image services for reliability
+    var urls = [
+      'https://source.unsplash.com/800x500/?' + query + ',food',
+      'https://source.unsplash.com/800x500/?food,' + query,
+    ];
+    // Unsplash Source resolves to a final image URL - we need to follow the redirect
+    // We'll just use the source URL directly as img src (browser follows redirect)
+    return urls[0];
+  } catch(e) {
+    return '';
+  }
+}
+
+// Smarter: use Unsplash API with embedded demo key
+async function fetchRecipeImageSmart(title) {
+  try {
+    var q = encodeURIComponent(title + ' food dish');
+    // Unsplash demo access key (public, read-only)
+    var key = 'oP9aEl7QM11I3BhOMRdPzgG8SHbYlHp_GKMQVAf28AI';
+    var res = await fetch('https://api.unsplash.com/search/photos?query='+q+'&per_page=1&orientation=landscape&client_id='+key);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    if (data.results && data.results[0]) {
+      return data.results[0].urls.regular;
+    }
+    // Fallback to source URL
+    return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(title) + ',food';
+  } catch(e) {
+    // Fallback
+    return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(title) + ',food';
+  }
+}
+
 async function dbSave(r) {
   if (!SUPABASE_CONFIGURED || !currentUser) return false;
   try {
-    var cover_url = r.cover || null;
+    var cover_url = r.cover_url || r.cover || null;
     if (window._pendingPhotoFile) {
       var f = window._pendingPhotoFile;
       var ext = f.name.split('.').pop();
@@ -1102,6 +1218,10 @@ async function dbSave(r) {
       var up = await sb.storage.from('recipe-images').upload(path, f);
       if (!up.error) cover_url = sb.storage.from('recipe-images').getPublicUrl(up.data.path).data.publicUrl;
       window._pendingPhotoFile = null;
+    }
+    // Auto-fetch image if none provided
+    if (!cover_url && r.title) {
+      cover_url = await fetchRecipeImageSmart(r.title);
     }
     var ins = await sb.from('recipes').insert({
       user_id: currentUser.id,
@@ -1122,7 +1242,7 @@ async function dbSave(r) {
 async function dbUpdate(r) {
   if (!SUPABASE_CONFIGURED || !currentUser) return false;
   try {
-    var cover_url = r.cover || null;
+    var cover_url = r.cover_url || r.cover || null;
     if (window._pendingPhotoFile) {
       var f = window._pendingPhotoFile;
       var ext = f.name.split('.').pop();
@@ -1130,6 +1250,9 @@ async function dbUpdate(r) {
       var up = await sb.storage.from('recipe-images').upload(path, f);
       if (!up.error) cover_url = sb.storage.from('recipe-images').getPublicUrl(up.data.path).data.publicUrl;
       window._pendingPhotoFile = null;
+    }
+    if (!cover_url && r.title) {
+      cover_url = await fetchRecipeImageSmart(r.title);
     }
     var upd = await sb.from('recipes').update({
       title: r.title, description: r.description||'',
@@ -1244,8 +1367,8 @@ function renderGrid() {
   var filtered = recipes.filter(function(r) {
     if (activeFilter==='Verified' && !r.verified) return false;
     if (activeFilter!=='All' && activeFilter!=='Verified') {
-      // Map English filter label → Italian DB values stored in country field
-      var countryMap={'Italy':'Italia','Japan':'Giappone','Spain':'Spagna','France':'Francia','Mexico':'Messico'};
+      // Map English filter label → Italyn DB values stored in country field
+      var countryMap={'Italy':'Italy','Japan':'Japan','Spain':'Spain','France':'France','Mexico':'Mexico'};
       var dbVal = countryMap[activeFilter] || activeFilter;
       if (r.country !== activeFilter && r.country !== dbVal) return false;
     }
@@ -1275,8 +1398,8 @@ function renderGrid() {
       +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">⭐ Verified</span>':'')
       +'<span class="badge badge-t">⏱ '+tStr+'</span>'+diffBadge+'</div>'
       +(isOwn ? '<div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">'
-        +'<button onclick="event.stopPropagation();event.preventDefault();openEdit(\''+rid+'\')" title="Modifica" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">✏️</button>'
-        +'<button onclick="event.stopPropagation();event.preventDefault();deleteRecipe(\''+rid+'\')" title="Elimina" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">🗑️</button>'
+        +'<button onclick="event.stopPropagation();event.preventDefault();openEdit(\''+rid+'\')" title="Edit" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">✏️</button>'
+        +'<button onclick="event.stopPropagation();event.preventDefault();deleteRecipe(\''+rid+'\')" title="Delete" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.92);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(4px)">🗑️</button>'
         +'</div>' : '')
       +'</div>'
       +'<div class="rcard-body">'
@@ -1310,7 +1433,7 @@ function openDetail(id) {
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
     +'<div style="width:40px;height:40px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600;flex-shrink:0">'+(r.author||'?')[0].toUpperCase()+'</div>'
     +'<div><div style="font-weight:500;font-size:14px">'+(authorName)+'</div><div style="font-size:12px;color:var(--muted)">'+(r.region||'')+'</div></div>'
-    +(r.verified?'<span style="margin-left:auto;background:rgba(201,168,76,.15);color:var(--gold);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500">\u2b50 Verificata</span>':'')
+    +(r.verified?'<span style="margin-left:auto;background:rgba(201,168,76,.15);color:var(--gold);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500">\u2b50 Verified</span>':'')
     +'</div>'
     +'<p style="font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:4px">'+(r.description||'')+'</p>'
     +'<div class="m-sec">Ingredients</div>';
@@ -1323,7 +1446,7 @@ function openDetail(id) {
   });
 
   if (r.notes && r.notes.length) {
-    html += '<div class="auth-box"><div class="auth-box-t">\u2b50 Note di autenticit\u00e0</div><ul>'
+    html += '<div class="auth-box"><div class="auth-box-t">\u2b50 Note di auserscit\u00e0</div><ul>'
       +r.notes.map(function(n){return '<li>'+n+'</li>'}).join('')+'</ul></div>';
   }
 
@@ -1486,7 +1609,7 @@ function initChat() {
   el.innerHTML='';
   var r=ckRecipe;
   var welcome='Ciao! Sono il tuo AI Chef per <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
-  welcome+='Ho già tutto il contesto della ricetta: '+r.ingredients.length+' ingredienti, '+(r.steps||[]).length+' passaggi. ';
+  welcome+='I already have all the recipe context: '+r.ingredients.length+' ingredienti, '+(r.steps||[]).length+' passaggi. ';
   welcome+='Chiedimi qualsiasi cosa — sostituzioni, tempi, tecniche o se qualcosa va storto!';
   appendMsg('ai', welcome);
   updateQuickButtons(0);
@@ -1554,9 +1677,9 @@ async function sendChat() {
   var s=r.steps[ckStep];
   var stepTxt=typeof s==='string'?s:s.text;
   var allSteps=(r.steps||[]).map(function(x,i){return (i+1)+'. '+(typeof x==='string'?x:x.text);}).join(' | ');
-  var ctx='Ricetta: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note autenticità: '+(r.notes||[]).join('; ')+'.';
+  var ctx='Ricetta: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note auserscità: '+(r.notes||[]).join('; ')+'.';
   try {
-    var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Autentico app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
+    var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Ausersco app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
@@ -1601,7 +1724,7 @@ function openAdd(mode) {
   var addTitle = document.getElementById('add-overlay-title');
   if (addTitle) addTitle.textContent = 'Nuova ricetta';
   var saveBtn = document.querySelector('#ph1 .btn-save');
-  if (saveBtn) saveBtn.textContent = 'Pubblica ricetta';
+  if (saveBtn) saveBtn.textContent = 'Publish recipe';
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1704,16 +1827,16 @@ function goPhase(n) {
 
 async function runAI() {
   var raw=document.getElementById('f-raw').value.trim();
-  if(raw.length<15){showToast('\u26a0\ufe0f Scrivi prima la ricetta!');return;}
+  if(raw.length<15){showToast('⚠️ Please write your recipe first!');return;}
   showPhase(2);
   document.getElementById('ai-loading').style.display='';
   document.getElementById('ai-fields').style.display='none';
-  var msgs=['Sto leggendo la ricetta\u2026','Individuo gli ingredienti\u2026','Struttura i passaggi\u2026','Stimo i tempi\u2026','Quasi pronto\u2026'];
+  var msgs=['Reading your recipe…','Identifying ingredients…','Structuring the steps…','Estimating cooking times…','Almost ready…'];
   var mi=0;
   var mlb=document.getElementById('ai-load-msg');
   var miv=setInterval(function(){mlb.textContent=msgs[Math.min(++mi,msgs.length-1)];},1400);
   try {
-    var prompt='Sei un esperto culinario. Struttura la ricetta in JSON PURO. Rispondi SOLO con il JSON, senza markdown, senza testo prima o dopo. Formato ESATTO: {"title":"...","region":"...","country":"uno tra Italia|Giappone|Spagna|Francia|Messico|India|Grecia|Marocco|Altro","time":30,"description":"...","ingredients":[{"name":"...","qty":"..."}],"steps":[{"text":"...","timer":0}],"notes":["..."],"changes":["..."]}. Regole: timer in secondi (0 se nessuno). Ricetta da strutturare:\n\n'+raw;
+    var prompt='You are a culinary expert. Structure the recipe as pure JSON. Respond ONLY with JSON — no markdown, no extra text before or after. EXACT format: {"title":"...","region":"...","country":"one of: Italy|Japan|Spain|France|Mexico|India|Greece|Morocco|Thailand|China|Turkey|Other","time":30,"description":"...","ingredients":[{"name":"...","qty":"..."}],"steps":[{"text":"...","timer":0}],"notes":["..."],"changes":["..."]}. Rules: ALL text fields must be in English. Timer in seconds (0 if none). Recipe to structure:\n\n'+raw;
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
@@ -1722,7 +1845,7 @@ async function runAI() {
         max_tokens:1500,
         temperature:0.1,
         messages:[
-          {role:'system',content:'Sei un esperto culinario. Rispondi SEMPRE e SOLO con JSON valido, niente testo aggiuntivo, niente markdown.'},
+          {role:'system',content:'You are a culinary expert. ALWAYS respond with valid JSON only — no extra text, no markdown, no explanations.'},
           {role:'user',content:prompt}
         ]
       })
@@ -1731,12 +1854,12 @@ async function runAI() {
     if(!res.ok){var errData=await res.json().catch(function(){return{};});throw new Error('Errore API '+res.status+': '+(errData.message||''));}
     var data=await res.json();
     var txt=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
-    if(!txt){throw new Error('Risposta vuota dall\'IA');}
+    if(!txt){throw new Error('Empty response from AI');}
     // Estrai JSON robusto
     txt=txt.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
     var jsonStart=txt.indexOf('{');
     var jsonEnd=txt.lastIndexOf('}');
-    if(jsonStart===-1||jsonEnd===-1){throw new Error('Formato risposta non valido');}
+    if(jsonStart===-1||jsonEnd===-1){throw new Error('Invalid response format');}
     txt=txt.slice(jsonStart,jsonEnd+1);
     var ai;
     try{ai=JSON.parse(txt);}catch(pe){
@@ -1884,7 +2007,7 @@ function applyFade(){
 function addIngRow(name,qty) {
   var i=ingIdx++,dl=document.getElementById('ing-dyn-list');
   var d=document.createElement('div');d.className='dyn-row';d.id='ir'+i;
-  d.innerHTML='<input type="text" placeholder="Ingrediente" data-in="'+i+'" value="'+(name||'')+'">'
+  d.innerHTML='<input type="text" placeholder="Ingredient" data-in="'+i+'" value="'+(name||'')+'">'
     +'<input type="text" placeholder="Quantit\u00e0" data-iq="'+i+'" value="'+(qty||'')+'" style="max-width:140px">'
     +'<button class="rm-btn" onclick="document.getElementById(\'ir'+i+'\').remove()">\u2715</button>';
   dl.appendChild(d);
@@ -2002,8 +2125,8 @@ function addManualIngRow() {
   var div = document.createElement('div');
   div.id = 'mir' + i;
   div.style.cssText = 'display:flex;gap:8px;align-items:center';
-  div.innerHTML = '<input type="text" placeholder="Ingrediente" data-min="'+i+'" style="flex:1;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
-    + '<input type="text" placeholder="Quantità" data-miq="'+i+'" style="width:130px;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+  div.innerHTML = '<input type="text" placeholder="Ingredient" data-min="'+i+'" style="flex:1;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    + '<input type="text" placeholder="Quantity" data-miq="'+i+'" style="width:130px;border:1.5px solid var(--border,#E5E0D8);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
     + '<button type="button" onclick="this.parentNode.remove()" style="width:32px;height:32px;border:1.5px solid var(--border,#E5E0D8);border-radius:8px;background:none;cursor:pointer;font-size:15px;color:var(--muted);flex-shrink:0">✕</button>';
   document.getElementById('ing-manual-list').appendChild(div);
 }
@@ -2126,7 +2249,7 @@ var CURATED = {
   cacio: {
     id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
     cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
-    emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
+    emoji:'🍝', verified:true, author:'Ausersco Editors', likes:2840, time:15, difficulty:'Easy',
     description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
     ingredients:[
       {name:'Tonnarelli or thick spaghetti',qty:'400 g'},
@@ -2146,7 +2269,7 @@ var CURATED = {
   mole: {
     id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
     cover:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&fit=crop',
-    emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
+    emoji:'🫚', verified:true, author:'Ausersco Editors', likes:1920, time:240, difficulty:'Hard',
     description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
     ingredients:[
       {name:'Mulato chillies, dried',qty:'4'},
@@ -2187,7 +2310,7 @@ var CURATED = {
   tagine: {
     id:'c3', title:'Lamb Tagine with Preserved Lemon', region:'Marrakech, Morocco', country:'Morocco',
     cover:'https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop',
-    emoji:'🥘', verified:true, author:'Autentico Editors', likes:1540, time:150, difficulty:'Medium',
+    emoji:'🥘', verified:true, author:'Ausersco Editors', likes:1540, time:150, difficulty:'Medium',
     description:'Slow-cooked lamb with saffron, preserved lemon and olives. The conical tagine lid creates a self-basting steam cycle.',
     ingredients:[
       {name:'Lamb shoulder, bone-in pieces',qty:'1.2 kg'},
@@ -2219,7 +2342,7 @@ var CURATED = {
   pho: {
     id:'c4', title:'Phở Bò Hà Nội', region:'Hanoi, Vietnam', country:'Vietnam',
     cover:'https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop',
-    emoji:'🍜', verified:true, author:'Autentico Editors', likes:2210, time:360, difficulty:'Medium',
+    emoji:'🍜', verified:true, author:'Ausersco Editors', likes:2210, time:360, difficulty:'Medium',
     description:'Northern-style pho — clear, clean, intensely aromatic. The 6-hour bone broth is non-negotiable.',
     ingredients:[
       {name:'Beef bones (knuckle + neck)',qty:'2 kg'},
@@ -2251,7 +2374,7 @@ var CURATED = {
   biryani: {
     id:'c5', title:'Hyderabadi Dum Biryani', region:'Hyderabad, India', country:'India',
     cover:'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop',
-    emoji:'🍚', verified:true, author:'Autentico Editors', likes:1890, time:180, difficulty:'Hard',
+    emoji:'🍚', verified:true, author:'Ausersco Editors', likes:1890, time:180, difficulty:'Hard',
     description:'The dum (sealed steam) technique locks saffron, caramelised onion and whole spice aromas into every grain of rice.',
     ingredients:[
       {name:'Bone-in chicken pieces',qty:'1 kg'},
@@ -2280,7 +2403,7 @@ var CURATED = {
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
     cover:'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?q=80&w=800&auto=format&fit=crop',
-    emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
+    emoji:'🐟', verified:true, author:'Ausersco Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
       {name:'Mixed Mediterranean fish (scorpionfish, gurnard, monkfish, sea bass)',qty:'2 kg total'},
@@ -2323,11 +2446,11 @@ function openCurated(key) {
 // ══════════════════════════════════════════════════════════════════
 //  FRIENDS & USER SEARCH
 // ══════════════════════════════════════════════════════════════════
-var following = JSON.parse(localStorage.getItem('autentico_following') || '[]'); // [{id,username,avatar}]
+var following = JSON.parse(localStorage.getItem('ausersco_following') || '[]'); // [{id,username,avatar}]
 var viewingUserId = null;
 
 function saveFollowing() {
-  localStorage.setItem('autentico_following', JSON.stringify(following));
+  localStorage.setItem('ausersco_following', JSON.stringify(following));
 }
 
 async function searchUsers(q) {
@@ -2568,7 +2691,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="auth-overlay" onclick="if(event.target===this)closeAuthModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:420px;border-radius:24px;padding:32px;position:relative;animation:slideUp .3s ease">
     <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;background:#eee;color:#333;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Welcome to Autentico</h2>
+    <h2 style="font-family:var(--serif,serif);font-size:22px;margin-bottom:6px">Welcome to Ausersco</h2>
     <p style="font-size:14px;color:#7A7570;margin-bottom:20px">Sign in to publish recipes, like and comment.</p>
     <div style="display:flex;background:#f5f5f5;border-radius:12px;padding:3px;margin-bottom:20px">
       <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:8px;border:none;background:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.1)">Sign in</button>
