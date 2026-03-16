@@ -360,6 +360,82 @@ footer p{font-size:13px;color:var(--muted)}
 .section-search:focus-within svg{color:var(--terra)}
 .section-search .clear-search{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:2px;display:none;line-height:1}
 .section-search input:not(:placeholder-shown) ~ .clear-search{display:block}
+
+/* ── CURATED SECTION ────────────────────────────────────────────────────── */
+.curated-section{padding:56px 80px;background:linear-gradient(135deg,#1a0f0a 0%,#2d1a12 100%);position:relative;overflow:hidden}
+.curated-section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C4614A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.curated-section .section-title{color:#fff;margin-bottom:8px}
+.curated-subtitle{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:32px}
+.curated-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.ccard{border-radius:20px;overflow:hidden;position:relative;height:340px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.ccard img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.ccard:hover img{transform:scale(1.08)}
+.ccard-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.2) 55%,transparent 100%)}
+.ccard-body{position:absolute;bottom:0;left:0;right:0;padding:20px 18px}
+.ccard-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:#1a0f0a;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.ccard-title{font-family:var(--serif);font-size:20px;color:#fff;font-weight:600;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.ccard-sub{font-size:12px;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1px}
+.ccard-meta{display:flex;gap:12px;margin-top:8px}
+.ccard-pill{background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:20px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1)}
+
+/* ── FRIENDS SECTION ────────────────────────────────────────────────────── */
+.friends-section{padding:56px 80px}
+.friends-section .section-title{margin-bottom:8px}
+.friends-subtitle{color:var(--muted);font-size:14px;margin-bottom:28px}
+.friends-search-row{display:flex;gap:12px;margin-bottom:32px;align-items:center}
+.friends-search{position:relative;flex:1;max-width:400px}
+.friends-search input{width:100%;border:2px solid var(--border);border-radius:14px;padding:12px 16px 12px 44px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;transition:all var(--transition)}
+.friends-search input:focus{border-color:var(--terra);box-shadow:0 0 0 3px rgba(196,97,74,.1)}
+.friends-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;width:16px;height:16px}
+.friends-list{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.friend-chip{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:40px;padding:8px 16px 8px 8px;cursor:pointer;transition:all var(--transition);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.friend-chip:hover{border-color:var(--terra);transform:translateY(-1px);box-shadow:0 4px 16px rgba(196,97,74,.2)}
+.friend-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--terra2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden}
+.friend-av img{width:100%;height:100%;object-fit:cover}
+.friend-name{font-size:13px;font-weight:600}
+.friend-count{font-size:11px;color:var(--muted);margin-top:1px}
+.friend-chip .remove-friend{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0 0 0 4px;line-height:1;transition:color .2s}
+.friend-chip .remove-friend:hover{color:#e74c3c}
+.friends-feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.no-friends{text-align:center;padding:60px 40px;color:var(--muted)}
+.no-friends-icon{font-size:48px;margin-bottom:16px}
+
+/* ── USER SEARCH RESULTS ────────────────────────────────────────────────── */
+.user-search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1px solid var(--border);z-index:200;overflow:hidden;max-height:280px;overflow-y:auto;display:none}
+.user-search-results.show{display:block}
+.user-result-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
+.user-result-item:last-child{border-bottom:none}
+.user-result-item:hover{background:#faf7f2}
+.user-result-name{font-size:14px;font-weight:600}
+.user-result-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.btn-follow{background:var(--terra);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all var(--transition);white-space:nowrap}
+.btn-follow:hover{background:var(--terra2)}
+.btn-follow.following{background:#f0f0f0;color:var(--muted)}
+
+/* ── PUBLIC USER PROFILE OVERLAY ───────────────────────────────────────── */
+#user-profile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:800;overflow-y:auto;backdrop-filter:blur(4px);align-items:flex-start;justify-content:center;padding:40px 20px}
+#user-profile-overlay.open{display:flex}
+.user-profile-modal{background:var(--bg);width:100%;max-width:680px;border-radius:28px;overflow:hidden;animation:slideUp .28s ease;box-shadow:0 32px 80px rgba(0,0,0,.22)}
+.up-cover{height:140px;background:linear-gradient(135deg,var(--terra),var(--terra2));position:relative;display:flex;align-items:flex-end;padding:0 28px 0}
+.up-cover-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.up-avatar{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--terra);overflow:hidden;position:relative;top:36px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.up-avatar img{width:100%;height:100%;object-fit:cover}
+.up-body{padding:48px 28px 32px}
+.up-name{font-family:var(--serif);font-size:24px;font-weight:600;margin-bottom:4px}
+.up-email{font-size:13px;color:var(--muted);margin-bottom:20px}
+.up-stats{display:flex;gap:24px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.up-stat-n{font-family:var(--serif);font-size:22px;font-weight:600}
+.up-stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.up-actions{display:flex;gap:10px;margin-bottom:28px}
+.up-recipes-title{font-family:var(--serif);font-size:18px;margin-bottom:16px}
+.up-recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.up-recipe-card{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition)}
+.up-recipe-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.up-recipe-img{height:90px;background:#f0ede8;overflow:hidden}
+.up-recipe-img img{width:100%;height:100%;object-fit:cover}
+.up-recipe-info{padding:8px 10px}
+.up-recipe-info div{font-size:13px;font-weight:500;line-height:1.3}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -370,6 +446,11 @@ footer p{font-size:13px;color:var(--muted)}
 <!-- HEADER -->
 <header>
   <a class="logo" href="#">Autenti<span>co</span></a>
+  <nav style="display:flex;gap:4px">
+    <a href="#ricette" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Recipes</a>
+    <a href="#curated" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Editor's Picks</a>
+    <a href="#friends-section" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Friends</a>
+  </nav>
   <div class="hdr-right">
     <button class="btn-add-hdr" onclick="openChoice()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -429,6 +510,149 @@ footer p{font-size:13px;color:var(--muted)}
   </div>
   <div class="recipes-grid" id="recipes-grid"></div>
 </section>
+
+
+<!-- ══ CURATED: EDITOR'S PICKS ══ -->
+<section class="curated-section" id="curated">
+  <h2 class="section-title">✦ Editor's Picks</h2>
+  <p class="curated-subtitle">Hyper-local recipes handpicked for their authenticity — each one a window into a culture.</p>
+  <div class="curated-grid" id="curated-grid">
+
+    <div class="ccard" onclick="openCurated('cacio')">
+      <img src="https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?q=80&w=800&fit=crop" alt="Cacio e Pepe" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Cacio e Pepe</div>
+        <div class="ccard-sub">Rome, Italy · 15 min</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🍝 Pasta</span>
+          <span class="ccard-pill">Easy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccard" onclick="openCurated('mole')">
+      <img src="https://images.unsplash.com/photo-1612715353116-7e0a9dda5a15?q=80&w=800&fit=crop" alt="Mole Negro" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Mole Negro Oaxaqueño</div>
+        <div class="ccard-sub">Oaxaca, Mexico · 4 h</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🫚 Sauce</span>
+          <span class="ccard-pill">Hard</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccard" onclick="openCurated('tagine')">
+      <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop" alt="Lamb Tagine" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Lamb Tagine with Preserved Lemon</div>
+        <div class="ccard-sub">Marrakech, Morocco · 2 h 30 min</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🥩 Stew</span>
+          <span class="ccard-pill">Medium</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccard" onclick="openCurated('pho')">
+      <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop" alt="Pho Bo" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Phở Bò Hà Nội</div>
+        <div class="ccard-sub">Hanoi, Vietnam · 6 h</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🍜 Soup</span>
+          <span class="ccard-pill">Medium</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccard" onclick="openCurated('biryani')">
+      <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop" alt="Hyderabadi Biryani" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Hyderabadi Dum Biryani</div>
+        <div class="ccard-sub">Hyderabad, India · 3 h</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🍚 Rice</span>
+          <span class="ccard-pill">Hard</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccard" onclick="openCurated('bouillabaisse')">
+      <img src="https://images.unsplash.com/photo-1548943487-a2e4e43b4853?q=80&w=800&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <div class="ccard-ov"></div>
+      <div class="ccard-body">
+        <div class="ccard-badge">⭐ Editor's Pick</div>
+        <div class="ccard-title">Bouillabaisse Marseillaise</div>
+        <div class="ccard-sub">Marseille, France · 2 h</div>
+        <div class="ccard-meta">
+          <span class="ccard-pill">🐟 Seafood</span>
+          <span class="ccard-pill">Hard</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FRIENDS SECTION ══ -->
+<section class="friends-section" id="friends-section">
+  <h2 class="section-title">👥 Friends' Recipes</h2>
+  <p class="friends-subtitle">Follow other cooks and see what they're making.</p>
+
+  <div class="friends-search-row">
+    <div class="friends-search" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="friend-search-input" placeholder="Search users by name…" oninput="searchUsers(this.value)" autocomplete="off">
+      <div class="user-search-results" id="user-search-results"></div>
+    </div>
+  </div>
+
+  <div class="friends-list" id="friends-chips"></div>
+
+  <div id="friends-feed-wrap">
+    <div class="no-friends" id="no-friends-msg">
+      <div class="no-friends-icon">🧑‍🍳</div>
+      <div style="font-size:16px;font-weight:500;margin-bottom:8px">Follow some cooks!</div>
+      <div style="font-size:14px">Search for users above and follow them to see their recipes here.</div>
+    </div>
+    <div class="friends-feed" id="friends-feed" style="display:none"></div>
+  </div>
+</section>
+
+<!-- ══ PUBLIC USER PROFILE OVERLAY ══ -->
+<div id="user-profile-overlay" onclick="if(event.target===this)closeUserProfile()">
+  <div class="user-profile-modal">
+    <div class="up-cover">
+      <button class="up-cover-close" onclick="closeUserProfile()">✕</button>
+      <div class="up-avatar" id="up-avatar">?</div>
+    </div>
+    <div class="up-body">
+      <div class="up-name" id="up-name">User</div>
+      <div class="up-email" id="up-email"></div>
+      <div class="up-stats">
+        <div><div class="up-stat-n" id="up-stat-recipes">0</div><div class="up-stat-l">Recipes</div></div>
+        <div><div class="up-stat-n" id="up-stat-likes">0</div><div class="up-stat-l">Total likes</div></div>
+      </div>
+      <div class="up-actions">
+        <button id="up-follow-btn" class="btn-primary" style="padding:10px 24px;font-size:13px" onclick="toggleFollowUser()">Follow</button>
+        <button onclick="closeUserProfile()" style="padding:10px 20px;border-radius:30px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-family:var(--sans)">Close</button>
+      </div>
+      <div class="up-recipes-title">Recipes by <span id="up-name-short"></span></div>
+      <div class="up-recipes-grid" id="up-recipes-grid"></div>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="foot-logo">Autenti<span>co</span></div>
@@ -1019,8 +1243,9 @@ function renderGrid() {
         +'</div>' : '')
       +'</div>'
       +'<div class="rcard-body">'
-      +'<div class="rcard-author"><div class="rcard-av">'+av+'</div>'
-      +'<div><div class="rcard-an">'+authorName+'</div><div class="rcard-ar">'+(r.region||'')+'</div></div></div>'
+      +'<div class="rcard-author" data-uid="'+(r.user_id||'')+'" data-uname="'+encodeURIComponent(authorName)+'" onclick="event.stopPropagation();event.preventDefault();var d=this.dataset;if(d.uid)openUserProfile(d.uid,d.uname)" style="cursor:pointer" title="View profile">'
+      +'<div class="rcard-av">'+av+'</div>'
+      +'<div><div class="rcard-an" style="text-decoration:underline dotted;text-underline-offset:2px">'+authorName+'</div><div class="rcard-ar">'+(r.region||'')+'</div></div></div>'
       +'<div class="rcard-title">'+r.title+'</div>'
       +'<div class="rcard-desc">'+(r.description||'')+'</div>'
       +'<div class="rcard-footer">'
@@ -1852,10 +2077,425 @@ function openAIAdd() {
 
 
 
+
+
+// ══════════════════════════════════════════════════════════════════
+//  CURATED RECIPES DATA
+// ══════════════════════════════════════════════════════════════════
+var CURATED = {
+  cacio: {
+    id:'c1', title:'Cacio e Pepe', region:'Rome, Italy', country:'Italy',
+    cover:'https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?q=80&w=800&fit=crop',
+    emoji:'🍝', verified:true, author:'Autentico Editors', likes:2840, time:15, difficulty:'Easy',
+    description:'Three ingredients, one Roman masterpiece. The creaminess comes purely from cheese, pepper and starchy pasta water — zero cream.',
+    ingredients:[
+      {name:'Tonnarelli or thick spaghetti',qty:'400 g'},
+      {name:'Pecorino Romano, finely grated',qty:'200 g'},
+      {name:'Black pepper, coarsely ground',qty:'2 tsp'}
+    ],
+    steps:[
+      {text:'Toast the pepper in a dry wide pan over medium heat until fragrant, about 1 minute. Set aside.',timer:60},
+      {text:'Bring a pot of lightly salted water to a boil (less water than usual for more starch). Cook pasta 2 min under al dente.',timer:null},
+      {text:'Mix grated Pecorino with 4 tbsp of warm pasta water to form a smooth, creamy paste.',timer:null},
+      {text:'Reserve a full cup of pasta water. Drain pasta and add to the pan with pepper over low heat.',timer:null},
+      {text:'Remove from heat completely. Add the cheese paste and toss vigorously, adding pasta water spoon by spoon until glossy and saucy.',timer:null},
+      {text:'Plate immediately with extra pepper and Pecorino.',timer:null}
+    ],
+    notes:['Never add oil or cream — the emulsion is everything.','The pan must be off heat when you add cheese or it will clump.','Use less cooking water than normal to maximise starch.']
+  },
+  mole: {
+    id:'c2', title:'Mole Negro Oaxaqueño', region:'Oaxaca, Mexico', country:'Mexico',
+    cover:'https://images.unsplash.com/photo-1612715353116-7e0a9dda5a15?q=80&w=800&fit=crop',
+    emoji:'🫚', verified:true, author:'Autentico Editors', likes:1920, time:240, difficulty:'Hard',
+    description:'The king of Mexican sauces — 30+ ingredients, three types of dried chilli, and a patience of hours. Worth every minute.',
+    ingredients:[
+      {name:'Mulato chillies, dried',qty:'4'},
+      {name:'Ancho chillies, dried',qty:'4'},
+      {name:'Pasilla chillies, dried',qty:'4'},
+      {name:'Chihuacle negro chillies',qty:'2'},
+      {name:'Dark chocolate 70%',qty:'60 g'},
+      {name:'Plantain, ripe',qty:'1'},
+      {name:'Tomatoes',qty:'3'},
+      {name:'Tomatillos',qty:'4'},
+      {name:'Sesame seeds, toasted',qty:'3 tbsp'},
+      {name:'Pumpkin seeds, toasted',qty:'3 tbsp'},
+      {name:'Raisins',qty:'2 tbsp'},
+      {name:'Onion',qty:'1'},
+      {name:'Garlic cloves',qty:'4'},
+      {name:'Stale tortilla',qty:'1'},
+      {name:'Chicken broth',qty:'1 L'},
+      {name:'Avocado leaf, dried',qty:'2'},
+      {name:'Cinnamon stick',qty:'1/2'},
+      {name:'Black peppercorns',qty:'5'},
+      {name:'Cumin seeds',qty:'1/4 tsp'},
+      {name:'Cloves',qty:'3'},
+      {name:'Lard or vegetable oil',qty:'4 tbsp'},
+      {name:'Salt',qty:'to taste'}
+    ],
+    steps:[
+      {text:'Toast each type of dried chilli separately in a dry pan until they just begin to blister — do not burn. Soak in hot water 30 min.',timer:1800},
+      {text:'Char tomatoes, tomatillos, onion and garlic directly over a flame or in a cast iron pan until blackened on all sides.',timer:null},
+      {text:'Fry the tortilla piece and plantain in oil until dark. Fry sesame seeds, pumpkin seeds, raisins, cinnamon, peppercorns, cloves and cumin in separate batches.',timer:null},
+      {text:'Blend the soaked chillies (discard water) with charred vegetables into a smooth paste. Blend the fried ingredients separately.',timer:null},
+      {text:'Heat lard in a large heavy pot. Add the chilli paste — it will spit. Fry stirring constantly for 15 minutes.',timer:900},
+      {text:'Add the fried-ingredient paste and avocado leaves. Stir and cook 10 more minutes.',timer:600},
+      {text:'Add broth gradually, stirring constantly. Simmer on very low heat 45 minutes.',timer:2700},
+      {text:'Add chocolate, stir until melted. Season. The mole should coat the back of a spoon thickly.',timer:null}
+    ],
+    notes:['Mole improves enormously the next day.','The tortilla acts as a natural thickener.','Char the vegetables until nearly black — that bitterness is essential.']
+  },
+  tagine: {
+    id:'c3', title:'Lamb Tagine with Preserved Lemon', region:'Marrakech, Morocco', country:'Morocco',
+    cover:'https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&fit=crop',
+    emoji:'🥘', verified:true, author:'Autentico Editors', likes:1540, time:150, difficulty:'Medium',
+    description:'Slow-cooked lamb with saffron, preserved lemon and olives. The conical tagine lid creates a self-basting steam cycle.',
+    ingredients:[
+      {name:'Lamb shoulder, bone-in pieces',qty:'1.2 kg'},
+      {name:'Preserved lemons',qty:'2'},
+      {name:'Green olives, pitted',qty:'100 g'},
+      {name:'Onions, grated',qty:'2'},
+      {name:'Garlic cloves, minced',qty:'4'},
+      {name:'Fresh coriander, chopped',qty:'1 bunch'},
+      {name:'Fresh parsley, chopped',qty:'1/2 bunch'},
+      {name:'Saffron threads',qty:'1/2 tsp'},
+      {name:'Ground ginger',qty:'1 tsp'},
+      {name:'Ground cumin',qty:'1 tsp'},
+      {name:'Ground cinnamon',qty:'1/2 tsp'},
+      {name:'Turmeric',qty:'1/2 tsp'},
+      {name:'Olive oil',qty:'4 tbsp'},
+      {name:'Salt & pepper',qty:'to taste'}
+    ],
+    steps:[
+      {text:'Steep saffron in 3 tbsp warm water for 15 minutes.',timer:900},
+      {text:'Mix lamb with grated onion, garlic, coriander, parsley, all spices and olive oil. Marinate 1 hour minimum.',timer:3600},
+      {text:'Heat the tagine base on low flame. Brown the lamb pieces on all sides.',timer:null},
+      {text:'Add saffron water and enough water to come 1 cm up the sides. Cover with the conical lid.',timer:null},
+      {text:'Cook on lowest possible flame for 1 hour 30 minutes. Check water level occasionally.',timer:5400},
+      {text:'Add preserved lemon quarters (rind only) and olives in the last 20 minutes.',timer:1200},
+      {text:'Serve directly from the tagine with crusty bread for sauce-mopping.',timer:null}
+    ],
+    notes:['Preserved lemons are the soul of this dish — fresh lemon will not substitute.','Low and slow is the rule: tagines are not meant for high heat.','If using a clay tagine, soak it in water overnight before first use.']
+  },
+  pho: {
+    id:'c4', title:'Phở Bò Hà Nội', region:'Hanoi, Vietnam', country:'Vietnam',
+    cover:'https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=800&fit=crop',
+    emoji:'🍜', verified:true, author:'Autentico Editors', likes:2210, time:360, difficulty:'Medium',
+    description:'Northern-style pho — clear, clean, intensely aromatic. The 6-hour bone broth is non-negotiable.',
+    ingredients:[
+      {name:'Beef bones (knuckle + neck)',qty:'2 kg'},
+      {name:'Beef brisket',qty:'500 g'},
+      {name:'Beef sirloin (for serving raw)',qty:'200 g'},
+      {name:'Flat rice noodles',qty:'400 g'},
+      {name:'Charred onion, halved',qty:'2'},
+      {name:'Charred ginger, 5cm piece',qty:'1'},
+      {name:'Star anise',qty:'5'},
+      {name:'Cinnamon stick',qty:'1'},
+      {name:'Cloves',qty:'4'},
+      {name:'Black cardamom pods',qty:'2'},
+      {name:'Coriander seeds',qty:'1 tsp'},
+      {name:'Fish sauce',qty:'3 tbsp'},
+      {name:'Rock sugar',qty:'1 tbsp'},
+      {name:'Salt',qty:'to taste'}
+    ],
+    steps:[
+      {text:'Blanch bones in boiling water 5 minutes. Discard water and rinse bones clean.',timer:300},
+      {text:'Char the onion and ginger directly over a gas flame or under the broiler until blackened.',timer:null},
+      {text:'Toast spices in a dry pan until aromatic, 2 minutes. Bundle in cheesecloth.',timer:120},
+      {text:'Cover bones with 4 litres cold water. Bring to gentle boil then simmer 6 hours, skimming every 30 min.',timer:21600},
+      {text:'Add brisket in the last 90 min of cooking. Remove and slice thinly when done.',timer:null},
+      {text:'Strain broth. Season with fish sauce, rock sugar and salt. It should be clear and golden.',timer:null},
+      {text:'Cook noodles per packet. Arrange in bowls with brisket slices and raw sirloin. Ladle boiling broth over (it will cook the raw meat).',timer:null}
+    ],
+    notes:['The char on the onion and ginger is what gives the broth its signature smoky sweetness.','Northern pho uses minimal garnish — bean sprouts and extra herbs are the Southern style.','The broth must be at a rolling boil when poured to properly cook the raw beef.']
+  },
+  biryani: {
+    id:'c5', title:'Hyderabadi Dum Biryani', region:'Hyderabad, India', country:'India',
+    cover:'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&fit=crop',
+    emoji:'🍚', verified:true, author:'Autentico Editors', likes:1890, time:180, difficulty:'Hard',
+    description:'The dum (sealed steam) technique locks saffron, caramelised onion and whole spice aromas into every grain of rice.',
+    ingredients:[
+      {name:'Bone-in chicken pieces',qty:'1 kg'},
+      {name:'Basmati rice, soaked 30 min',qty:'500 g'},
+      {name:'Yoghurt',qty:'250 g'},
+      {name:'Fried onions (birista)',qty:'3 large onions'},
+      {name:'Fresh mint',qty:'1 bunch'},
+      {name:'Saffron, steeped in warm milk',qty:'1/2 tsp in 4 tbsp'},
+      {name:'Ghee',qty:'4 tbsp'},
+      {name:'Garam masala',qty:'1 tsp'},
+      {name:'Biryani spice blend (whole)',qty:'2 bay leaves, 3 cardamom, 1 cinnamon, 4 cloves'},
+      {name:'Green chillies, slit',qty:'3'},
+      {name:'Ginger-garlic paste',qty:'2 tbsp'},
+      {name:'Salt',qty:'to taste'}
+    ],
+    steps:[
+      {text:'Marinate chicken with yoghurt, ginger-garlic paste, garam masala, half the fried onions, green chillies and salt. Minimum 2 hours.',timer:7200},
+      {text:'Par-cook rice in salted boiling water with whole spices until 70% done (still has a bite). Drain.',timer:null},
+      {text:'In a heavy pot, layer marinated chicken on the bottom.',timer:null},
+      {text:'Add a layer of rice, then mint, fried onions and ghee. Drizzle saffron milk. Repeat layers, finishing with saffron rice on top.',timer:null},
+      {text:'Seal the pot tightly with foil then the lid. Cook on high 5 minutes then lowest flame 25 minutes.',timer:1800},
+      {text:'Rest 10 minutes sealed before opening. Fold gently to mix layers without breaking rice.',timer:600}
+    ],
+    notes:['Birista (deep-fried onions) is the single most important flavour element — do not skip.','The dum seal traps steam: do not open until resting time is done.','Soaking basmati is essential for separate, long grains.']
+  },
+  bouillabaisse: {
+    id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
+    cover:'https://images.unsplash.com/photo-1548943487-a2e4e43b4853?q=80&w=800&fit=crop',
+    emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
+    description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
+    ingredients:[
+      {name:'Mixed Mediterranean fish (scorpionfish, gurnard, monkfish, sea bass)',qty:'2 kg total'},
+      {name:'Mussels and clams',qty:'500 g'},
+      {name:'Onion, sliced',qty:'1'},
+      {name:'Fennel bulb, sliced',qty:'1'},
+      {name:'Tomatoes, crushed',qty:'4'},
+      {name:'Garlic cloves',qty:'4'},
+      {name:'Saffron threads',qty:'1 tsp'},
+      {name:'Orange zest',qty:'1 strip'},
+      {name:'Fresh thyme, bay, parsley stems',qty:'1 bouquet garni'},
+      {name:'Pastis or dry white wine',qty:'100 ml'},
+      {name:'Olive oil',qty:'5 tbsp'},
+      {name:'Baguette slices, toasted',qty:'8'},
+      {name:'For rouille: garlic, saffron, egg yolk, olive oil, bread',qty:''}
+    ],
+    steps:[
+      {text:'Make fish stock: simmer fish heads and bones with onion, fennel, tomato, garlic, bouquet garni and saffron in 2 L water for 30 min. Strain and reserve.',timer:1800},
+      {text:'Heat olive oil in a wide pot. Sauté sliced onion and fennel until soft. Add garlic and pastis, cook 2 min.',timer:120},
+      {text:'Add tomatoes and orange zest. Cook 10 min until thick.',timer:600},
+      {text:'Add the strained fish stock. Bring to a vigorous boil (the boiling emulsifies the oil into the broth).',timer:null},
+      {text:'Add firmest fish first (monkfish), then delicate fish, then shellfish. Cook 8-10 min at a rolling boil.',timer:540},
+      {text:'Make rouille: pound garlic and saffron in a mortar, add egg yolk, then drizzle in olive oil to form a thick aioli-like sauce.',timer:null},
+      {text:'Serve broth first with croutons spread with rouille, then fish separately on a platter.',timer:null}
+    ],
+    notes:['Bouillabaisse must boil vigorously — this is what creates the emulsified, milky broth.',"Rouille is not optional.","Use as many fish varieties as possible — variety is the point."]
+  }
+};
+
+function openCurated(key) {
+  var r = CURATED[key];
+  if (!r) return;
+  // Inject into recipes array temporarily if not already there
+  if (!recipes.find(function(x){return x.id===r.id;})) {
+    recipes.push(r);
+  }
+  openDetail(r.id);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FRIENDS & USER SEARCH
+// ══════════════════════════════════════════════════════════════════
+var following = JSON.parse(localStorage.getItem('autentico_following') || '[]'); // [{id,username,avatar}]
+var viewingUserId = null;
+
+function saveFollowing() {
+  localStorage.setItem('autentico_following', JSON.stringify(following));
+}
+
+async function searchUsers(q) {
+  var box = document.getElementById('user-search-results');
+  if (!q || q.trim().length < 2) { box.classList.remove('show'); box.innerHTML=''; return; }
+  if (!SUPABASE_CONFIGURED) return;
+  var res = await sb.from('profiles').select('id,username,avatar_url').ilike('username','%'+q.trim()+'%').limit(8);
+  if (res.error || !res.data) { box.classList.remove('show'); return; }
+  var users = res.data.filter(function(u){ return !currentUser || u.id !== currentUser.id; });
+  if (!users.length) { box.innerHTML='<div style="padding:14px 16px;font-size:13px;color:var(--muted)">No users found.</div>'; box.classList.add('show'); return; }
+  box.innerHTML = users.map(function(u) {
+    var isF = following.some(function(f){return f.id===u.id;});
+    var av = u.avatar_url ? '<img src="'+u.avatar_url+'" style="width:100%;height:100%;object-fit:cover">' : (u.username||'?')[0].toUpperCase();
+    var eid = u.id.replace(/[^a-zA-Z0-9_-]/g,'_');
+    return '<div class="user-result-item" data-uid="'+u.id+'" data-uname="'+encodeURIComponent(u.username||'')+'" onclick="var d=this.dataset;openUserProfile(d.uid,d.uname)">'
+      + '<div class="friend-av" style="width:36px;height:36px;flex-shrink:0">'+av+'</div>'
+      + '<div style="flex:1"><div class="user-result-name">'+(u.username||'Anonymous')+'</div></div>'
+      + '<button class="btn-follow '+(isF?'following':'')+'" data-uid="'+u.id+'" data-uname="'+encodeURIComponent(u.username||'')+'" data-uav="'+encodeURIComponent(u.avatar_url||'')+'" onclick="event.stopPropagation();var d=this.dataset;toggleFollow(d.uid,d.uname,d.uav,this)">'
+      + (isF?'Following':'Follow')+'</button></div>';
+  }).join('');
+  box.classList.add('show');
+}
+
+// Close search results when clicking outside
+document.addEventListener('click', function(e) {
+  var box = document.getElementById('user-search-results');
+  var wrap = document.querySelector('.friends-search');
+  if (box && wrap && !wrap.contains(e.target)) box.classList.remove('show');
+});
+
+function toggleFollow(uid, usernameEnc, avatarEnc, btn) {
+  var username = decodeURIComponent(usernameEnc);
+  var avatar = decodeURIComponent(avatarEnc);
+  var idx = following.findIndex(function(f){return f.id===uid;});
+  if (idx >= 0) {
+    following.splice(idx, 1);
+    if (btn) { btn.textContent='Follow'; btn.classList.remove('following'); }
+  } else {
+    following.push({id:uid, username:username, avatar:avatar});
+    if (btn) { btn.textContent='Following'; btn.classList.add('following'); }
+  }
+  saveFollowing();
+  renderFriendsChips();
+  loadFriendsFeed();
+}
+
+function renderFriendsChips() {
+  var el = document.getElementById('friends-chips');
+  if (!el) return;
+  if (!following.length) { el.innerHTML=''; return; }
+  el.innerHTML = following.map(function(f) {
+    var av = f.avatar ? '<img src="'+f.avatar+'" style="width:100%;height:100%;object-fit:cover">' : (f.username||'?')[0].toUpperCase();
+    return '<div class="friend-chip" data-uid="'+f.id+'" data-uname="'+encodeURIComponent(f.username||'')+'" onclick="var d=this.dataset;openUserProfile(d.uid,d.uname)">'
+      + '<div class="friend-av">'+av+'</div>'
+      + '<div><div class="friend-name">'+(f.username||'User')+'</div><div class="friend-count">Following</div></div>'
+      + '<button class="remove-friend" data-uid="'+f.id+'" data-uname="'+encodeURIComponent(f.username||'')+'" data-uav="'+encodeURIComponent(f.avatar||'')+'" onclick="event.stopPropagation();var d=this.dataset;toggleFollow(d.uid,d.uname,d.uav,null)" title="Unfollow">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+async function loadFriendsFeed() {
+  var feed = document.getElementById('friends-feed');
+  var noMsg = document.getElementById('no-friends-msg');
+  if (!feed || !noMsg) return;
+  if (!following.length) {
+    feed.style.display='none'; noMsg.style.display='block'; return;
+  }
+  noMsg.style.display='none'; feed.style.display='grid';
+  feed.innerHTML='<div style="grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)">Loading friends\u2019 recipes…</div>';
+  if (!SUPABASE_CONFIGURED) { feed.innerHTML='<div style="grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)">Connect Supabase to see friends\u2019 recipes.</div>'; return; }
+  var ids = following.map(function(f){return f.id;});
+  var res = await sb.from('recipes').select('*, profiles(username,avatar_url)').in('user_id', ids).order('created_at',{ascending:false}).limit(20);
+  if (res.error || !res.data || !res.data.length) {
+    feed.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted)">Your friends haven\u2019t posted any recipes yet.</div>'; return;
+  }
+  var frFeed = res.data.map(function(r){
+    r.time = r.time_minutes||r.time||30;
+    r.author = (r.profiles&&r.profiles.username)||'Anonymous';
+    r.cover = r.cover_url||r.cover||'';
+    return r;
+  });
+  // Add to recipes array if not already there
+  frFeed.forEach(function(r){
+    if (!recipes.find(function(x){return x.id===r.id;})) recipes.push(r);
+  });
+  feed.innerHTML = frFeed.map(function(r) {
+    var rid = String(r.id).replace(/'/g,'');
+    var mins = r.time_minutes||r.time||30;
+    var tStr = mins<60?mins+'min':Math.floor(mins/60)+'h'+(mins%60?mins%60+'m':'');
+    var authorName = (r.profiles&&r.profiles.username)||r.author||'Anonymous';
+    var av = authorName[0].toUpperCase();
+    var coverImg = r.cover_url||r.cover||'';
+    var imgHtml = coverImg
+      ? '<img src="'+coverImg+'" alt="'+r.title+'" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'">'
+      : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:48px">'+(r.emoji||'🍽️')+'</div>';
+    return '<a class="rcard" href="#" onclick="openDetail(\''+ rid +'\');return false">'
+      +'<div class="rcard-img">'+imgHtml
+      +'<div class="rcard-badges">'+(r.verified?'<span class="badge badge-v">⭐ Verified</span>':'')+'<span class="badge badge-t">⏱ '+tStr+'</span></div>'
+      +'</div>'
+      +'<div class="rcard-body">'
+      +'<div class="rcard-author" data-uid="'+r.user_id+'" data-uname="'+encodeURIComponent(authorName)+'" onclick="event.stopPropagation();event.preventDefault();var d=this.dataset;openUserProfile(d.uid,d.uname)" style="cursor:pointer">'
+      +'<div class="rcard-av">'+av+'</div>'
+      +'<div><div class="rcard-an">'+authorName+'</div><div class="rcard-ar">'+(r.region||'')+'</div></div></div>'
+      +'<div class="rcard-title">'+r.title+'</div>'
+      +'<div class="rcard-desc">'+(r.description||'')+'</div>'
+      +'<div class="rcard-footer">'
+      +'<div class="rcard-likes '+(userLikes.has(String(r.id))?'liked':'')+'" onclick="event.stopPropagation();event.preventDefault();toggleLike(this.dataset.rid,this)" data-rid="'+rid+'" style="cursor:pointer">'
+      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(userLikes.has(String(r.id))?'var(--terra)':'none')+'" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+      +'<span id="likes-fr-'+rid+'">'+(r.likes_count||r.likes||0)+'</span></div>'
+      +'<button class="btn-cook" onclick="event.stopPropagation();event.preventDefault();startCooking(\''+rid+'\')" >Cook →</button>'
+      +'</div></div></a>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PUBLIC USER PROFILE
+// ══════════════════════════════════════════════════════════════════
+var viewingUserData = null;
+
+async function openUserProfile(uid, usernameEnc) {
+  viewingUserId = uid;
+  var username = decodeURIComponent(usernameEnc||'');
+  var ov = document.getElementById('user-profile-overlay');
+  if (!ov) return;
+  ov.classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // Set basic info immediately
+  document.getElementById('up-name').textContent = username || 'User';
+  document.getElementById('up-name-short').textContent = username || 'User';
+  document.getElementById('up-avatar').textContent = (username||'?')[0].toUpperCase();
+  document.getElementById('up-email').textContent = '';
+  document.getElementById('up-stat-recipes').textContent = '…';
+  document.getElementById('up-stat-likes').textContent = '…';
+  document.getElementById('up-recipes-grid').innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--muted)">Loading…</div>';
+
+  // Follow button state
+  var isF = following.some(function(f){return f.id===uid;});
+  var fbtn = document.getElementById('up-follow-btn');
+  if (fbtn) { fbtn.textContent = isF ? 'Following' : 'Follow'; fbtn.style.background = isF ? '#f0f0f0' : 'var(--terra)'; fbtn.style.color = isF ? 'var(--muted)' : '#fff'; }
+
+  if (!SUPABASE_CONFIGURED) return;
+  // Load profile
+  var pRes = await sb.from('profiles').select('*').eq('id', uid).single();
+  if (!pRes.error && pRes.data) {
+    viewingUserData = pRes.data;
+    var name = pRes.data.username || username;
+    document.getElementById('up-name').textContent = name;
+    document.getElementById('up-name-short').textContent = name;
+    if (pRes.data.avatar_url) {
+      document.getElementById('up-avatar').innerHTML = '<img src="'+pRes.data.avatar_url+'" style="width:100%;height:100%;object-fit:cover">';
+    }
+    if (fbtn) {
+      fbtn.onclick = function(){ toggleFollow(uid, encodeURIComponent(name), encodeURIComponent(pRes.data.avatar_url||''), fbtn); var isNowF=following.some(function(f){return f.id===uid;}); fbtn.textContent=isNowF?'Following':'Follow'; fbtn.style.background=isNowF?'#f0f0f0':'var(--terra)'; fbtn.style.color=isNowF?'var(--muted)':'#fff'; };
+    }
+  }
+  // Load recipes
+  var rRes = await sb.from('recipes').select('*, profiles(username,avatar_url)').eq('user_id', uid).order('created_at',{ascending:false});
+  if (!rRes.error && rRes.data) {
+    var userRecipes = rRes.data.map(function(r){
+      r.time = r.time_minutes||r.time||30; r.author=(r.profiles&&r.profiles.username)||username; r.cover=r.cover_url||r.cover||''; return r;
+    });
+    userRecipes.forEach(function(r){ if (!recipes.find(function(x){return x.id===r.id;})) recipes.push(r); });
+    var totalLikes = userRecipes.reduce(function(s,r){return s+(r.likes_count||0);},0);
+    document.getElementById('up-stat-recipes').textContent = userRecipes.length;
+    document.getElementById('up-stat-likes').textContent = totalLikes;
+    document.getElementById('up-recipes-grid').innerHTML = userRecipes.length
+      ? userRecipes.map(function(r){
+          var rid=String(r.id).replace(/'/g,'');
+          var coverHtml = (r.cover_url||r.cover)
+            ? '<div class="up-recipe-img"><img src="'+(r.cover_url||r.cover)+'" loading="lazy" onerror="this.style.display=\'none\'"></div>'
+            : '<div class="up-recipe-img" style="display:flex;align-items:center;justify-content:center;font-size:28px">'+(r.emoji||'🍽️')+'</div>';
+          return '<div class="up-recipe-card" data-rid="'+rid+'" onclick="var rid=this.dataset.rid;closeUserProfile();setTimeout(function(){openDetail(rid)},50)">'
+            +coverHtml+'<div class="up-recipe-info"><div>'+r.title+'</div></div></div>';
+        }).join('')
+      : '<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--muted)">No recipes yet.</div>';
+  }
+}
+
+function closeUserProfile() {
+  var ov = document.getElementById('user-profile-overlay');
+  if (ov) ov.classList.remove('open');
+  document.body.style.overflow='';
+  viewingUserId = null; viewingUserData = null;
+}
+
+function toggleFollowUser() {
+  if (!viewingUserId) return;
+  var name = document.getElementById('up-name').textContent;
+  var avatar = viewingUserData ? (viewingUserData.avatar_url||'') : '';
+  var fbtn = document.getElementById('up-follow-btn');
+  toggleFollow(viewingUserId, encodeURIComponent(name), encodeURIComponent(avatar), fbtn);
+  var isNowF = following.some(function(f){return f.id===viewingUserId;});
+  if (fbtn) { fbtn.textContent=isNowF?'Following':'Follow'; fbtn.style.background=isNowF?'#f0f0f0':'var(--terra)'; fbtn.style.color=isNowF?'var(--muted)':'#fff'; }
+}
+
+// Make author avatars in main grid clickable
+function handleAuthorClick(e, userId, username) {
+  e.stopPropagation(); e.preventDefault();
+  if (userId) openUserProfile(userId, encodeURIComponent(username));
+}
+
 // STARTUP
 document.addEventListener('DOMContentLoaded', function() {
   updateAuthUI();
   loadRecipes();
+  renderFriendsChips();
+  loadFriendsFeed();
 });
 
 </script>
