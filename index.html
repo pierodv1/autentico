@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Autentico — World Recipes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1148,28 +1148,27 @@ function openProfile() {
 
 // DB
 async function loadRecipes() {
-  if (!SUPABASE_CONFIGURED) { renderGrid(); updateStats(); return; }
+  if (!SUPABASE_CONFIGURED) { recipes = DEFAULT_RECIPES.slice(); renderGrid(); updateStats(); return; }
   try {
     var res = await sb.from('recipes')
       .select('*, profiles(username, avatar_url)')
       .order('created_at', {ascending: false});
+    var dbRecipes = [];
     if (!res.error && res.data) {
-      recipes = res.data.map(function(r){
+      dbRecipes = res.data.map(function(r){
         r.time = r.time_minutes || r.time || 30;
         r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonymous';
         r.difficulty = diffFromDb(r.difficulty);
         r.cover = r.cover_url || r.cover || '';
-        // Normalise Italyn country names stored in DB to English display values
-        var ctryMap = {'Italy':'Italy','Japan':'Japan','Spain':'Spain','France':'France','Mexico':'Mexico','Greece':'Greece','India':'India','Morocco':'Morocco','Thailand':'Thailand','Turkey':'Turkey','China':'China','South Korea':'South Korea','Vietnam':'Vietnam','Ethiopia':'Ethiopia','Peru':'Peru','Lebanon':'Lebanon','Other':'Other'};
-        if (ctryMap[r.country]) r.country = ctryMap[r.country];
-        // Normalise difficulty
         var diffMap = {'Facile':'Easy','Medio':'Medium','Difficile':'Hard'};
         if (diffMap[r.difficulty]) r.difficulty = diffMap[r.difficulty];
         return r;
       });
-    } else {
-      recipes = [];
     }
+    // Merge: DB recipes first, then defaults not already in DB
+    var dbIds = dbRecipes.map(function(r){return String(r.id);});
+    var defaults = DEFAULT_RECIPES.filter(function(r){return dbIds.indexOf(String(r.id)) < 0;});
+    recipes = dbRecipes.concat(defaults);
     renderGrid(); updateStats(); updateFilterBar();
   } catch(e) { console.warn('loadRecipes:', e.message); recipes = []; renderGrid(); updateStats(); }
 }
@@ -2227,6 +2226,143 @@ function openAIAdd() {
 
 
 
+
+
+// ══════════════════════════════════════════════════════════
+// DEFAULT RECIPES — shown when DB is empty or loading
+// ══════════════════════════════════════════════════════════
+var DEFAULT_RECIPES = [
+  {
+    id:'d1', title:'Spaghetti Carbonara', region:'Rome, Italy', country:'Italy',
+    cover:'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop',
+    emoji:'🍝', verified:true, author:'Autentico', likes:3240, likes_count:3240,
+    time:25, time_minutes:25, difficulty:'Medium', portions:4,
+    description:'The authentic Roman pasta with eggs, Pecorino, guanciale and black pepper. No cream, ever.',
+    ingredients:[
+      {name:'Spaghetti',qty:'400g'},{name:'Guanciale',qty:'200g'},
+      {name:'Pecorino Romano',qty:'100g'},{name:'Egg yolks',qty:'4'},
+      {name:'Black pepper',qty:'generous'},{name:'Salt',qty:'to taste'}
+    ],
+    steps:[
+      {text:'Bring a large pot of lightly salted water to boil. Cook spaghetti until al dente.',timer:null},
+      {text:'Dice guanciale and fry in its own fat over medium heat until crispy. Set aside.',timer:300},
+      {text:'Whisk egg yolks with grated Pecorino and a generous amount of black pepper.',timer:null},
+      {text:'Reserve a cup of pasta water. Drain pasta and toss immediately in the pan with guanciale off the heat.',timer:null},
+      {text:'Add the egg mixture and toss vigorously, adding pasta water spoon by spoon to create a glossy sauce.',timer:null}
+    ],
+    notes:['No cream — ever. The creaminess comes from the egg and starchy water emulsion.','Use guanciale, not pancetta or bacon.']
+  },
+  {
+    id:'d2', title:'Chicken Ramen', region:'Tokyo, Japan', country:'Japan',
+    cover:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?q=80&w=800&auto=format&fit=crop',
+    emoji:'🍜', verified:true, author:'Autentico', likes:2180, likes_count:2180,
+    time:180, time_minutes:180, difficulty:'Hard', portions:4,
+    description:'Rich tonkotsu-style chicken broth with handmade noodles, soft-boiled egg and chashu.',
+    ingredients:[
+      {name:'Whole chicken',qty:'1.5kg'},{name:'Ramen noodles',qty:'400g'},
+      {name:'Soy sauce',qty:'4 tbsp'},{name:'Mirin',qty:'2 tbsp'},
+      {name:'Ginger',qty:'3cm piece'},{name:'Garlic',qty:'4 cloves'},
+      {name:'Spring onions',qty:'4'},{name:'Soft-boiled eggs',qty:'4'},
+      {name:'Nori sheets',qty:'4'},{name:'Sesame oil',qty:'1 tsp'}
+    ],
+    steps:[
+      {text:'Roast chicken carcass at 200°C for 30 minutes until golden.',timer:1800},
+      {text:'Simmer chicken, ginger, garlic and spring onions in 3L water for 2 hours.',timer:7200},
+      {text:'Strain broth. Season with soy sauce, mirin and salt.',timer:null},
+      {text:'Cook noodles per packet. Slice chashu chicken thinly.',timer:null},
+      {text:'Assemble: noodles in bowl, ladle hot broth over, top with egg, nori and spring onions.',timer:null}
+    ],
+    notes:['The broth is everything — do not rush it.','Soft-boil eggs for exactly 6 minutes 30 seconds.']
+  },
+  {
+    id:'d3', title:'Street Tacos al Pastor', region:'Mexico City, Mexico', country:'Mexico',
+    cover:'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=800&auto=format&fit=crop',
+    emoji:'🌮', verified:true, author:'Autentico', likes:1920, likes_count:1920,
+    time:90, time_minutes:90, difficulty:'Medium', portions:6,
+    description:'Marinated pork cooked on a vertical spit with pineapple, served on small corn tortillas.',
+    ingredients:[
+      {name:'Pork shoulder',qty:'1kg'},{name:'Dried guajillo chillies',qty:'5'},
+      {name:'Dried ancho chillies',qty:'3'},{name:'Pineapple',qty:'200g'},
+      {name:'Corn tortillas',qty:'24 small'},{name:'White onion',qty:'1'},
+      {name:'Fresh coriander',qty:'1 bunch'},{name:'Achiote paste',qty:'2 tbsp'},
+      {name:'Lime',qty:'3'},{name:'White vinegar',qty:'2 tbsp'}
+    ],
+    steps:[
+      {text:'Toast and soak dried chillies in hot water for 20 minutes.',timer:1200},
+      {text:'Blend chillies with achiote, vinegar, garlic and spices into a smooth marinade.',timer:null},
+      {text:'Slice pork thin, coat in marinade. Marinate at least 2 hours.',timer:7200},
+      {text:'Grill pork slices on high heat until charred at edges, about 3 min per side.',timer:180},
+      {text:'Warm tortillas. Assemble with pork, diced onion, coriander, pineapple and lime.',timer:null}
+    ],
+    notes:['True al pastor uses a trompo (vertical spit). A very hot grill is the best home substitute.','Always double-stack the tortillas — they are small for a reason.']
+  },
+  {
+    id:'d4', title:'Chicken Biryani', region:'Hyderabad, India', country:'India',
+    cover:'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=800&auto=format&fit=crop',
+    emoji:'🍚', verified:true, author:'Autentico', likes:2450, likes_count:2450,
+    time:120, time_minutes:120, difficulty:'Hard', portions:6,
+    description:'Fragrant basmati rice layered with spiced chicken and sealed for the dum cooking method.',
+    ingredients:[
+      {name:'Basmati rice',qty:'500g'},{name:'Chicken pieces',qty:'1kg'},
+      {name:'Yoghurt',qty:'250g'},{name:'Fried onions',qty:'200g'},
+      {name:'Saffron',qty:'pinch'},{name:'Warm milk',qty:'4 tbsp'},
+      {name:'Ghee',qty:'3 tbsp'},{name:'Garam masala',qty:'2 tsp'},
+      {name:'Ginger-garlic paste',qty:'2 tbsp'},{name:'Fresh mint',qty:'1 bunch'}
+    ],
+    steps:[
+      {text:'Marinate chicken with yoghurt, ginger-garlic paste and spices for 2 hours.',timer:7200},
+      {text:'Soak saffron in warm milk. Soak and par-cook rice until 70% done.',timer:null},
+      {text:'Cook marinated chicken until almost done in a heavy pan.',timer:null},
+      {text:'Layer rice over chicken. Add fried onions, mint and saffron milk.',timer:null},
+      {text:'Seal pot with foil and lid. Cook on low heat 25 minutes (dum method).',timer:1500}
+    ],
+    notes:['Fried onions are the single most important element — do not skip.','Never open the pot during dum cooking.']
+  },
+  {
+    id:'d5', title:'Greek Moussaka', region:'Athens, Greece', country:'Greece',
+    cover:'https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&auto=format&fit=crop',
+    emoji:'🫕', verified:false, author:'Autentico', likes:1340, likes_count:1340,
+    time:90, time_minutes:90, difficulty:'Medium', portions:8,
+    description:'Layers of aubergine, spiced lamb mince and béchamel, baked until golden.',
+    ingredients:[
+      {name:'Aubergine',qty:'3 large'},{name:'Lamb mince',qty:'600g'},
+      {name:'Tomatoes, crushed',qty:'400g tin'},{name:'Butter',qty:'60g'},
+      {name:'Plain flour',qty:'60g'},{name:'Milk',qty:'600ml'},
+      {name:'Cinnamon',qty:'1 tsp'},{name:'Nutmeg',qty:'pinch'},
+      {name:'Onion',qty:'1'},{name:'Egg yolks',qty:'2'}
+    ],
+    steps:[
+      {text:'Slice aubergine, salt and leave 30 min. Rinse, dry and fry until golden.',timer:1800},
+      {text:'Brown lamb with onion. Add tomatoes, cinnamon and simmer 20 min.',timer:1200},
+      {text:'Make béchamel: melt butter, whisk in flour, gradually add milk. Season with nutmeg.',timer:null},
+      {text:'Remove béchamel from heat, stir in egg yolks.',timer:null},
+      {text:'Layer: aubergine, lamb, aubergine, béchamel. Bake at 180°C for 45 min.',timer:2700}
+    ],
+    notes:['The béchamel must be thick enough to hold its shape.','Better the next day — always make ahead.']
+  },
+  {
+    id:'d6', title:'Thai Green Curry', region:'Bangkok, Thailand', country:'Thailand',
+    cover:'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=800&auto=format&fit=crop',
+    emoji:'🍛', verified:false, author:'Autentico', likes:1560, likes_count:1560,
+    time:40, time_minutes:40, difficulty:'Easy', portions:4,
+    description:'Fragrant green curry with coconut milk, Thai basil and your choice of protein.',
+    ingredients:[
+      {name:'Coconut milk',qty:'400ml'},{name:'Green curry paste',qty:'3 tbsp'},
+      {name:'Chicken breast',qty:'500g'},{name:'Thai aubergine',qty:'200g'},
+      {name:'Fish sauce',qty:'2 tbsp'},{name:'Palm sugar',qty:'1 tsp'},
+      {name:'Thai basil',qty:'handful'},{name:'Kaffir lime leaves',qty:'4'},
+      {name:'Lemongrass',qty:'1 stalk'},{name:'Jasmine rice',qty:'400g'}
+    ],
+    steps:[
+      {text:'Fry green curry paste in a wok over high heat until fragrant, about 1 minute.',timer:60},
+      {text:'Add coconut cream (top of can). Stir and cook until oil separates.',timer:120},
+      {text:'Add chicken, aubergine and remaining coconut milk. Simmer 15 min.',timer:900},
+      {text:'Season with fish sauce and palm sugar. Add kaffir lime leaves.',timer:null},
+      {text:'Finish with Thai basil. Serve with jasmine rice.',timer:null}
+    ],
+    notes:['Use the thick cream from the top of the coconut tin to fry the paste.','Do not boil vigorously — gentle simmer keeps the coconut milk from splitting.']
+  }
+];
 
 // ══════════════════════════════════════════════════════════════════
 //  CURATED RECIPES DATA
