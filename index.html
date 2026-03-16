@@ -447,8 +447,8 @@ footer p{font-size:13px;color:var(--muted)}
 @media(max-width:600px){
   /* ── Header Mobile ── */
   header{padding:0 12px;height:56px;gap:8px;max-width:100vw;box-sizing:border-box;justify-content:space-between;overflow:visible}
-  .logo{font-size:17px;flex-shrink:0;white-space:nowrap}
-  nav{display:none}
+  .logo{font-size:15px;flex-shrink:0;white-space:nowrap;letter-spacing:-.3px}
+  #main-nav{display:none !important}
   .hdr-right{gap:6px;flex-shrink:0;display:flex;align-items:center}
   .search-wrap{display:none}
   /* Add button: circle with + icon only */
@@ -526,6 +526,8 @@ footer p{font-size:13px;color:var(--muted)}
   .hero h1{font-size:26px}
 }
 
+
+#main-nav{display:flex;gap:4px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -536,7 +538,7 @@ footer p{font-size:13px;color:var(--muted)}
 <!-- HEADER -->
 <header>
   <a class="logo" href="#">Autenti<span>co</span></a>
-  <nav style="display:flex;gap:4px">
+  <nav id="main-nav">
     <a href="#recipes" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Recipes</a>
     <a href="#curated" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Editor's Picks</a>
     <a href="#friends-section" style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s" onmouseover="this.style.color='var(--terra)';this.style.background='rgba(196,97,74,.07)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'">Friends</a>
@@ -627,7 +629,7 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="curated-grid" id="curated-grid" style="grid-template-columns:repeat(3,1fr)">
 
     <div class="ccard" onclick="openCurated('cacio')">
-      <img src="https://www.casapappagallo.it/storage/17060/cacio-e-pepe.jpg" alt="Cacio e Pepe" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=800&auto=format&fit=crop" alt="Cacio e Pepe" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -1060,7 +1062,7 @@ function updateAuthUI() {
     var avatarHtml = av
       ? '<img src="' + av + '" style="width:100%;height:100%;object-fit:cover"/>'
       : name[0].toUpperCase();
-    hel.innerHTML = '<div style="position:relative;display:inline-block">'
+    hel.innerHTML = '<div style="position:relative">'
       + '<div id="user-chip-btn" onclick="toggleProfileDrop()" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 12px 6px 6px;border-radius:24px;border:1.5px solid #E5E0D8;background:#fff;font-size:14px;user-select:none">'
       + '<div style="width:30px;height:30px;border-radius:50%;background:#C4614A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;overflow:hidden;flex-shrink:0">' + avatarHtml + '</div>'
       + '<span style="font-weight:500;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</span>'
@@ -1185,39 +1187,15 @@ function diffFromDb(d) {
 
 
 // AUTO-FETCH IMAGE FROM UNSPLASH
-async function fetchRecipeImage(title) {
-  try {
-    // Use Unsplash Source (no API key needed, uses title as query)
-    var query = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,'').trim().toLowerCase());
-    // Try multiple image services for reliability
-    var urls = [
-      'https://source.unsplash.com/800x500/?' + query + ',food',
-      'https://source.unsplash.com/800x500/?food,' + query,
-    ];
-    // Unsplash Source resolves to a final image URL - we need to follow the redirect
-    // We'll just use the source URL directly as img src (browser follows redirect)
-    return urls[0];
-  } catch(e) {
-    return '';
-  }
-}
+async 
 
 // Smarter: use Unsplash API with embedded demo key
 async function fetchRecipeImageSmart(title) {
-  var UNSPLASH_KEY = 'J-QBPe0oC_Y43d72wJv5-UzSHRDtNmQAvkB7fH9WI9I';
-  var clean = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim();
-  var q = encodeURIComponent(clean + ' food dish plating');
-  try {
-    var res = await fetch(
-      'https://api.unsplash.com/search/photos?query=' + q + '&per_page=3&orientation=landscape&content_filter=high',
-      { headers: { Authorization: 'Client-ID ' + UNSPLASH_KEY } }
-    );
-    if (res.ok) {
-      var data = await res.json();
-      if (data.results && data.results.length > 0) return data.results[0].urls.regular;
-    }
-  } catch(e) { console.warn('Unsplash error:', e.message); }
-  return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(clean + ',food');
+  // Use Unsplash Source — free, no API key, always returns a relevant food photo
+  // The browser img tag follows the redirect automatically
+  var words = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(/\s+/).slice(0,3);
+  var query = words.join(',') + ',food';
+  return 'https://source.unsplash.com/800x600/?' + query;
 }
 
 async function dbSave(r) {
