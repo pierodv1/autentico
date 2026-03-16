@@ -23,9 +23,10 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
 .search-wrap{position:relative}
-.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 46px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.search-wrap input{border:1.5px solid var(--border);border-radius:24px;padding:9px 16px 9px 44px;font-size:14px;font-family:var(--sans);background:#fff;outline:none;width:200px;transition:all var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .search-wrap input:focus{border-color:var(--terra);width:250px;box-shadow:0 0 0 3px rgba(196,97,74,.1)}
-.search-wrap svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#555;pointer-events:none;z-index:2;background:transparent;width:16px;height:16px;transition:color .2s}
+.search-wrap:focus-within svg{color:var(--terra);transition:color .2s}
 .btn-add-hdr{background:var(--terra);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all var(--transition);box-shadow:0 3px 12px rgba(196,97,74,.35);letter-spacing:.2px}
 .btn-add-hdr:hover{background:var(--terra2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(196,97,74,.45)}
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
@@ -71,8 +72,8 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .rcard{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);cursor:pointer;transition:transform var(--transition),box-shadow var(--transition);display:block;text-decoration:none;color:inherit;border:1px solid rgba(0,0,0,.04)}
 .rcard:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,.14)}
 .rcard:active{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
-.rcard-img{position:relative;height:220px;overflow:hidden}
-.rcard-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--transition)}
+.rcard-img{position:relative;height:220px;overflow:hidden;background:linear-gradient(135deg,#f0ebe3,#e8e0d5)}
+.rcard-img img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .6s var(--transition)}
 .rcard:hover .rcard-img img{transform:scale(1.08)}
 .rcard-badges{position:absolute;top:10px;left:10px;display:flex;gap:6px}
 .badge{border-radius:20px;padding:5px 11px;font-size:11px;font-weight:600;letter-spacing:.3px}
@@ -86,9 +87,11 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .rcard-title{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:6px;line-height:1.15;letter-spacing:-.3px}
 .rcard-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rcard-footer{display:flex;align-items:center;justify-content:space-between}
-.rcard-likes{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);transition:color .2s}
+.rcard-likes{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);transition:color .2s;min-width:40px;min-height:24px}
 .rcard-likes.liked{color:var(--terra);font-weight:600}
-.rcard-likes svg{color:var(--terra)}
+.rcard-likes svg{color:var(--terra);transition:color .2s,font-size .2s;flex-shrink:0}
+@keyframes likePopSafe{0%{transform:scale(1)}40%{transform:scale(1.3)}70%{transform:scale(0.95)}100%{transform:scale(1)}}
+.rcard-likes.liked svg{animation:likePopSafe .35s ease forwards}
 .btn-cook{background:var(--terra);color:#fff;border:none;border-radius:22px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all var(--transition);letter-spacing:.2px}
 .btn-cook:hover{background:var(--terra2);transform:scale(1.05)}
 .btn-cook:active{transform:scale(.97)}
@@ -350,6 +353,9 @@ footer p{font-size:13px;color:var(--muted)}
 .badge-easy{background:rgba(40,140,60,.85);color:#fff}
 .badge-med{background:rgba(200,120,20,.85);color:#fff}
 .badge-hard{background:rgba(180,40,40,.85);color:#fff}
+/* LANGUAGE SELECTOR */
+#lang-select{border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;background:#fff;cursor:pointer;font-family:var(--sans);outline:none;transition:border-color .2s;color:var(--text)}
+#lang-select:hover,#lang-select:focus{border-color:var(--terra)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -363,11 +369,17 @@ footer p{font-size:13px;color:var(--muted)}
   <div class="hdr-right">
     <div class="search-wrap">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="search-input" placeholder="Cerca ricetta…" oninput="renderGrid()">
+      <input type="text" id="search-input" placeholder="Cerca ricetta…" data-i18n="search_placeholder" oninput="renderGrid()">
     </div>
-    <button class="btn-add-hdr" onclick="openChoice()">
+    <select id="lang-select" onchange="setLang(this.value)">
+      <option value="it">🇮🇹 IT</option>
+      <option value="en">🇬🇧 EN</option>
+      <option value="es">🇪🇸 ES</option>
+      <option value="fr">🇫🇷 FR</option>
+    </select>
+    <button class="btn-add-hdr" onclick="openChoice()" data-i18n="add_recipe">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Aggiungi ricetta
+      <span data-i18n="add_recipe">Aggiungi ricetta</span>
     </button>
     <!-- AUTH AREA -->
     <div id="auth-area" style="position:relative">
@@ -384,7 +396,7 @@ footer p{font-size:13px;color:var(--muted)}
 <!-- HERO -->
 <section class="hero">
   <div>
-    <div class="hero-tag">✦ Ricette Verificate</div>
+    <div class="hero-tag" data-i18n="hero_tag">✦ Ricette Verificate</div>
     <h1>Sapori <em>autentici</em><br>da tutto il mondo</h1>
     <p>Ricette tradizionali condivise da chi le conosce davvero. Niente scorciatoie, niente compromessi.</p>
     <div class="hero-btns">
@@ -406,9 +418,9 @@ footer p{font-size:13px;color:var(--muted)}
 
 <!-- RICETTE -->
 <section class="section" id="ricette">
-  <h2 class="section-title">Tutte le ricette</h2>
+  <h2 class="section-title" data-i18n="all_recipes">Tutte le ricette</h2>
   <div class="filter-bar">
-    <button class="f-btn active" data-f="Tutto" onclick="setFilter(this)">Tutto</button>
+    <button class="f-btn active" data-f="Tutto" onclick="setFilter(this)" data-i18n="filter_all">Tutto</button>
     <button class="f-btn" data-f="Italia" onclick="setFilter(this)">🇮🇹 Italia</button>
     <button class="f-btn" data-f="Giappone" onclick="setFilter(this)">🇯🇵 Giappone</button>
     <button class="f-btn" data-f="Spagna" onclick="setFilter(this)">🇪🇸 Spagna</button>
@@ -462,7 +474,7 @@ footer p{font-size:13px;color:var(--muted)}
 
     <!-- PHASE 1 -->
     <div id="ph1">
-      <h2>Aggiungi una ricetta</h2>
+      <h2 id="add-overlay-title">Aggiungi una ricetta</h2>
       <div style="display:flex;gap:8px;margin:12px 0 20px">
         <button id="mode-ai-btn" onclick="setAddMode('ai')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--terra,#C4614A);background:var(--terra,#C4614A);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">✨ Con l'AI</button>
         <button id="mode-manual-btn" onclick="setAddMode('manual')" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--border,#E5E0D8);background:#fff;color:var(--text,#1A1A1A);cursor:pointer;font-size:14px;font-family:inherit">✍️ Manualmente</button>
@@ -609,8 +621,8 @@ footer p{font-size:13px;color:var(--muted)}
       <div class="profile-name" id="profile-name-txt">Utente</div>
       <div class="profile-email" id="profile-email-txt"></div>
       <div class="profile-stats">
-        <div><div class="profile-stat-n" id="profile-stat-recipes">0</div><div class="profile-stat-l">Ricette</div></div>
-        <div><div class="profile-stat-n" id="profile-stat-likes">0</div><div class="profile-stat-l">Like ricevuti</div></div>
+        <div><div class="profile-stat-n" id="profile-stat-recipes">0</div><div class="profile-stat-l" data-i18n="profile_recipes_lbl">Ricette</div></div>
+        <div><div class="profile-stat-n" id="profile-stat-likes">0</div><div class="profile-stat-l" data-i18n="profile_likes_lbl">Like ricevuti</div></div>
       </div>
       <div class="profile-recipes-title">Le mie ricette</div>
       <div class="profile-recipes-grid" id="profile-recipes-grid">
@@ -670,101 +682,6 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const MISTRAL_KEY = 'kvESiqtWZZ2jZB7aq9RF8acxSqLYKb2G';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const SUPABASE_CONFIGURED = SUPABASE_URL.indexOf('supabase.co') >= 0;
-
-// DATA
-const DEFAULT_RECIPES = [
-  {
-    id:"r1", title:"Authentic Carbonara",
-    description:"The real Roman way — no cream, no garlic. Just 4 ingredients and pure technique.",
-    region:"Roma, Italia", country:"Italia",
-    cover:"https://images.unsplash.com/photo-1608756687911-aa1599ab3bd9?q=80&w=800&auto=format&fit=crop",
-    verified:true, author:"Marco Romano", likes:1245, time:20,
-    ingredients:[{name:"Spaghetti",qty:"400 g"},{name:"Guanciale",qty:"150 g"},{name:"Pecorino Romano",qty:"50 g"},{name:"Tuorli d\u2019uovo",qty:"4"},{name:"Pepe nero",qty:"q.b."}],
-    steps:[
-      {text:"Taglia il guanciale a strisce spesse e mettilo in una padella fredda.",timer:null},
-      {text:"Cuoci a fuoco medio finch\u00e9 diventa croccante e dorato. Tieni il grasso.",timer:300},
-      {text:"Sbatti 4 tuorli con il Pecorino grattugiato e abbondante pepe nero.",timer:null},
-      {text:"Cuoci gli spaghetti in acqua salata bollente al dente.",timer:480},
-      {text:"Salva una tazza abbondante di acqua di cottura prima di scolare.",timer:null},
-      {text:"Scola la pasta e versala nella padella del guanciale \u2014 fuori dal fuoco!",timer:null},
-      {text:"Aggiungi la crema di uova mescolando velocemente con acqua di cottura.",timer:null},
-      {text:"Impiatta con altro Pecorino e pepe nero.",timer:null}
-    ],
-    notes:["Mai usare la panna: la cremosit\u00e0 viene dall\u2019emulsione di uova, formaggio e acqua amidacea.","Il guanciale \u00e8 essenziale \u2014 la pancetta affumicata cambia troppo il sapore.","Spegni il fuoco prima di aggiungere le uova o si strapazzano."]
-  },
-  {
-    id:"r2", title:"Cacio e Pepe",
-    description:"La magia di soli tre ingredienti: formaggio, pepe e acqua amidacea.",
-    region:"Roma, Italia", country:"Italia",
-    cover:"https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?q=80&w=800&auto=format&fit=crop",
-    verified:true, author:"Marco Romano", likes:980, time:15,
-    ingredients:[{name:"Tonnarelli o Spaghetti",qty:"400 g"},{name:"Pecorino Romano",qty:"200 g"},{name:"Pepe nero in grani",qty:"1 cucchiaio"}],
-    steps:[
-      {text:"Pesta il pepe grossolanamente e tostalo in una padella asciutta finch\u00e9 profuma.",timer:120},
-      {text:"Porta a ebollizione poca acqua (meno del normale, per pi\u00f9 amido).",timer:null},
-      {text:"Cuoci la pasta aggiungendo acqua poco a poco come un risotto.",timer:null},
-      {text:"Mescola il Pecorino grattugiato con acqua tiepida fino a pasta cremosa.",timer:null},
-      {text:"Togli dal fuoco completamente. Aggiungi la pasta di Pecorino e mescola forte.",timer:null},
-      {text:"Aggiungi acqua di cottura fino a crema lucida. Impiatta con altro pepe.",timer:null}
-    ],
-    notes:["Il formaggio non deve scaldarsi troppo o si raggruma.","Cuocere la pasta risotto-style rilascia pi\u00f9 amido.","Non aggiungere sale: il Pecorino \u00e8 gi\u00e0 sapido."]
-  },
-  {
-    id:"r3", title:"Authentic Takoyaki",
-    description:"Croccante fuori, morbido dentro. Lo street food dell\u2019anima di Osaka.",
-    region:"Osaka, Giappone", country:"Giappone",
-    cover:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?q=80&w=800&auto=format&fit=crop",
-    verified:true, author:"Yuki Tanaka", likes:850, time:40,
-    ingredients:[{name:"Farina per takoyaki",qty:"200 g"},{name:"Uova",qty:"2"},{name:"Brodo dashi",qty:"600 ml"},{name:"Polpo bollito",qty:"150 g"},{name:"Tenkasu",qty:"30 g"},{name:"Cipollotti",qty:"2 steli"}],
-    steps:[
-      {text:"Sbatti le uova con il brodo dashi freddo.",timer:null},
-      {text:"Aggiungi la farina mescolando \u2014 la pastella deve essere molto liquida.",timer:null},
-      {text:"Taglia il polpo a pezzi e trita i cipollotti.",timer:null},
-      {text:"Scalda la piastra a fuoco alto e oliala generosamente.",timer:null},
-      {text:"Versa la pastella riempiendo e traboccando ogni buco.",timer:null},
-      {text:"Metti un pezzo di polpo in ogni buco. Cospargi tenkasu e cipollotti.",timer:null},
-      {text:"Aspetta 2 minuti poi gira ogni pallina di 90 gradi.",timer:120},
-      {text:"Continua a girare finch\u00e9 sono sfere dorate e croccanti.",timer:180},
-      {text:"Servi con salsa takoyaki, maionese e fiocchi di bonito.",timer:null}
-    ],
-    notes:["La pastella deve essere quasi watery per il centro morbido.","Una piastra in ghisa d\u00e0 il migliore esterno croccante.","I fiocchi di bonito si muovono sul piatto caldo \u2014 \u00e8 normale!"]
-  },
-  {
-    id:"r4", title:"Pan con Tomate",
-    description:"La colazione catalana pi\u00f9 semplice e perfetta.",
-    region:"Barcelona, Spagna", country:"Spagna",
-    cover:"https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=800&auto=format&fit=crop",
-    verified:false, author:"Sofia Garcia", likes:420, time:5,
-    ingredients:[{name:"Pane rustico",qty:"4 fette"},{name:"Pomodori maturi",qty:"2"},{name:"Spicchio d\u2019aglio",qty:"1"},{name:"Olio extravergine d\u2019oliva",qty:"q.b."},{name:"Sale marino in fiocchi",qty:"q.b."}],
-    steps:[
-      {text:"Affetta il pane a fette spesse e tostalo finch\u00e9 \u00e8 dorato e croccante.",timer:null},
-      {text:"Strofina lo spicchio d\u2019aglio tagliato a met\u00e0 sul pane caldo.",timer:null},
-      {text:"Strofina energicamente i pomodori tagliati a met\u00e0 sul pane. Butta la buccia.",timer:null},
-      {text:"Irrora con olio extravergine di oliva.",timer:null},
-      {text:"Cospargi con sale marino in fiocchi. Servi subito.",timer:null}
-    ],
-    notes:["Non frullare i pomodori: vanno strofinati direttamente sul pane.","Ordine: aglio, pomodoro, olio, sale."]
-  },
-  {
-    id:"r5", title:"Rag\u00f9 Napoletano",
-    description:"Il sugo della domenica. Carne e San Marzano cotti per 6 ore.",
-    region:"Napoli, Italia", country:"Italia",
-    cover:"https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?q=80&w=800&auto=format&fit=crop",
-    verified:true, author:"Elena Esposito", likes:2100, time:360,
-    ingredients:[{name:"Spezzatino di manzo",qty:"500 g"},{name:"Costine di maiale",qty:"500 g"},{name:"Passata di San Marzano",qty:"1.5 L"},{name:"Cipolle grandi",qty:"2"},{name:"Vino rosso",qty:"1 bicchiere"},{name:"Olio d\u2019oliva",qty:"4 cucchiai"}],
-    steps:[
-      {text:"Trita le cipolle e scalda l\u2019olio in una pentola pesante.",timer:null},
-      {text:"Rosola la carne su tutti i lati fino a una bella crosticina dorata.",timer:null},
-      {text:"Aggiungi le cipolle e cuoci finch\u00e9 trasparenti.",timer:300},
-      {text:"Versa il vino rosso e lascia evaporare l\u2019alcol.",timer:300},
-      {text:"Aggiungi la passata e un pizzico di sale. Porta a bollore.",timer:null},
-      {text:"Abbassa al minimo assoluto e copri parzialmente.",timer:null},
-      {text:"Lascia \u2018pippiare\u2019 per 6 ore mescolando ogni tanto.",timer:21600},
-      {text:"La salsa sar\u00e0 scura e densa. Servi il sugo con pasta, carne a parte.",timer:null}
-    ],
-    notes:["Il segreto \u00e8 nel \u2018pippiare\u2019: il sugo deve appena fremere.","6 ore sono il minimo.","La carne si serve separata dalla pasta."]
-  }
-];
 
 // STATE
 var recipes = [];
@@ -888,27 +805,23 @@ function openProfile() {
 
 // DB
 async function loadRecipes() {
-  recipes = DEFAULT_RECIPES.slice();
-  renderGrid(); updateStats();
-  if (!SUPABASE_CONFIGURED) return;
+  if (!SUPABASE_CONFIGURED) { renderGrid(); updateStats(); return; }
   try {
     var res = await sb.from('recipes')
       .select('*, profiles(username, avatar_url)')
       .order('created_at', {ascending: false});
-    if (!res.error && res.data && res.data.length > 0) {
-      var dbIds = res.data.map(function(r){return r.id;});
-      var defs = DEFAULT_RECIPES.filter(function(r){return dbIds.indexOf(r.id) < 0;});
-      // Normalize fields: add .time alias for time_minutes for compatibility
-      var normalized = res.data.map(function(r){
+    if (!res.error && res.data) {
+      recipes = res.data.map(function(r){
         r.time = r.time_minutes || r.time || 30;
         r.author = (r.profiles && r.profiles.username) ? r.profiles.username : 'Anonimo';
         r.cover = r.cover_url || r.cover || '';
         return r;
       });
-      recipes = normalized.concat(defs);
-      renderGrid(); updateStats();
+    } else {
+      recipes = [];
     }
-  } catch(e) { console.warn('loadRecipes:', e.message); }
+    renderGrid(); updateStats();
+  } catch(e) { console.warn('loadRecipes:', e.message); recipes = []; renderGrid(); updateStats(); }
 }
 
 async function dbSave(r) {
@@ -934,6 +847,33 @@ async function dbSave(r) {
       ingredients: r.ingredients||[], steps: r.steps||[], notes: r.notes||[]
     });
     if (ins.error) throw new Error(ins.error.message);
+    await loadRecipes();
+    return true;
+  } catch(e) { showToast('❌ '+e.message); return false; }
+}
+
+async function dbUpdate(r) {
+  if (!SUPABASE_CONFIGURED || !currentUser) return false;
+  try {
+    var cover_url = r.cover || null;
+    if (window._pendingPhotoFile) {
+      var f = window._pendingPhotoFile;
+      var ext = f.name.split('.').pop();
+      var path = currentUser.id+'/'+Date.now()+'.'+ext;
+      var up = await sb.storage.from('recipe-images').upload(path, f);
+      if (!up.error) cover_url = sb.storage.from('recipe-images').getPublicUrl(up.data.path).data.publicUrl;
+      window._pendingPhotoFile = null;
+    }
+    var upd = await sb.from('recipes').update({
+      title: r.title, description: r.description||'',
+      region: r.region||'', country: r.country||'Altro',
+      cover_url: cover_url, emoji: r.emoji||'🍽️',
+      verified: r.verified||false,
+      time_minutes: r.time||30,
+      difficulty: r.difficulty||'Facile', portions: parseInt(r.portions)||4,
+      ingredients: r.ingredients||[], steps: r.steps||[], notes: r.notes||[]
+    }).eq('id', r.id).eq('user_id', currentUser.id);
+    if (upd.error) throw new Error(upd.error.message);
     await loadRecipes();
     return true;
   } catch(e) { showToast('❌ '+e.message); return false; }
@@ -983,6 +923,22 @@ function updateStats() {
   document.getElementById('stat-count').textContent = recipes.length;
   var countries = new Set(recipes.map(function(r){return r.country}).filter(Boolean));
   document.getElementById('stat-countries').textContent = countries.size;
+  updateProfileStats();
+}
+
+function updateProfileStats() {
+  if (!currentUser) return;
+  var uid = currentUser.id;
+  var myR = recipes.filter(function(r) {
+    return String(r.user_id) === String(uid) || String(r.authorUid) === String(uid);
+  });
+  var myLikes = myR.reduce(function(sum, r) {
+    return sum + (r.likes_count || r.likes || 0);
+  }, 0);
+  var rEl = document.getElementById('profile-stat-recipes');
+  var lEl = document.getElementById('profile-stat-likes');
+  if (rEl) rEl.textContent = myR.length;
+  if (lEl) lEl.textContent = myLikes;
 }
 
 function setFilter(btn) {
@@ -1001,7 +957,7 @@ function renderGrid() {
     return true;
   });
   var grid = document.getElementById('recipes-grid');
-  if (!filtered.length) { grid.innerHTML='<div class="no-results">Nessuna ricetta trovata.</div>'; return; }
+  if (!filtered.length) { grid.innerHTML='<div class="no-results">'+(TRANSLATIONS[currentLang]&&TRANSLATIONS[currentLang].no_results||'Nessuna ricetta trovata.')+'</div>'; return; }
   grid.innerHTML = filtered.map(function(r,idx) {
     // Support both local (time) and Supabase (time_minutes) field names
     var mins = r.time_minutes || r.time || 30;
@@ -1034,7 +990,8 @@ function renderGrid() {
       +'<div class="rcard-likes '+(userLikes.has(String(r.id))?'liked':'')+'" onclick="event.stopPropagation();toggleLike(this.dataset.rid,this)" data-rid="'+rid+'" style="cursor:pointer">'
       +'<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(userLikes.has(String(r.id))?'var(--terra)':'none')+'" stroke="'+(userLikes.has(String(r.id))?'var(--terra)':'currentColor')+'" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
       +'<span id="likes-'+rid+'">'+(r.likes||r.likes_count||0)+'</span></div>'
-      +'<button class="btn-cook" onclick="event.stopPropagation();startCooking(\''+rid+'\')">Cucina →</button>'
+      +'<button class="btn-cook" onclick="event.stopPropagation();startCooking(\''+rid+'\')">'+(TRANSLATIONS[currentLang]&&TRANSLATIONS[currentLang].cook_btn||'Cucina →')+'</button>'
+      +(currentUser && (String(r.user_id)===String(currentUser.id)||String(r.authorUid)===String(currentUser.id)) ? '<button class="btn-edit" onclick="event.stopPropagation();openEdit(\''+rid+'\')" style="background:none;border:1.5px solid var(--border);border-radius:22px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all var(--transition);color:var(--muted);margin-left:6px">✏️</button>' : '')
       +'</div></div></a>';
   }).join('');
 }
@@ -1319,6 +1276,7 @@ async function sendChat() {
 
 function openAdd(mode) {
   if (!requireAuth()) return;
+  editRecipeId = null;
   ingIdx=0; stepIdx=0; manualIngIdx=0; manualStepIdx=0;
   window._pendingPhotoFile = null;
   // Reset manual lists
@@ -1338,10 +1296,79 @@ function openAdd(mode) {
   if (fImgFile) fImgFile.value='';
   var fImgLabel = document.getElementById('fr-img-label');
   if (fImgLabel) fImgLabel.textContent='';
+  // Reset title
+  var addTitle = document.getElementById('add-overlay-title');
+  if (addTitle) addTitle.textContent = 'Nuova Ricetta';
+  var saveBtn = document.querySelector('#ph1 .btn-save');
+  if (saveBtn) saveBtn.textContent = 'Pubblica ricetta';
   showPhase(1);
   document.getElementById('add-overlay').classList.add('open');
   document.body.style.overflow='hidden';
   setAddMode(mode === 'manual' ? 'manual' : 'ai');
+}
+
+function openEdit(id) {
+  if (!requireAuth()) return;
+  var r = recipes.find(function(x){return x.id===id;});
+  if (!r) return;
+  editRecipeId = id;
+  ingIdx=0; stepIdx=0; manualIngIdx=0; manualStepIdx=0;
+  window._pendingPhotoFile = null;
+  // Set manual lists
+  var iml = document.getElementById('ing-manual-list'); if(iml) iml.innerHTML='';
+  var sml = document.getElementById('step-manual-list'); if(sml) sml.innerHTML='';
+  document.getElementById('f-raw').value='';
+  var authorRow = document.getElementById('author-row');
+  if (authorRow) authorRow.style.display = 'none';
+  document.getElementById('ing-dyn-list').innerHTML='';
+  document.getElementById('step-dyn-list').innerHTML='';
+  var fImgFile = document.getElementById('fr-img-file');
+  if (fImgFile) fImgFile.value='';
+  var fImgLabel = document.getElementById('fr-img-label');
+  if (fImgLabel) fImgLabel.textContent='';
+  // Update title
+  var addTitle = document.getElementById('add-overlay-title');
+  if (addTitle) addTitle.textContent = 'Modifica Ricetta';
+  // Pre-populate manual form fields
+  setAddMode('manual');
+  var title = document.getElementById('fm-title'); if(title) title.value = r.title||'';
+  var desc = document.getElementById('fm-desc'); if(desc) desc.value = r.description||'';
+  var country = document.getElementById('fm-country'); if(country) country.value = r.country||'';
+  var region = document.getElementById('fm-region'); if(region) region.value = r.region||'';
+  var emoji = document.getElementById('fm-emoji'); if(emoji) emoji.value = r.emoji||'🍽️';
+  var time = document.getElementById('fm-time'); if(time) time.value = r.time_minutes||r.time||30;
+  var diff = document.getElementById('fm-diff'); if(diff) diff.value = r.difficulty||'Facile';
+  var portions = document.getElementById('fm-portions'); if(portions) portions.value = r.portions||4;
+  var img = document.getElementById('fm-img'); if(img) img.value = r.cover_url||r.cover||'';
+  var verified = document.getElementById('fm-verified'); if(verified) verified.checked = r.verified||false;
+  var notes = document.getElementById('fm-notes');
+  if(notes) notes.value = (r.notes||[]).join('\n');
+  // Ingredients
+  (r.ingredients||[]).forEach(function(ing) {
+    addManualIngRow();
+    var idx = manualIngIdx - 1;
+    var nEl = document.querySelector('[data-min="'+idx+'"]');
+    var qEl = document.querySelector('[data-miq="'+idx+'"]');
+    if(nEl) nEl.value = ing.name||'';
+    if(qEl) qEl.value = ing.qty||'';
+  });
+  // Steps
+  (r.steps||[]).forEach(function(s) {
+    addManualStepRow();
+    var idx = manualStepIdx - 1;
+    var tEl = document.querySelector('[data-msn="'+idx+'"]');
+    var tipEl = document.querySelector('[data-mstip="'+idx+'"]');
+    var tmrEl = document.querySelector('[data-mst="'+idx+'"]');
+    if(tEl) tEl.value = (typeof s==='string'?s:(s.text||''));
+    if(tipEl) tipEl.value = (typeof s==='string'?'':(s.tip||''));
+    if(tmrEl) tmrEl.value = (typeof s==='string'?0:(s.timer||0));
+  });
+  // Update save button
+  var saveBtn = document.querySelector('#ph1 .btn-save');
+  if (saveBtn) saveBtn.textContent = 'Salva modifiche';
+  showPhase(1);
+  document.getElementById('add-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function closeAdd(){
@@ -1641,6 +1668,7 @@ async function submitSignup() {
 
 // ADD MODE TOGGLE
 var manualIngIdx = 0, manualStepIdx = 0;
+var editRecipeId = null;
 
 function setAddMode(mode) {
   document.getElementById('add-ai-mode').style.display = mode === 'ai' ? '' : 'none';
@@ -1726,7 +1754,7 @@ async function saveManualRecipe() {
   }
 
   var newR = {
-    id: 'u'+Date.now(),
+    id: editRecipeId || ('u'+Date.now()),
     title: title,
     description: (document.getElementById('fm-desc').value||'').trim() || title,
     region: region, country: country,
@@ -1745,11 +1773,23 @@ async function saveManualRecipe() {
     ingredients: ings, steps: steps, notes: notes
   };
 
-  recipes.unshift(newR);
-  renderGrid(); updateStats(); closeAdd();
-  showToast('⏳ Pubblicazione in corso…');
-  var ok = await dbSave(newR);
-  if (ok) showToast('✅ Ricetta pubblicata!');
+  if (editRecipeId) {
+    // Preserve existing likes/cover from original
+    var orig = recipes.find(function(x){return x.id===editRecipeId;});
+    if (orig) { newR.likes = orig.likes; newR.likes_count = orig.likes_count; if(!cover) { newR.cover = orig.cover; newR.cover_url = orig.cover_url; } }
+    var idx = recipes.findIndex(function(x){return x.id===editRecipeId;});
+    if (idx >= 0) recipes[idx] = newR;
+    renderGrid(); updateStats(); closeAdd();
+    showToast('⏳ Salvataggio in corso…');
+    var ok = await dbUpdate(newR);
+    if (ok) showToast('✅ Ricetta aggiornata!');
+  } else {
+    recipes.unshift(newR);
+    renderGrid(); updateStats(); closeAdd();
+    showToast('⏳ Pubblicazione in corso…');
+    var ok = await dbSave(newR);
+    if (ok) showToast('✅ Ricetta pubblicata!');
+  }
 }
 
 
@@ -1771,8 +1811,116 @@ function openAIAdd() {
   setTimeout(function() { showPhase(1); }, 50);
 }
 
+// LANGUAGE / i18n
+var TRANSLATIONS = {
+  it: {
+    add_recipe: '+ Aggiungi ricetta',
+    search_placeholder: 'Cerca ricetta…',
+    all_recipes: 'Tutte le ricette',
+    filter_all: 'Tutto',
+    filter_verified: '⭐ Verificate',
+    no_results: 'Nessuna ricetta trovata.',
+    hero_tag: '✦ Ricette Verificate',
+    hero_title_1: 'Sapori ',
+    hero_cta: 'Scopri le ricette',
+    hero_add: '+ Aggiungi la tua',
+    stat_recipes: 'Ricette',
+    stat_countries: 'Paesi',
+    stat_authentic: '100% Autentiche',
+    cook_btn: 'Cucina →',
+    profile_recipes_lbl: 'Ricette',
+    profile_likes_lbl: 'Like ricevuti',
+    login_btn: 'Accedi',
+    toast_login_required: '🔒 Accedi per continuare'
+  },
+  en: {
+    add_recipe: '+ Add recipe',
+    search_placeholder: 'Search recipe…',
+    all_recipes: 'All recipes',
+    filter_all: 'All',
+    filter_verified: '⭐ Verified',
+    no_results: 'No recipes found.',
+    hero_tag: '✦ Verified Recipes',
+    hero_cta: 'Explore recipes',
+    hero_add: '+ Add yours',
+    stat_recipes: 'Recipes',
+    stat_countries: 'Countries',
+    stat_authentic: '100% Authentic',
+    cook_btn: 'Cook →',
+    profile_recipes_lbl: 'Recipes',
+    profile_likes_lbl: 'Likes received',
+    login_btn: 'Sign in',
+    toast_login_required: '🔒 Sign in to continue'
+  },
+  es: {
+    add_recipe: '+ Añadir receta',
+    search_placeholder: 'Buscar receta…',
+    all_recipes: 'Todas las recetas',
+    filter_all: 'Todo',
+    filter_verified: '⭐ Verificadas',
+    no_results: 'No se encontraron recetas.',
+    hero_tag: '✦ Recetas Verificadas',
+    hero_cta: 'Explorar recetas',
+    hero_add: '+ Añade la tuya',
+    stat_recipes: 'Recetas',
+    stat_countries: 'Países',
+    stat_authentic: '100% Auténticas',
+    cook_btn: 'Cocinar →',
+    profile_recipes_lbl: 'Recetas',
+    profile_likes_lbl: 'Likes recibidos',
+    login_btn: 'Entrar',
+    toast_login_required: '🔒 Inicia sesión para continuar'
+  },
+  fr: {
+    add_recipe: '+ Ajouter recette',
+    search_placeholder: 'Chercher recette…',
+    all_recipes: 'Toutes les recettes',
+    filter_all: 'Tout',
+    filter_verified: '⭐ Vérifiées',
+    no_results: 'Aucune recette trouvée.',
+    hero_tag: '✦ Recettes Vérifiées',
+    hero_cta: 'Explorer les recettes',
+    hero_add: '+ Ajoutez la vôtre',
+    stat_recipes: 'Recettes',
+    stat_countries: 'Pays',
+    stat_authentic: '100% Authentiques',
+    cook_btn: 'Cuisiner →',
+    profile_recipes_lbl: 'Recettes',
+    profile_likes_lbl: 'Likes reçus',
+    login_btn: 'Se connecter',
+    toast_login_required: '🔒 Connectez-vous pour continuer'
+  }
+};
+
+var currentLang = 'it';
+
+function setLang(lang) {
+  if (!TRANSLATIONS[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('autentico_lang', lang);
+  document.documentElement.lang = lang;
+  var t = TRANSLATIONS[lang];
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (!t[key]) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = t[key];
+    } else {
+      el.textContent = t[key];
+    }
+  });
+  // Sync select value
+  var sel = document.getElementById('lang-select');
+  if (sel) sel.value = lang;
+  // Re-render grid to update dynamic text
+  renderGrid();
+}
+
 // STARTUP
 document.addEventListener('DOMContentLoaded', function() {
+  var savedLang = localStorage.getItem('autentico_lang') || 'it';
+  setLang(savedLang);
   updateAuthUI();
   loadRecipes();
 });
