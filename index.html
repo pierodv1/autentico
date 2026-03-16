@@ -18,7 +18,7 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden}
 
 /* HEADER */
-header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 0 var(--border);overflow:hidden}
+header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 0 var(--border);max-width:100vw;box-sizing:border-box}
 .logo{font-family:var(--serif);font-size:22px;font-weight:600;text-decoration:none;color:var(--text)}
 .logo span{color:var(--terra)}
 .hdr-right{display:flex;align-items:center;gap:12px}
@@ -29,7 +29,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .btn-add-hdr:active{transform:translateY(0);box-shadow:0 2px 8px rgba(196,97,74,.3)}
 
 /* HERO */
-.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:60px 80px;gap:60px;position:relative;overflow:hidden}
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:60px 80px;gap:60px;position:relative;max-width:100vw;box-sizing:border-box}
 .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(196,97,74,.07),transparent 70%);pointer-events:none}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(196,97,74,.1);color:var(--terra);border-radius:20px;padding:6px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(196,97,74,.2)}
 .hero h1{font-family:var(--serif);font-size:clamp(40px,5vw,68px);font-weight:600;line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px}
@@ -82,7 +82,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .rcard-an{font-size:13px;font-weight:600}
 .rcard-ar{font-size:11px;color:var(--muted);margin-top:1px}
 .rcard-title{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:6px;line-height:1.15;letter-spacing:-.3px}
-.rcard-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rcard-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100vw;box-sizing:border-box}
 .rcard-footer{display:flex;align-items:center;justify-content:space-between}
 .rcard-likes{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);transition:color .2s;min-width:40px;min-height:24px}
 .rcard-likes.liked{color:var(--terra);font-weight:600}
@@ -144,7 +144,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.97);backdr
 .ck-ings{padding:10px 24px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0}
 .ck-ings::-webkit-scrollbar{display:none}
 .ck-ing-pill{background:rgba(255,255,255,.08);border-radius:20px;padding:5px 12px;font-size:12px;white-space:nowrap;color:rgba(255,255,255,.65)}
-.ck-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 24px;overflow:hidden}
+.ck-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 24px;max-width:100vw;box-sizing:border-box}
 .ck-card{background:rgba(255,255,255,.06);border-radius:24px;padding:28px 32px;max-width:700px;margin:0 auto;width:100%}
 .ck-num{font-family:var(--serif);font-size:60px;color:rgba(255,255,255,.07);margin-bottom:8px;line-height:1}
 .ck-txt{font-size:clamp(18px,2.8vw,24px);font-weight:400;line-height:1.45}
@@ -355,7 +355,7 @@ footer p{font-size:13px;color:var(--muted)}
 .section-search input:not(:placeholder-shown) ~ .clear-search{display:block}
 
 /* ── CURATED SECTION ────────────────────────────────────────────────────── */
-.curated-section{padding:56px 80px;background:linear-gradient(135deg,#1a0f0a 0%,#2d1a12 100%);position:relative;overflow:hidden}
+.curated-section{padding:56px 80px;background:linear-gradient(135deg,#1a0f0a 0%,#2d1a12 100%);position:relative;max-width:100vw;box-sizing:border-box}
 .curated-section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C4614A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
 .curated-section .section-title{color:#fff;margin-bottom:8px}
 .curated-subtitle{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:32px}
@@ -383,7 +383,7 @@ footer p{font-size:13px;color:var(--muted)}
 .friends-list{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
 .friend-chip{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:40px;padding:8px 16px 8px 8px;cursor:pointer;transition:all var(--transition);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .friend-chip:hover{border-color:var(--terra);transform:translateY(-1px);box-shadow:0 4px 16px rgba(196,97,74,.2)}
-.friend-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--terra2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden}
+.friend-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--terra2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;max-width:100vw;box-sizing:border-box}
 .friend-av img{width:100%;height:100%;object-fit:cover}
 .friend-name{font-size:13px;font-weight:600}
 .friend-count{font-size:11px;color:var(--muted);margin-top:1px}
@@ -424,7 +424,7 @@ footer p{font-size:13px;color:var(--muted)}
 .up-recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .up-recipe-card{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition)}
 .up-recipe-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
-.up-recipe-img{height:90px;background:#f0ede8;overflow:hidden}
+.up-recipe-img{height:90px;background:#f0ede8;max-width:100vw;box-sizing:border-box}
 .up-recipe-img img{width:100%;height:100%;object-fit:cover}
 .up-recipe-info{padding:8px 10px}
 .up-recipe-info div{font-size:13px;font-weight:500;line-height:1.3}
@@ -445,24 +445,26 @@ footer p{font-size:13px;color:var(--muted)}
 
 /* ── MOBILE ── */
 @media(max-width:600px){
-  /* Header */
-  header{padding:0 12px;height:56px;gap:6px;overflow:hidden}
-  .logo{font-size:18px;flex-shrink:0}
-  .hdr-right{gap:6px;flex-shrink:0}
-  .search-wrap{flex:1;min-width:0;display:none}
-  .btn-add-hdr{padding:0;width:36px;height:36px;border-radius:50%;font-size:0;gap:0;flex-shrink:0}
-  .btn-add-hdr svg{width:18px;height:18px;flex-shrink:0}
-  .btn-add-txt{display:none}
+  /* ── Header Mobile ── */
+  header{padding:0 12px;height:56px;gap:8px;max-width:100vw;box-sizing:border-box;justify-content:space-between;overflow:visible}
+  .logo{font-size:17px;flex-shrink:0;white-space:nowrap}
   nav{display:none}
-  /* Auth area — always visible on mobile */
-  #auth-area{flex-shrink:0 !important;min-width:36px}
-  #header-auth{flex-shrink:0}
-  /* User chip — avatar only */
-  #user-chip-btn span{display:none !important}
-  #user-chip-btn{padding:3px !important;border-radius:50% !important;gap:0 !important;border:2px solid var(--terra) !important;width:36px !important;height:36px !important;justify-content:center !important}
-  /* Sign-in button — icon only on mobile */
-  .hdr-signin-txt{display:none}
-  .hdr-signin-btn{width:36px !important;height:36px !important;padding:0 !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important}
+  .hdr-right{gap:6px;flex-shrink:0;display:flex;align-items:center}
+  .search-wrap{display:none}
+  /* Add button: circle with + icon only */
+  .btn-add-hdr{padding:0;width:36px;height:36px;border-radius:50%;font-size:0;gap:0;flex-shrink:0;min-width:36px}
+  .btn-add-hdr svg{width:18px;height:18px}
+  .btn-add-txt{display:none}
+  /* Auth area — must never be hidden */
+  #auth-area{flex-shrink:0 !important;position:relative;min-width:36px !important}
+  #header-auth{flex-shrink:0 !important;display:flex !important;align-items:center}
+  /* Sign-in button: person icon only */
+  .hdr-signin-btn{width:36px !important;height:36px !important;padding:0 !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;min-width:36px !important}
+  .hdr-signin-txt{display:none !important}
+  /* User chip: avatar circle only */
+  #user-chip-btn{padding:2px !important;border-radius:50% !important;gap:0 !important;width:36px !important;height:36px !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;min-width:36px !important;border:2px solid var(--terra) !important}
+  #user-chip-btn>span{display:none !important}
+  #user-chip-btn>svg{display:none !important}
 
   /* Hero */
   .hero{padding:28px 16px 24px;text-align:center}
@@ -695,7 +697,7 @@ footer p{font-size:13px;color:var(--muted)}
     </div>
 
     <div class="ccard" onclick="openCurated('bouillabaisse')">
-      <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=800&auto=format&fit=crop" alt="Bouillabaisse" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?q=80&w=800&auto=format&fit=crop" alt="Bouillabaisse" loading="lazy">
       <div class="ccard-ov"></div>
       <div class="ccard-body">
         <div class="ccard-badge">⭐ Editor's Pick</div>
@@ -781,11 +783,11 @@ footer p{font-size:13px;color:var(--muted)}
     <div style="display:flex;flex-direction:column;gap:12px">
       <button onclick="closeChoice();openAdd('manual')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#C4614A'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:#FDF0ED;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✍️</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Scrivo io la ricetta</div><div style="font-size:13px;color:#7A7570">Inserisci tutti i dettagli manualmente</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">I'll write it myself</div><div style="font-size:13px;color:#7A7570">Enter all details manually</div></div>
       </button>
       <button onclick="closeChoice();openAdd('ai')" style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;border:2px solid #E5E0D8;background:linear-gradient(135deg,#f5f0ff,#fff);cursor:pointer;text-align:left;width:100%;transition:border .2s" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#E5E0D8'">
         <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✨</div>
-        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Mi aiuta l'AI</div><div style="font-size:13px;color:#7A7570">Describe the dish, the AI generates the recipe</div></div>
+        <div><div style="font-weight:600;font-size:15px;margin-bottom:3px">Let AI help</div><div style="font-size:13px;color:#7A7570">Describe the dish, the AI generates the recipe</div></div>
       </button>
     </div>
   </div>
@@ -1202,23 +1204,20 @@ async function fetchRecipeImage(title) {
 
 // Smarter: use Unsplash API with embedded demo key
 async function fetchRecipeImageSmart(title) {
-  // Try Unsplash API first (free, 50 req/hr, no card needed)
   var UNSPLASH_KEY = 'J-QBPe0oC_Y43d72wJv5-UzSHRDtNmQAvkB7fH9WI9I';
+  var clean = title.replace(/[^a-zA-Z0-9 ]/g,' ').trim();
+  var q = encodeURIComponent(clean + ' food dish plating');
   try {
-    var q = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g,' ').trim() + ' food');
     var res = await fetch(
-      'https://api.unsplash.com/search/photos?query=' + q + '&per_page=1&orientation=landscape',
+      'https://api.unsplash.com/search/photos?query=' + q + '&per_page=3&orientation=landscape&content_filter=high',
       { headers: { Authorization: 'Client-ID ' + UNSPLASH_KEY } }
     );
     if (res.ok) {
       var data = await res.json();
-      if (data.results && data.results.length > 0)
-        return data.results[0].urls.regular;
+      if (data.results && data.results.length > 0) return data.results[0].urls.regular;
     }
-  } catch(e) { console.warn('Unsplash API error:', e); }
-  // Fallback: picsum food-themed placeholder (always returns an image)
-  var seed = title.split('').reduce(function(a,c){return a+c.charCodeAt(0);},0) % 1000;
-  return 'https://picsum.photos/seed/' + seed + '/800/500';
+  } catch(e) { console.warn('Unsplash error:', e.message); }
+  return 'https://source.unsplash.com/800x500/?' + encodeURIComponent(clean + ',food');
 }
 
 async function dbSave(r) {
@@ -1477,7 +1476,7 @@ function openDetail(id) {
   +'</div>';
   });
 
-  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Inizia a cucinare</button></div></div>';
+  html += '<div class="m-cta"><button class="btn-start" onclick="closeDetail();startCooking(\''+r.id+'\')">🍳 Start Cooking</button></div></div>';
 
   document.getElementById('detail-modal').innerHTML = html;
   var ov=document.getElementById('detail-overlay');
@@ -1558,8 +1557,8 @@ function renderCkStep() {
   else td.innerHTML='';
   var isLast=i===steps.length-1;
   document.getElementById('ck-nav').innerHTML=
-    (i>0?'<button class="ck-prev" onclick="ckMove(-1)">\u2190 Indietro</button>':'<div></div>')
-    +'<button class="'+(isLast?'ck-finish':'ck-next')+'" onclick="'+(isLast?'finishCook()':'ckMove(1)')+'">'+(isLast?'\ud83c\udf89 Fatto!':'Passo successivo \u2192')+'</button>';
+    (i>0?'<button class="ck-prev" onclick="ckMove(-1)">\u2190 Back</button>':'<div></div>')
+    +'<button class="'+(isLast?'ck-finish':'ck-next')+'" onclick="'+(isLast?'finishCook()':'ckMove(1)')+'">'+(isLast?'\ud83c\udf89 Fatto!':'Next step \u2192')+'</button>';
 }
 
 function renderTimer(container) {
@@ -1608,7 +1607,7 @@ function ckMove(dir){
   updateQuickButtons(ckStep);
 }
 
-function finishCook(){clearCkTimer();closeCooking();showToast('\ud83c\udf89 Ricetta completata! Buon appetito!');}
+function finishCook(){clearCkTimer();closeCooking();showToast('\ud83c\udf89 Recipe complete! Enjoy your meal!');}
 
 function fmtTime(s){
   if(s<=0)return'0:00';
@@ -1623,8 +1622,8 @@ function initChat() {
   el.innerHTML='';
   var r=ckRecipe;
   var welcome='Ciao! Sono il tuo AI Chef per <strong>'+r.title+'</strong> 👨‍🍳<br><br>';
-  welcome+='I already have all the recipe context: '+r.ingredients.length+' ingredienti, '+(r.steps||[]).length+' passaggi. ';
-  welcome+='Chiedimi qualsiasi cosa — sostituzioni, tempi, tecniche o se qualcosa va storto!';
+  welcome+='I already have all the recipe context: '+r.ingredients.length+' ingredients, '+(r.steps||[]).length+' steps. ';
+  welcome+='Ask me anything — substitutions, timing, techniques, or if something goes wrong!';
   appendMsg('ai', welcome);
   updateQuickButtons(0);
 }
@@ -1691,7 +1690,7 @@ async function sendChat() {
   var s=r.steps[ckStep];
   var stepTxt=typeof s==='string'?s:s.text;
   var allSteps=(r.steps||[]).map(function(x,i){return (i+1)+'. '+(typeof x==='string'?x:x.text);}).join(' | ');
-  var ctx='Ricetta: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". Tutti i passi: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note auserscità: '+(r.notes||[]).join('; ')+'.';
+  var ctx='Recipe: '+r.title+' ('+r.region+'). You are at step '+(ckStep+1)+' of '+(r.steps||[]).length+': "'+stepTxt+'". All steps: '+allSteps+'. Ingredienti: '+(r.ingredients||[]).map(function(g){return g.name+' '+g.qty;}).join(', ')+'. Note auserscità: '+(r.notes||[]).join('; ')+'.';
   try {
     var mistralChatMsgs=[{role:'system',content:'You are an expert chef assisting the user while cooking in the Autentico app. Reply in English, BRIEF and PRACTICAL (max 3-4 sentences). Contesto: '+ctx}].concat(chatHistory.map(function(m){return{role:m.role==='assistant'?'assistant':'user',content:m.content};}));
     var res=await fetch('https://api.mistral.ai/v1/chat/completions',{
@@ -1736,7 +1735,7 @@ function openAdd(mode) {
   if (fImgLabel) fImgLabel.textContent='';
   // Reset title
   var addTitle = document.getElementById('add-overlay-title');
-  if (addTitle) addTitle.textContent = 'Nuova ricetta';
+  if (addTitle) addTitle.textContent = 'New Recipe';
   var saveBtn = document.querySelector('#ph1 .btn-save');
   if (saveBtn) saveBtn.textContent = 'Publish recipe';
   showPhase(1);
@@ -1833,7 +1832,7 @@ function goPhase(n) {
     var title=document.getElementById('fr-title').value.trim();
     var region=document.getElementById('fr-region').value.trim();
     var country=document.getElementById('fr-country').value;
-    if(!title||!region||!country){showToast('\u26a0\ufe0f Compila nome, regione e paese');return;}
+    if(!title||!region||!country){showToast('\u26a0\ufe0f Please fill in name, region and country');return;}
     renderFinalPreview();
   }
   showPhase(n);
@@ -1865,7 +1864,7 @@ async function runAI() {
       })
     });
     clearInterval(miv);
-    if(!res.ok){var errData=await res.json().catch(function(){return{};});throw new Error('Errore API '+res.status+': '+(errData.message||''));}
+    if(!res.ok){var errData=await res.json().catch(function(){return{};});throw new Error('API Error '+res.status+': '+(errData.message||''));}
     var data=await res.json();
     var txt=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
     if(!txt){throw new Error('Empty response from AI');}
@@ -1885,7 +1884,7 @@ async function runAI() {
     clearInterval(miv);
     console.error('AI error:', e);
     populateFields({});
-    showToast('\u26a0\ufe0f IA non disponibile \u2014 compila manualmente');
+    showToast('\u26a0\ufe0f AI unavailable \u2014 please fill in manually');
   }
 }
 
@@ -1958,9 +1957,9 @@ function renderFinalPreview() {
   var html='<div class="final-card"><h3>'+title+'</h3>'
     +'<div style="margin-bottom:10px"><span class="ftag">📍 '+region+'</span><span class="ftag">🌍 '+country+'</span><span class="ftag">⏱ '+t+'</span></div>'
     +'<p style="font-size:14px;color:var(--muted);margin-bottom:12px">'+desc+'</p>'
-    +'<div style="font-weight:600;font-size:13px;margin-bottom:6px">Ingredienti ('+ings.length+')</div>'
+    +'<div style="font-weight:600;font-size:13px;margin-bottom:6px">Ingredients ('+ings.length+')</div>'
     +ings.map(function(g){return '<div class="final-ing">'+g.name+(g.qty?' \u2014 '+g.qty:'')+'</div>';}).join('')
-    +'<div style="font-weight:600;font-size:13px;margin:12px 0 8px">Passaggi ('+steps.length+')</div>'
+    +'<div style="font-weight:600;font-size:13px;margin:12px 0 8px">Steps ('+steps.length+')</div>'
     +steps.map(function(s,i){return '<div class="final-step"><div class="final-sn">'+String(i+1).padStart(2,'0')+'</div><div class="final-st">'+s.text+(s.timer>0?' <span style="color:var(--terra);font-size:11px">\u23f1 '+fmtTime(s.timer)+'</span>':'')+'</div></div>';}).join('')
     +'</div>';
   document.getElementById('final-preview').innerHTML=html;
@@ -1970,10 +1969,10 @@ async function saveRecipe() {
   var title=document.getElementById('fr-title').value.trim();
   var region=document.getElementById('fr-region').value.trim();
   var country=document.getElementById('fr-country').value;
-  if(!title||!region||!country){showToast('\u26a0\ufe0f Compila nome, regione e paese');return;}
+  if(!title||!region||!country){showToast('\u26a0\ufe0f Please fill in name, region and country');return;}
   var ings=collectIngs(),steps=collectSteps();
   if(!ings.length){showToast('⚠️ Add at least one ingredient');return;}
-  if(!steps.length){showToast('\u26a0\ufe0f Aggiungi almeno un passaggio');return;}
+  if(!steps.length){showToast('\u26a0\ufe0f Add at least one step');return;}
   var notes=(document.getElementById('fr-notes').value.trim()||'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
   var cover=document.getElementById('fr-img').value.trim()||'';
   var authorName = currentProfile ? (currentProfile.username||currentUser.email.split('@')[0]) : (document.getElementById('f-author') ? document.getElementById('f-author').value.trim() : 'Anonimo') || 'Anonimo';
@@ -1990,9 +1989,9 @@ async function saveRecipe() {
   };
   recipes.unshift(newR);
   renderGrid();updateStats();closeAdd();
-  showToast('\u23f3 Pubblicazione in corso\u2026');
+  showToast('\u23f3 Publishing in progress\u2026');
   var ok=await dbSave(newR);
-  if(ok)showToast('\u2713 Ricetta pubblicata e salvata!');
+  if(ok)showToast('\u2713 Recipe published!');
 }
 
 function showToast(msg) {
@@ -2085,15 +2084,15 @@ function switchAuthTab(tab) {
 async function submitLogin() {
   var email = document.getElementById('auth-email').value.trim();
   var pass = document.getElementById('auth-password').value;
-  if (!email || !pass) { showToast('⚠️ Inserisci email e password'); return; }
+  if (!email || !pass) { showToast('⚠️ Please enter your email and password'); return; }
   await doLogin(email, pass);
 }
 async function submitSignup() {
   var username = document.getElementById('auth-username').value.trim();
   var email = document.getElementById('auth-email-signup').value.trim();
   var pass = document.getElementById('auth-password-signup').value;
-  if (!username || !email || !pass) { showToast('⚠️ Compila tutti i campi'); return; }
-  if (pass.length < 6) { showToast('⚠️ Password minimo 6 caratteri'); return; }
+  if (!username || !email || !pass) { showToast('⚠️ Please fill in all fields'); return; }
+  if (pass.length < 6) { showToast('⚠️ Password must be at least 6 characters'); return; }
   await doSignup(username, email, pass);
 }
 
@@ -2411,7 +2410,7 @@ var CURATED = {
   },
   bouillabaisse: {
     id:'c6', title:'Bouillabaisse Marseillaise', region:'Marseille, France', country:'France',
-    cover:'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=800&auto=format&fit=crop',
+    cover:'https://images.unsplash.com/photo-1559847844-5315695dadae?q=80&w=800&auto=format&fit=crop',
     emoji:'🐟', verified:true, author:'Autentico Editors', likes:1650, time:120, difficulty:'Hard',
     description:"The original fisherman's stew from the Vieux Port. At least four types of Mediterranean fish and the rouille-smeared crouton are non-negotiable.",
     ingredients:[
@@ -2707,13 +2706,13 @@ document.addEventListener('DOMContentLoaded', function() {
       <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;background:none;border-radius:9px;cursor:pointer;font-size:14px;color:#7A7570">Sign up</button>
     </div>
     <div id="auth-form-login">
-      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email" placeholder="tua@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
+      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email" placeholder="your@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Password</label><input type="password" id="auth-password" placeholder="••••••••" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <button onclick="submitLogin()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Sign in</button>
     </div>
     <div id="auth-form-signup" style="display:none">
-      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Username</label><input type="text" id="auth-username" placeholder="nomeutente" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
-      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email-signup" placeholder="tua@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
+      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Username</label><input type="text" id="auth-username" placeholder="username" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
+      <div style="margin-bottom:12px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Email</label><input type="email" id="auth-email-signup" placeholder="your@email.com" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <div style="margin-bottom:16px"><label style="display:block;font-size:12px;color:#7A7570;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Password (min. 6 characters)</label><input type="password" id="auth-password-signup" placeholder="••••••••" style="width:100%;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px 12px;font-size:14px;outline:none"/></div>
       <button onclick="submitSignup()" style="width:100%;background:#C4614A;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;cursor:pointer">Sign up free</button>
     </div>
