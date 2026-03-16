@@ -206,7 +206,7 @@ header { position:sticky;top:0;z-index:200;background:rgba(250,247,242,.96);back
 .ck-btn-finish { background:#4CAF50;color:#fff; }
 
 /* ── ADD MODAL ── */
-#add-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;overflow-y:auto; }
+#add-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;overflow-y:auto; }
 #add-overlay.open { display:flex;justify-content:center;padding:40px 20px; }
 .add-modal { background:#fff;width:100%;max-width:680px;border-radius:24px;padding:32px;align-self:flex-start;animation:slideUp .3s ease;position:relative; }
 .add-modal h2 { font-family:var(--serif);font-size:26px;margin-bottom:6px; }
@@ -1312,27 +1312,21 @@ async function generateFromDesc() {
   const card = document.getElementById('ai-result-card');
   btn.disabled = true;
   btn.innerHTML = '<div class="ai-spinner"></div> Sto creando la ricetta…';
-  card.classList.remove('show');
+  card.style.display = 'none';
 
-  const systemPrompt = `You are an expert chef. Generate an authentic recipe in valid JSON format.
-IMPORTANT: Respond with ONLY valid JSON, no markdown, no backticks, no extra text.
-Use only double quotes. No trailing commas. No special characters in values.
-Use this exact structure:
-{"title":"Recipe Name","region":"City, Country","country":"Country","emoji":"🍜","difficulty":"Facile","time_minutes":30,"portions":4,"description":"Short description","ingredients":[{"name":"ingredient","qty":"100 g"}],"steps":[{"text":"Step instruction","tip":"Pro tip","timer":0}],"notes":["Note 1","Note 2"]}
-Rules: difficulty must be Facile, Medio or Difficile. timer in seconds (0 if none). Min 6 ingredients, 5 steps. Write ALL content in Italian language.`;
+  const systemPrompt = 'Sei un chef esperto. Rispondi SOLO con JSON valido, niente altro. Struttura esatta: {"title":"Nome","region":"Citta, Paese","country":"Paese","emoji":"emoji","difficulty":"Facile","time_minutes":30,"portions":4,"description":"descrizione","ingredients":[{"name":"nome","qty":"100 g"}],"steps":[{"text":"istruzione","tip":"consiglio","timer":0}],"notes":["nota"]}. difficulty: solo Facile Medio o Difficile. timer: secondi interi. Minimo 6 ingredienti e 5 passi dettagliati. Tutto in italiano. SOLO JSON.';
 
   try {
     const raw = await callGemini('Genera una ricetta autentica per: ' + desc, systemPrompt);
     // Extract and fix JSON robustly
-    let clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
-    const jStart = clean.indexOf('{');
-    const jEnd = clean.lastIndexOf('}');
-    if (jStart >= 0 && jEnd > jStart) clean = clean.slice(jStart, jEnd + 1);
-    clean = clean
-      .replace(/,\s*([}\]])/g, '$1')
-      .replace(/[\u0000-\u001F\u007F]/g, ' ')
-      .replace(/\r/g, '');
+    var clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
+    var jStart = clean.indexOf('{');
+    var jEnd = clean.lastIndexOf('}');
+    if (jStart < 0 || jEnd <= jStart) throw new Error('Risposta non valida, riprova.');
+    clean = clean.slice(jStart, jEnd + 1);
+    clean = clean.replace(/,\s*([}\]])/g,'$1').replace(/[\u0000-\u001F]/g,' ');
     aiGeneratedRecipe = JSON.parse(clean);
+    if (!aiGeneratedRecipe.title) throw new Error('Ricetta incompleta, riprova.');
 
     // Show preview card
     document.getElementById('arc-title').textContent = aiGeneratedRecipe.title;
@@ -1344,7 +1338,7 @@ Rules: difficulty must be Facile, Medio or Difficile. timer in seconds (0 if non
       aiGeneratedRecipe.ingredients.slice(0, 5).map(i =>
         `<span class="ai-result-pill">${i.name}</span>`
       ).join('') + (aiGeneratedRecipe.ingredients.length > 5 ? `<span class="ai-result-pill">+${aiGeneratedRecipe.ingredients.length - 5} altri</span>` : '');
-    card.classList.add('show');
+    card.style.display = 'block';
 
   } catch(e) {
     let msg = '❌ Errore: ' + e.message;
@@ -1366,9 +1360,7 @@ Rules: difficulty must be Facile, Medio or Difficile. timer in seconds (0 if non
 function applyGeneratedRecipe() {
   if (!aiGeneratedRecipe) return;
   closeAiChef();
-  setTimeout(() => {
-    fillFormWithRecipe(aiGeneratedRecipe);
-  }, 200);
+  setTimeout(function() { fillFormWithRecipe(aiGeneratedRecipe); }, 400);
 }
 
 // ── TAB 2: CHAT INTERATTIVA ──
@@ -1465,9 +1457,7 @@ async function sendChat() {
 function applyChatRecipe() {
   if (!chatRecipeData) return;
   closeAiChef();
-  setTimeout(() => {
-    fillFormWithRecipe(chatRecipeData);
-  }, 200);
+  setTimeout(function() { fillFormWithRecipe(chatRecipeData); }, 400);
 }
 
 // ── FILL FORM (shared by both tabs) ──
